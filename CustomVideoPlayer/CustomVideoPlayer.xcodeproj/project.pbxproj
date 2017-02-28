@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+Extension.m */; };
+		752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+Extension.m */; };
 		75F745531E63BC4900F5F775 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745521E63BC4900F5F775 /* main.m */; };
 		75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745551E63BC4900F5F775 /* AppDelegate.m */; };
 		75F745591E63BC4900F5F775 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745581E63BC4900F5F775 /* ViewController.m */; };
@@ -39,6 +41,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		752E29071E657DE1009AA362 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
+		752E29081E657DE1009AA362 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
+		752E29091E657DE1009AA362 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		752E290A1E657DE1009AA362 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		75F7454E1E63BC4900F5F775 /* CustomVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75F745521E63BC4900F5F775 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		75F745541E63BC4900F5F775 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -91,6 +97,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		752E29031E657DA5009AA362 /* PlayerManager */ = {
+			isa = PBXGroup;
+			children = (
+				75F7458A1E640D4100F5F775 /* MMVideoPlayer.h */,
+				75F7458B1E640D4100F5F775 /* MMVideoPlayer.m */,
+			);
+			name = PlayerManager;
+			sourceTree = "<group>";
+		};
+		752E29041E657DE1009AA362 /* MMCategory */ = {
+			isa = PBXGroup;
+			children = (
+				752E29071E657DE1009AA362 /* UIColor+Extension.h */,
+				752E29081E657DE1009AA362 /* UIColor+Extension.m */,
+				752E29091E657DE1009AA362 /* UIView+Extension.h */,
+				752E290A1E657DE1009AA362 /* UIView+Extension.m */,
+			);
+			path = MMCategory;
+			sourceTree = "<group>";
+		};
 		75F745451E63BC4900F5F775 = {
 			isa = PBXGroup;
 			children = (
@@ -114,11 +140,11 @@
 		75F745501E63BC4900F5F775 /* CustomVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				752E29041E657DE1009AA362 /* MMCategory */,
+				752E29031E657DA5009AA362 /* PlayerManager */,
 				75F745991E641F2200F5F775 /* Protocol */,
 				75F745981E641BC600F5F775 /* View */,
 				75F7458D1E640D5B00F5F775 /* Header */,
-				75F7458A1E640D4100F5F775 /* MMVideoPlayer.h */,
-				75F7458B1E640D4100F5F775 /* MMVideoPlayer.m */,
 				75F745541E63BC4900F5F775 /* AppDelegate.h */,
 				75F745551E63BC4900F5F775 /* AppDelegate.m */,
 				75F745571E63BC4900F5F775 /* ViewController.h */,
@@ -323,8 +349,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */,
 				75F7458C1E640D4100F5F775 /* MMVideoPlayer.m in Sources */,
 				75F745971E641BBC00F5F775 /* MMPlayerLayerView.m in Sources */,
+				752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */,
 				75F745591E63BC4900F5F775 /* ViewController.m in Sources */,
 				75F745941E6414AC00F5F775 /* MMVideoPlayerView.m in Sources */,
 				75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */,
@@ -566,6 +594,7 @@
 				75F7457D1E63BC4900F5F775 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		75F7457E1E63BC4900F5F775 /* Build configuration list for PBXNativeTarget "CustomVideoPlayerTests" */ = {
 			isa = XCConfigurationList;
@@ -574,6 +603,7 @@
 				75F745801E63BC4900F5F775 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		75F745811E63BC4900F5F775 /* Build configuration list for PBXNativeTarget "CustomVideoPlayerUITests" */ = {
 			isa = XCConfigurationList;
@@ -582,6 +612,7 @@
 				75F745831E63BC4900F5F775 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

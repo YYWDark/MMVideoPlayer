@@ -33,6 +33,69 @@
     [self addSubview:self.infoView];
 }
 
-#pragma mark - get
+#pragma mark - action
+- (void)respondToButtonAction:(UIButton *)button {
+  
+}
 
+- (void)respondToSliderAction:(UISlider *)slider {
+    NSLog(@"value == %lf",slider.value);
+}
+#pragma mark - get
+- (UIButton *)closeButton {
+    if (_closeButton == nil) {
+        
+    }
+    return _closeButton;
+}
+
+
+- (UIButton *)playButton {
+    if (_playButton == nil) {
+        _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _playButton.selected = NO;
+        _playButton.tag = 1;
+        [_playButton setImage:[UIImage imageNamed:@"cm2_vehicle_btn_play_prs"] forState:UIControlStateNormal];
+        [_playButton addTarget:self action:@selector(respondToButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _playButton;
+}
+
+- (UISlider *)sliderView {
+    if (_sliderView == nil) {
+        _sliderView = [[UISlider alloc] init];
+        [_sliderView setThumbImage:[UIImage imageNamed:@"cm2_fm_playbar_btn"] forState:UIControlStateNormal];
+        _sliderView.minimumTrackTintColor =[UIColor redColor];
+        _sliderView.maximumTrackTintColor =[UIColor grayColor];
+        [_sliderView addTarget:self action:@selector(respondToSliderAction:) forControlEvents:UIControlEventValueChanged];
+    }
+    return _sliderView;
+}
+
+- (UILabel *)currentTimeLabel {
+    if (_currentTimeLabel == nil) {
+        _currentTimeLabel = [[UILabel alloc] init];
+        _currentTimeLabel.font = [UIFont systemFontOfSize:11];
+        _currentTimeLabel.text =@"00:00";
+        _currentTimeLabel.textColor =[UIColor whiteColor];
+    }
+    return _currentTimeLabel;
+}
+
+- (UILabel *)endTimeLabel {
+    if (_endTimeLabel == nil) {
+        _endTimeLabel = [[UILabel alloc] init];
+        _endTimeLabel.font = [UIFont systemFontOfSize:11];
+        _endTimeLabel.textColor =[UIColor grayColor];
+        _endTimeLabel.text =@"00:00";
+    }
+    return _endTimeLabel;
+}
+
+- (UIView *)infoView {
+    if (_infoView == nil) {
+        _infoView = [[UIView alloc] init];
+    }
+    return _infoView;
+}
 @end
