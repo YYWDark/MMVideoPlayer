@@ -8,7 +8,6 @@
 
 #import "MMVideoPlayerView.h"
 #import "MMPlayerLayerView.h"
-#import <AVFoundation/AVFoundation.h>
 
 @interface MMVideoPlayerView ()
 @property (strong, nonatomic) MMPlayerLayerView *playerLayerView;
@@ -19,7 +18,7 @@
     return [AVPlayerLayer class];
 }
 
-- (id)initWithPlayer:(AVPlayer *)player {
+- (instancetype)initWithPlayer:(AVPlayer *)player {
     self = [super initWithFrame:CGRectZero];
     if (self) {
         self.backgroundColor = [UIColor blackColor];
@@ -37,5 +36,7 @@
     self.playerLayerView.frame = self.bounds;
 }
 
-
+- (id <MMUpdateUIInterface>)interface {
+    return self.playerLayerView;
+}
 @end

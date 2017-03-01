@@ -8,12 +8,13 @@
 
 #import "MMVideoPlayer.h"
 #import "MMVideoPlayerView.h"
-@interface MMVideoPlayer ()
+#import "MMUpdateUIInterface.h"
+@interface MMVideoPlayer () <MMPlayerActionDelegate>
 @property (nonatomic, strong) MMVideoPlayerView *videoPlayerView;
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AVAsset *asset;
 @property (nonatomic, strong) AVPlayerItem *playerItem;
-
+@property (nonatomic, weak) id<MMUpdateUIInterface> interface;
 @end
 @implementation MMVideoPlayer
 #pragma mark - life cycle
@@ -32,11 +33,27 @@
 }
 
 - (void)initVideoPlayerAndRelevantSetting {
+    NSArray *keys = @[
+                      @"tracks",
+                      @"duration",
+                      @"commonMetadata",
+                      @"availableMediaCharacteristicsWithMediaSelectionOptions"
+                      ];
     self.asset = [AVAsset assetWithURL:self.videoUrl];
-    self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset];
+    self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset automaticallyLoadedAssetKeys:keys];
+    //add Observer to observe the movie status
+    [self _addObserver];
+    [self _initSubView];
 }
+
 #pragma mark - public methods
 #pragma mark - private methods
+- (void)_initSubView {
+    self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player];
+    self.interface = self.videoPlayerView.interface;
+    self.interface.delegate = self;
+}
+
 - (void)_addObserver {
     [self.playerItem addObserver:self
                  forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus
@@ -58,7 +75,7 @@
         return;
     }
     
-    if ([keyPath isEqualToString:@"status"]) {
+    if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
         // Get the status change from the change dictionary
         NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
@@ -82,34 +99,25 @@
 
 - (void)didReceiveAVPlayerItemDidPlayToEndTimeNotification:(NSNotification *)notification
 {
-//    if (notification.object == self.player.currentItem) {
-//        if (self.shouldReplayWhenFinish) {
-//            [self replay];
-//        } else {
-//            [self.player seekToTime:kCMTimeZero];
-//            [self showPlayButton];
-//        }
-//        
-//        if ([self.operationDelegate respondsToSelector:@selector(videoViewDidFinishPlaying:)]) {
-//            [self.operationDelegate videoViewDidFinishPlaying:self];
-//        }
-//    }
+
 }
 
 - (void)didReceiveAVPlayerItemPlaybackStalledNotification:(NSNotification *)notification
 {
-//    if (notification.object == self.player.currentItem) {
-//        if (self.stalledStrategy == CTVideoViewStalledStrategyPlay) {
-//            [self play];
-//        }
-//        if (self.stalledStrategy == CTVideoViewStalledStrategyDelegateCallback) {
-//            if ([self.operationDelegate respondsToSelector:@selector(videoViewStalledWhilePlaying:)]) {
-//                [self.operationDelegate videoViewStalledWhilePlaying:self];
-//            }
-//        }
-//    }
+
+}
+#pragma mark - MMPlayerActionDelegate
+- (void)play {
+    [self.player play];
 }
 
+- (void)pause {
+    [self.player pause]; 
+}
+
+- (void)stop {
+    
+}
 #pragma mark - get
 - (UIView *)view {
     return self.videoPlayerView;

@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MMPlayerActionDelegate.h"
 
 @protocol MMUpdateUIInterface <NSObject>
+@property (nonatomic, weak) id<MMPlayerActionDelegate> delegate;
+
 - (void)setTitle:(NSString *)title;
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration;
 @end

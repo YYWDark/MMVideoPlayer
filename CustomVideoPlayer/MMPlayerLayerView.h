@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MMUpdateUIInterface.h"
 
-@interface MMPlayerLayerView : UIView
+@interface MMPlayerLayerView : UIView <MMUpdateUIInterface>
+@property (nonatomic, weak) id <MMPlayerActionDelegate> delegate;
 @property (nonatomic, assign) BOOL isToolHidden;
 
 @end
