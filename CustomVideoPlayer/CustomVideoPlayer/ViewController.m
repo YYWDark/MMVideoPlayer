@@ -15,6 +15,8 @@
     MMVideoPlayer *player = [[MMVideoPlayer alloc] initWithURL:[[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"]];
     player.view.frame = self.view.frame;
     [self.view addSubview:player.view];
+    
+    
 }
 @end
 

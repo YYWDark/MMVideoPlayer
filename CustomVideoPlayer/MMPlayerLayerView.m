@@ -67,6 +67,15 @@ static CGFloat const TimeLableHeight = 40.0f;
     NSLog(@"value == %lf",slider.value);
 }
 
+//touch up slider
+- (void)respondToTouchUpAction:(UISlider *)slider {
+    NSLog(@"value == %lf",slider.value);
+}
+
+//touch down slider
+- (void)respondToTouchDownAction:(UISlider *)slider {
+    NSLog(@"value == %lf",slider.value);
+}
 
 #pragma mark - get
 - (UIButton *)closeButton {
@@ -81,7 +90,7 @@ static CGFloat const TimeLableHeight = 40.0f;
 - (UIButton *)playButton {
     if (_playButton == nil) {
         _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_playButton setImage:[UIImage imageNamed:@"Icon_Pause"] forState:UIControlStateNormal];
+        [_playButton setImage:[UIImage imageNamed:@"Icon_Play"] forState:UIControlStateNormal];
         [_playButton addTarget:self action:@selector(respondToPlayAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _playButton;
@@ -94,6 +103,8 @@ static CGFloat const TimeLableHeight = 40.0f;
         _sliderView.minimumTrackTintColor =[UIColor redColor];
         _sliderView.maximumTrackTintColor =[UIColor lightGrayColor];
         [_sliderView addTarget:self action:@selector(respondToSliderAction:) forControlEvents:UIControlEventValueChanged];
+        [_sliderView addTarget:self action:@selector(respondToTouchUpAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_sliderView addTarget:self action:@selector(respondToTouchDownAction:) forControlEvents:UIControlEventTouchDown];
     }
     return _sliderView;
 }

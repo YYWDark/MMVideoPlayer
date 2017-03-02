@@ -40,10 +40,17 @@
                       @"availableMediaCharacteristicsWithMediaSelectionOptions"
                       ];
     self.asset = [AVAsset assetWithURL:self.videoUrl];
-    self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset automaticallyLoadedAssetKeys:keys];
-    //add Observer to observe the movie status
+    self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset
+                           automaticallyLoadedAssetKeys:keys];
     [self _addObserver];
+    //add Observer to observe the movie status
+     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self _initSubView];
+    
+}
+
+- (void)dealloc {
+  [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
 }
 
 #pragma mark - public methods
@@ -68,7 +75,10 @@
 }
 
 #pragma mark - action
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
     // Only handle observations for the PlayerItemContext
     if (context != &kMMPlayerItemStatusContext) {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -76,6 +86,7 @@
     }
     
     if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
+        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
         // Get the status change from the change dictionary
         NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
@@ -96,6 +107,7 @@
         }
     }
 }
+
 
 - (void)didReceiveAVPlayerItemDidPlayToEndTimeNotification:(NSNotification *)notification
 {
