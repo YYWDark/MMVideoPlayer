@@ -12,13 +12,13 @@
 #import <UIKit/UIKit.h>
 #import "UIView+Extension.h"
 #import "UIColor+Extension.h"
-
+#import "AVAsset+Extension.h"
 /**********************************************************************/
 #define kScreenHeigth [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth  [UIScreen mainScreen].bounds.size.width
 static const NSString *kMMPlayerItemStatusContext;
 static NSString * const kMMVideoKVOKeyPathPlayerItemStatus = @"status";
-
+static CGFloat  const kMMVideoPlayerRefreshTime = .5f;
 /**********************************************************************/
 typedef NS_ENUM(NSUInteger, MMVideoVideoUrlType) {
     MMVideoVideoUrlTypeLocation,

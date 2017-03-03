@@ -15,6 +15,7 @@
 @property (nonatomic, strong) AVAsset *asset;
 @property (nonatomic, strong) AVPlayerItem *playerItem;
 @property (nonatomic, weak) id<MMUpdateUIInterface> interface;
+@property (nonatomic, weak) id timeObserver;
 @end
 @implementation MMVideoPlayer
 #pragma mark - life cycle
@@ -74,6 +75,30 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveAVPlayerItemPlaybackStalledNotification:) name:AVPlayerItemPlaybackStalledNotification object:nil];
 }
 
+- (void)_initPlayerSetting {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CMTime totalDuration = self.playerItem.duration;
+        //set sliderView minValue and maxValue
+        [self.interface setSliderMinimumValue:CMTimeGetSeconds(kCMTimeZero)
+                                 maximumValue:CMTimeGetSeconds(totalDuration)];
+        //set videoTitle
+        [self.interface setTitle:self.asset.videoTitle];
+    });
+}
+
+- (void)_timerObserveOfVedioPlayer {
+    CMTime interval = CMTimeMakeWithSeconds(kMMVideoPlayerRefreshTime, NSEC_PER_SEC);
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    __weak MMVideoPlayer *weakSelf = self;
+    void (^callBack)(CMTime time) = ^(CMTime time) {
+         NSTimeInterval currentTime = CMTimeGetSeconds(time);
+         NSTimeInterval duration = CMTimeGetSeconds(weakSelf.playerItem.duration);
+        [weakSelf.interface setCurrentTime:currentTime duration:duration];
+    };
+    self.timeObserver = [self.player addPeriodicTimeObserverForInterval:interval
+                                                                  queue:mainQueue
+                                                             usingBlock:callBack];
+}
 #pragma mark - action
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
@@ -84,9 +109,9 @@
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
+    [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
     
     if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
-        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
         // Get the status change from the change dictionary
         NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
@@ -96,7 +121,7 @@
         // Switch over the status
         switch (status) {
             case AVPlayerItemStatusReadyToPlay:
-                // Ready to Play
+                [self _initPlayerSetting];
                 break;
             case AVPlayerItemStatusFailed:
                 // Failed. Examine AVPlayerItem.error
@@ -109,13 +134,11 @@
 }
 
 
-- (void)didReceiveAVPlayerItemDidPlayToEndTimeNotification:(NSNotification *)notification
-{
-
+- (void)didReceiveAVPlayerItemDidPlayToEndTimeNotification:(NSNotification *)notification {
+    NSLog(@"结束的通知");
 }
 
-- (void)didReceiveAVPlayerItemPlaybackStalledNotification:(NSNotification *)notification
-{
+- (void)didReceiveAVPlayerItemPlaybackStalledNotification:(NSNotification *)notification {
 
 }
 #pragma mark - MMPlayerActionDelegate
@@ -130,6 +153,7 @@
 - (void)stop {
     
 }
+
 #pragma mark - get
 - (UIView *)view {
     return self.videoPlayerView;

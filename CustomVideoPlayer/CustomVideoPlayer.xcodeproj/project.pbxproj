@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		750678DD1E691A370007253F /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678DC1E691A370007253F /* Extension.m */; };
+		750678E31E691B690007253F /* AVAsset+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678E21E691B690007253F /* AVAsset+Extension.m */; };
 		752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+Extension.m */; };
 		752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+Extension.m */; };
 		75F745531E63BC4900F5F775 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745521E63BC4900F5F775 /* main.m */; };
@@ -41,6 +43,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		750678DB1E691A370007253F /* Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension.h; sourceTree = "<group>"; };
+		750678DC1E691A370007253F /* Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extension.m; sourceTree = "<group>"; };
+		750678E11E691B690007253F /* AVAsset+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAsset+Extension.h"; sourceTree = "<group>"; };
+		750678E21E691B690007253F /* AVAsset+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAsset+Extension.m"; sourceTree = "<group>"; };
 		752E29071E657DE1009AA362 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
 		752E29081E657DE1009AA362 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
 		752E29091E657DE1009AA362 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
@@ -114,6 +120,10 @@
 				752E29081E657DE1009AA362 /* UIColor+Extension.m */,
 				752E29091E657DE1009AA362 /* UIView+Extension.h */,
 				752E290A1E657DE1009AA362 /* UIView+Extension.m */,
+				750678DB1E691A370007253F /* Extension.h */,
+				750678DC1E691A370007253F /* Extension.m */,
+				750678E11E691B690007253F /* AVAsset+Extension.h */,
+				750678E21E691B690007253F /* AVAsset+Extension.m */,
 			);
 			path = MMCategory;
 			sourceTree = "<group>";
@@ -362,9 +372,11 @@
 				752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */,
 				75F7458C1E640D4100F5F775 /* MMVideoPlayer.m in Sources */,
 				75F745971E641BBC00F5F775 /* MMPlayerLayerView.m in Sources */,
+				750678E31E691B690007253F /* AVAsset+Extension.m in Sources */,
 				752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */,
 				75F745591E63BC4900F5F775 /* ViewController.m in Sources */,
 				75F745941E6414AC00F5F775 /* MMVideoPlayerView.m in Sources */,
+				750678DD1E691A370007253F /* Extension.m in Sources */,
 				75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */,
 				75F745531E63BC4900F5F775 /* main.m in Sources */,
 			);

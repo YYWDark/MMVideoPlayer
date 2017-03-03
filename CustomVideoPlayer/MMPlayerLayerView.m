@@ -77,6 +77,20 @@ static CGFloat const TimeLableHeight = 40.0f;
     NSLog(@"value == %lf",slider.value);
 }
 
+#pragma mark - MMUpdateUIInterface
+- (void)setTitle:(NSString *)title {
+    
+}
+
+- (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration {
+    
+}
+
+- (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime {
+    self.sliderView.minimumValue = minTime;
+    self.sliderView.maximumValue = maxTime;
+}
+
 #pragma mark - get
 - (UIButton *)closeButton {
     if (_closeButton == nil) {

@@ -14,4 +14,5 @@
 
 - (void)setTitle:(NSString *)title;
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration;
+- (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime;
 @end
