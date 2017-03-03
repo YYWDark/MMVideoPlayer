@@ -55,7 +55,7 @@ static CGFloat const TimeLableHeight = 40.0f;
 
 #pragma mark - action
 - (void)respondToCloseAction:(UIButton *)button {
-   
+   NSLog(@"");
 }
 
 - (void)respondToPlayAction:(UIButton *)button {
