@@ -59,7 +59,7 @@ static CGFloat const TimeLableHeight = 40.0f;
 }
 
 - (void)respondToPlayAction:(UIButton *)button {
-  
+    NSLog(@"");
 
 }
 
