@@ -83,7 +83,9 @@ NSString * const kCTVideoViewKVOKeyPathLayerReadyForDisplay = @"layer.readyForDi
 }
 
 
-
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
 #pragma mark - Notification
 - (void)didReceiveAVPlayerItemDidPlayToEndTimeNotification:(NSNotification *)notification {
     NSLog(@"播放结束了");
