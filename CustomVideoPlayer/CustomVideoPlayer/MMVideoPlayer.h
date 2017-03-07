@@ -10,7 +10,7 @@
 #import "MMVideoHeader.h"
 
 @interface MMVideoPlayer : NSObject
-@property (strong, nonatomic, readonly) UIView *view;
+@property (nonatomic, strong, readonly) UIView *view;
 @property (nonatomic, strong) NSURL *videoUrl;
 
 - (instancetype)initWithURL:(NSURL *)videoUrl;

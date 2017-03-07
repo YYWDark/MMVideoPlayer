@@ -9,7 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @protocol MMPlayerActionDelegate <NSObject>
+@required
 - (void)play;
 - (void)pause;
 - (void)stop;
+- (void)willDragToChangeCurrentTime;
+- (void)setVideoPlayerCurrentTime:(NSTimeInterval)time;
+- (void)didFinishedDragToChangeCurrentTime;
 @end

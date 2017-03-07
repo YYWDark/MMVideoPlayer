@@ -21,7 +21,7 @@ NSString * const kCTVideoViewKVOKeyPathLayerReadyForDisplay = @"layer.readyForDi
  static const NSString *PlayerItemStatusContext;
 - (void)viewDidLoad {
     [super viewDidLoad];
-     self.player = [[MMVideoPlayer alloc] initWithURL:[[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"]];
+     self.player = [[MMVideoPlayer alloc] initWithURL:[[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"]];
     self.player.view.frame = self.view.frame;
     [self.view addSubview:self.player.view];
     

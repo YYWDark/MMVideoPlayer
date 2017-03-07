@@ -11,8 +11,8 @@
 
 @protocol MMUpdateUIInterface <NSObject>
 @property (nonatomic, weak) id<MMPlayerActionDelegate> delegate;
-
 - (void)setTitle:(NSString *)title;
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration;
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime;
+- (void)callTheActionWiththeEndOfVideo;
 @end

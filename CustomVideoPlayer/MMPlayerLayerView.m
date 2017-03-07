@@ -35,7 +35,6 @@ static CGFloat const TimeLableHeight = 40.0f;
 }
 
 - (void)initUI {
-    self.backgroundColor = [UIColor blackColor];
     [self addSubview:self.closeButton];
     [self addSubview:self.playButton];
     [self addSubview:self.sliderView];
@@ -59,22 +58,39 @@ static CGFloat const TimeLableHeight = 40.0f;
 }
 
 - (void)respondToPlayAction:(UIButton *)button {
-    NSLog(@"");
-
+    button.selected = !button.selected;
+    if (button.selected == YES) {//播放
+        if ([self.delegate respondsToSelector:@selector(play)]) {
+            [self.delegate play];
+        }
+    }else {//暂停
+        if ([self.delegate respondsToSelector:@selector(pause)]) {
+            [self.delegate pause];
+        }
+    }
+   
 }
 
-- (void)respondToSliderAction:(UISlider *)slider {
+- (void)respondToSliderValueChangedAction:(UISlider *)slider {
     NSLog(@"value == %lf",slider.value);
+    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+        [self.delegate setVideoPlayerCurrentTime:slider.value];
+    }
 }
 
 //touch up slider
 - (void)respondToTouchUpAction:(UISlider *)slider {
     NSLog(@"value == %lf",slider.value);
+    if ([self.delegate respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
+        [self.delegate didFinishedDragToChangeCurrentTime];
+    }
 }
 
 //touch down slider
 - (void)respondToTouchDownAction:(UISlider *)slider {
-    NSLog(@"value == %lf",slider.value);
+    if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
+        [self.delegate willDragToChangeCurrentTime];
+    }
 }
 
 #pragma mark - MMUpdateUIInterface
@@ -83,12 +99,20 @@ static CGFloat const TimeLableHeight = 40.0f;
 }
 
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration {
-    
+    NSUInteger currentSeconds = time;
+    self.currentTimeLabel.text = [NSString formatSeconds:currentSeconds];
+    self.endTimeLabel.text = [NSString formatSeconds:duration];
+    self.sliderView.value = time;
 }
 
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime {
-    self.sliderView.minimumValue = minTime;
-    self.sliderView.maximumValue = maxTime;
+    self.sliderView.minimumValue = (NSUInteger)minTime;
+    self.sliderView.maximumValue = (NSUInteger)maxTime;
+}
+
+- (void)callTheActionWiththeEndOfVideo {
+    self.sliderView.value = 0.0;
+    self.playButton.selected = NO;
 }
 
 #pragma mark - get
@@ -104,7 +128,9 @@ static CGFloat const TimeLableHeight = 40.0f;
 - (UIButton *)playButton {
     if (_playButton == nil) {
         _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _playButton.selected = YES;
         [_playButton setImage:[UIImage imageNamed:@"Icon_Play"] forState:UIControlStateNormal];
+        [_playButton setImage:[UIImage imageNamed:@"Icon_Pause"] forState:UIControlStateSelected];
         [_playButton addTarget:self action:@selector(respondToPlayAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _playButton;
@@ -114,9 +140,9 @@ static CGFloat const TimeLableHeight = 40.0f;
     if (_sliderView == nil) {
         _sliderView = [[UISlider alloc] init];
         [_sliderView setThumbImage:[UIImage imageNamed:@"cm2_fm_playbar_btn"] forState:UIControlStateNormal];
-        _sliderView.minimumTrackTintColor =[UIColor redColor];
-        _sliderView.maximumTrackTintColor =[UIColor lightGrayColor];
-        [_sliderView addTarget:self action:@selector(respondToSliderAction:) forControlEvents:UIControlEventValueChanged];
+        _sliderView.minimumTrackTintColor = [UIColor redColor];
+        _sliderView.maximumTrackTintColor = [UIColor lightGrayColor];
+        [_sliderView addTarget:self action:@selector(respondToSliderValueChangedAction:) forControlEvents:UIControlEventValueChanged];
         [_sliderView addTarget:self action:@selector(respondToTouchUpAction:) forControlEvents:UIControlEventTouchUpInside];
         [_sliderView addTarget:self action:@selector(respondToTouchDownAction:) forControlEvents:UIControlEventTouchDown];
     }
@@ -127,7 +153,7 @@ static CGFloat const TimeLableHeight = 40.0f;
     if (_currentTimeLabel == nil) {
         _currentTimeLabel = [[UILabel alloc] init];
         _currentTimeLabel.font = [UIFont systemFontOfSize:11];
-        _currentTimeLabel.text =@"00:00";
+        _currentTimeLabel.text = @"-- : --";
         _currentTimeLabel.textColor =[UIColor whiteColor];
     }
     return _currentTimeLabel;
@@ -137,8 +163,8 @@ static CGFloat const TimeLableHeight = 40.0f;
     if (_endTimeLabel == nil) {
         _endTimeLabel = [[UILabel alloc] init];
         _endTimeLabel.font = [UIFont systemFontOfSize:11];
-        _endTimeLabel.textColor =[UIColor grayColor];
-        _endTimeLabel.text =@"00:00";
+        _endTimeLabel.textColor = [UIColor grayColor];
+        _endTimeLabel.text = @"-- : --";
     }
     return _endTimeLabel;
 }

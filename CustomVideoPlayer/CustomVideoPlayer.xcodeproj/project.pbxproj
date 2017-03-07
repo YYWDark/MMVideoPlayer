@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		750678DD1E691A370007253F /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678DC1E691A370007253F /* Extension.m */; };
+		75051E181E6E53F10003C7CE /* NSString+Format.m in Sources */ = {isa = PBXBuildFile; fileRef = 75051E171E6E53F10003C7CE /* NSString+Format.m */; };
+		75051E1A1E6E55FB0003C7CE /* 中国合伙人.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */; };
 		750678E31E691B690007253F /* AVAsset+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678E21E691B690007253F /* AVAsset+Extension.m */; };
 		752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+Extension.m */; };
 		752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+Extension.m */; };
@@ -43,8 +44,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		750678DB1E691A370007253F /* Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension.h; sourceTree = "<group>"; };
-		750678DC1E691A370007253F /* Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extension.m; sourceTree = "<group>"; };
+		75051E161E6E53F10003C7CE /* NSString+Format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Format.h"; sourceTree = "<group>"; };
+		75051E171E6E53F10003C7CE /* NSString+Format.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Format.m"; sourceTree = "<group>"; };
+		75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "中国合伙人.mp4"; sourceTree = "<group>"; };
 		750678E11E691B690007253F /* AVAsset+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAsset+Extension.h"; sourceTree = "<group>"; };
 		750678E21E691B690007253F /* AVAsset+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAsset+Extension.m"; sourceTree = "<group>"; };
 		752E29071E657DE1009AA362 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
@@ -120,10 +122,10 @@
 				752E29081E657DE1009AA362 /* UIColor+Extension.m */,
 				752E29091E657DE1009AA362 /* UIView+Extension.h */,
 				752E290A1E657DE1009AA362 /* UIView+Extension.m */,
-				750678DB1E691A370007253F /* Extension.h */,
-				750678DC1E691A370007253F /* Extension.m */,
 				750678E11E691B690007253F /* AVAsset+Extension.h */,
 				750678E21E691B690007253F /* AVAsset+Extension.m */,
+				75051E161E6E53F10003C7CE /* NSString+Format.h */,
+				75051E171E6E53F10003C7CE /* NSString+Format.m */,
 			);
 			path = MMCategory;
 			sourceTree = "<group>";
@@ -180,6 +182,7 @@
 		75F745511E63BC4900F5F775 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */,
 				75F745881E63F7E300F5F775 /* a.mp4 */,
 				75F745521E63BC4900F5F775 /* main.m */,
 			);
@@ -341,6 +344,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75051E1A1E6E55FB0003C7CE /* 中国合伙人.mp4 in Resources */,
 				75F745611E63BC4900F5F775 /* LaunchScreen.storyboard in Resources */,
 				75F745891E63F7E300F5F775 /* a.mp4 in Resources */,
 				75F7455E1E63BC4900F5F775 /* Assets.xcassets in Resources */,
@@ -369,6 +373,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75051E181E6E53F10003C7CE /* NSString+Format.m in Sources */,
 				752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */,
 				75F7458C1E640D4100F5F775 /* MMVideoPlayer.m in Sources */,
 				75F745971E641BBC00F5F775 /* MMPlayerLayerView.m in Sources */,
@@ -376,7 +381,6 @@
 				752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */,
 				75F745591E63BC4900F5F775 /* ViewController.m in Sources */,
 				75F745941E6414AC00F5F775 /* MMVideoPlayerView.m in Sources */,
-				750678DD1E691A370007253F /* Extension.m in Sources */,
 				75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */,
 				75F745531E63BC4900F5F775 /* main.m in Sources */,
 			);

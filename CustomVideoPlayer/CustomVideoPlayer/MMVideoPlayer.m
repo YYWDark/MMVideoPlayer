@@ -16,6 +16,7 @@
 @property (nonatomic, strong) AVPlayerItem *playerItem;
 @property (nonatomic, weak) id<MMUpdateUIInterface> interface;
 @property (nonatomic, weak) id timeObserver;
+@property (nonatomic, weak) id itemEndObserver;
 @end
 @implementation MMVideoPlayer
 #pragma mark - life cycle
@@ -77,14 +78,31 @@
 
 - (void)_initPlayerSetting {
     dispatch_async(dispatch_get_main_queue(), ^{
-        CMTime totalDuration = self.playerItem.duration;
+        
         //set sliderView minValue and maxValue
-        [self.interface setSliderMinimumValue:CMTimeGetSeconds(kCMTimeZero)
-                                 maximumValue:CMTimeGetSeconds(totalDuration)];
+        if ([self.interface respondsToSelector:@selector(setSliderMinimumValue:maximumValue:)]) {
+            [self.interface setSliderMinimumValue:CMTimeGetSeconds(kCMTimeZero)
+                                     maximumValue:CMTimeGetSeconds(self.playerItem.duration)];
+        }
+        
         //set videoTitle
-        [self.interface setTitle:self.asset.videoTitle];
+        if ([self.interface respondsToSelector:@selector(setTitle:)]) {
+          [self.interface setTitle:self.asset.videoTitle];
+        }
+        
+        
+        //callback currentTime per .5 second
+        [self _timerObserveOfVedioPlayer];
+        
+        //callback when the video end
+        [self _observeOfTheEndPointOfVedioPlayer];
+        
+        //play the video
+        [self.player play];
     });
 }
+
+
 
 - (void)_timerObserveOfVedioPlayer {
     CMTime interval = CMTimeMakeWithSeconds(kMMVideoPlayerRefreshTime, NSEC_PER_SEC);
@@ -93,12 +111,29 @@
     void (^callBack)(CMTime time) = ^(CMTime time) {
          NSTimeInterval currentTime = CMTimeGetSeconds(time);
          NSTimeInterval duration = CMTimeGetSeconds(weakSelf.playerItem.duration);
-        [weakSelf.interface setCurrentTime:currentTime duration:duration];
+        if ([weakSelf.interface respondsToSelector:@selector(setCurrentTime:duration:)]) {
+            [weakSelf.interface setCurrentTime:currentTime duration:duration];
+        }
     };
     self.timeObserver = [self.player addPeriodicTimeObserverForInterval:interval
                                                                   queue:mainQueue
                                                              usingBlock:callBack];
 }
+
+- (void)_observeOfTheEndPointOfVedioPlayer {
+    __weak MMVideoPlayer *weakSelf = self;
+    void (^callback)(NSNotification *note) = ^(NSNotification *notification) {
+         NSLog(@"the end of video");
+        if ([weakSelf.interface respondsToSelector:@selector(callTheActionWiththeEndOfVideo)]) {
+           [weakSelf.interface callTheActionWiththeEndOfVideo];
+        }
+    };
+    self.itemEndObserver = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
+                                                                             object:self.playerItem
+                                                                              queue:[NSOperationQueue mainQueue]
+                                                                         usingBlock:callback];
+}
+
 #pragma mark - action
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
@@ -141,9 +176,14 @@
 - (void)didReceiveAVPlayerItemPlaybackStalledNotification:(NSNotification *)notification {
 
 }
+
 #pragma mark - MMPlayerActionDelegate
 - (void)play {
-    [self.player play];
+    //if video is finished, replay!
+    if (CMTimeGetSeconds(self.playerItem.currentTime) == CMTimeGetSeconds(self.playerItem.duration)) {
+        [self.playerItem seekToTime:kCMTimeZero];
+    }
+   [self.player play];
 }
 
 - (void)pause {
@@ -151,9 +191,27 @@
 }
 
 - (void)stop {
-    
+    [self.player setRate:0];
+    [self.interface callTheActionWiththeEndOfVideo];
 }
 
+- (void)setVideoPlayerCurrentTime:(NSTimeInterval)time {
+    [self.playerItem cancelPendingSeeks];
+    [self.player seekToTime:CMTimeMakeWithSeconds(time, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    if ([self.interface respondsToSelector:@selector(setCurrentTime:duration:)]) {
+        [self.interface setCurrentTime:time duration:CMTimeGetSeconds(self.playerItem.duration)];
+    }
+}
+
+- (void)willDragToChangeCurrentTime {
+    [self.player pause];
+    [self.player removeTimeObserver:self.timeObserver];
+}
+
+- (void)didFinishedDragToChangeCurrentTime {
+    [self _timerObserveOfVedioPlayer];
+    [self.player play];
+}
 #pragma mark - get
 - (UIView *)view {
     return self.videoPlayerView;
