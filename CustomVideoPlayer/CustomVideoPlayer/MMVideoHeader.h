@@ -14,12 +14,19 @@
 #import "UIColor+Extension.h"
 #import "AVAsset+Extension.h"
 #import "NSString+Format.h"
+#import "UIImage+Thumabnails.h"
+#import "NSTimer+Extension.h"
 /**********************************************************************/
 #define kScreenHeigth [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth  [UIScreen mainScreen].bounds.size.width
+static CGFloat  const kMMThumbnailsImageWidth= 120.0f;
+static CGFloat  const kMMVideoPlayerRefreshTime = 0.5f;
+
 static const NSString *kMMPlayerItemStatusContext;
 static NSString * const kMMVideoKVOKeyPathPlayerItemStatus = @"status";
-static CGFloat  const kMMVideoPlayerRefreshTime = 0.5f;
+
+
+static NSString * const kMMFinishedGeneratThumbnailsImageNotification = @"kMMFinishedGeneratThumbnailsImageNotification";
 /**********************************************************************/
 typedef NS_ENUM(NSUInteger, MMVideoVideoUrlType) {
     MMVideoVideoUrlTypeLocation,

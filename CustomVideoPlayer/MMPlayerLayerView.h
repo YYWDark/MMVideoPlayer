@@ -12,5 +12,5 @@
 @interface MMPlayerLayerView : UIView <MMUpdateUIInterface>
 @property (nonatomic, weak) id <MMPlayerActionDelegate> delegate;
 @property (nonatomic, assign) BOOL isToolHidden;
-
+- (void)setCurrentTime:(NSTimeInterval)time;
 @end

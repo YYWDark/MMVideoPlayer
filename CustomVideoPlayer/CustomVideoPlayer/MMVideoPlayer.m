@@ -9,6 +9,8 @@
 #import "MMVideoPlayer.h"
 #import "MMVideoPlayerView.h"
 #import "MMUpdateUIInterface.h"
+#import "ThumbnailsImage.h"
+
 @interface MMVideoPlayer () <MMPlayerActionDelegate>
 @property (nonatomic, strong) MMVideoPlayerView *videoPlayerView;
 @property (nonatomic, strong) AVPlayer *player;
@@ -70,11 +72,6 @@
                     context:&kMMPlayerItemStatusContext];
 }
 
-- (void)_addNotification {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveAVPlayerItemDidPlayToEndTimeNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveAVPlayerItemPlaybackStalledNotification:) name:AVPlayerItemPlaybackStalledNotification object:nil];
-}
 
 - (void)_initPlayerSetting {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -90,7 +87,6 @@
           [self.interface setTitle:self.asset.videoTitle];
         }
         
-        
         //callback currentTime per .5 second
         [self _timerObserveOfVedioPlayer];
         
@@ -99,6 +95,8 @@
         
         //play the video
         [self.player play];
+        
+        [self _getThumbnailsFormVideoFile];
     });
 }
 
@@ -168,15 +166,47 @@
     }
 }
 
-
-- (void)didReceiveAVPlayerItemDidPlayToEndTimeNotification:(NSNotification *)notification {
-    NSLog(@"结束的通知");
+- (void)_getThumbnailsFormVideoFile {
+    AVAssetImageGenerator * imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:self.asset];
+    imageGenerator.maximumSize = CGSizeMake(200, 0);
+    CMTime duration = self.playerItem.duration;
+//    NSMutableArray *thumabnaisArray = [NSMutableArray array];
+    NSMutableArray *times = [NSMutableArray array];
+    CMTimeValue increment = duration.value / 5;
+    CMTimeValue currentValue = 2.0 * duration.timescale;
+    while (currentValue <= duration.value) {
+        CMTime time = CMTimeMake(currentValue, duration.timescale);
+        [times addObject:[NSValue valueWithCMTime:time]];
+        currentValue += increment;
+    }
+    
+    __block NSUInteger imageCount = times.count;
+    __block NSMutableArray *images = [NSMutableArray array];
+    
+    AVAssetImageGeneratorCompletionHandler handler = ^(CMTime requestedTime,
+                                                       CGImageRef imageRef,
+                                                       CMTime actualTime,
+                                                       AVAssetImageGeneratorResult result,
+                                                       NSError *error) {
+        
+        if (result == AVAssetImageGeneratorSucceeded) {                     // 拿到图片的每一帧
+           ThumbnailsImage *image =  [ThumbnailsImage thumbnailsImage:[UIImage imageWithCGImage:imageRef] photoTime:CMTimeGetSeconds(actualTime)];
+            [images addObject:image];
+        } else {
+            NSLog(@"Error: %@", [error localizedDescription]);
+        }
+        
+        // If the decremented image count is at 0, we're all done.
+        if (--imageCount == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:kMMFinishedGeneratThumbnailsImageNotification object:images];
+            });
+        }
+    };
+    
+    [imageGenerator generateCGImagesAsynchronouslyForTimes:times       // 8
+                                              completionHandler:handler];
 }
-
-- (void)didReceiveAVPlayerItemPlaybackStalledNotification:(NSNotification *)notification {
-
-}
-
 #pragma mark - MMPlayerActionDelegate
 - (void)play {
     //if video is finished, replay!

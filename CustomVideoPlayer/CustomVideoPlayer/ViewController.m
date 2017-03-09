@@ -22,7 +22,7 @@ NSString * const kCTVideoViewKVOKeyPathLayerReadyForDisplay = @"layer.readyForDi
 - (void)viewDidLoad {
     [super viewDidLoad];
      self.player = [[MMVideoPlayer alloc] initWithURL:[[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"]];
-    self.player.view.frame = self.view.frame;
+     self.player.view.frame = self.view.frame;
     [self.view addSubview:self.player.view];
     
 //    NSArray *keys = @[
