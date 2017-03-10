@@ -9,13 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface UIColor (Extension)
-/**
- *
- *
- *  @param hexString 例如#DF1342的
- *
- *  @return <#return value description#>
- */
 + (UIColor *)colorWithHexString:(NSString *)hexString;
 + (UIColor *)randomColor;
 @end

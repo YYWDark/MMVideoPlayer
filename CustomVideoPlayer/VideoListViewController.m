@@ -7,16 +7,22 @@
 //
 
 #import "VideoListViewController.h"
+#import "VideoModel.h"
+#import "VideoCell.h"
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
-@interface VideoListViewController ()
-
+static NSString *cellID = @"VideoListViewController";
+@interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource>
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray *dataArr;
 @end
 
 @implementation VideoListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.edgesForExtendedLayout = NO;
     self.view.backgroundColor = [UIColor whiteColor];
+    self.dataArr = [NSMutableArray array];
     [self _fetchDataFromNetWorking];
 }
 
@@ -25,19 +31,50 @@
     NSURLSession *session  = [NSURLSession sharedSession];
     //dataTask所有的任务都是由session引起的
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSLog(@"%@",[NSJSONSerialization JSONObjectWithData:data options:0 error:NULL]);
-        NSLog(@"%@",[NSThread currentThread]);
+        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+        NSArray *array = jsonDict[@"VAP4BFR16"];
+        [array enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL * _Nonnull stop) {
+            VideoModel *model = [VideoModel videomodelWithCover:dic[@"cover"]
+                                                       videoUrl:dic[@"mp4_url"]
+                                                     videoTitle:dic[@"title"]];
+            [self.dataArr addObject:model];
+        }];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.view addSubview:self.tableView];
+        });
     }];
     [task resume];
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.dataArr.count;
 }
-*/
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    VideoCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
+    VideoModel *model     = self.dataArr[indexPath.row];
+    cell.textLabel.text   = model.title ;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
+#pragma mark - Getter
+- (UITableView *)tableView{
+    if (_tableView == nil) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height  ) style:UITableViewStylePlain];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.scrollEnabled = YES;
+        _tableView.showsVerticalScrollIndicator = YES;
+        _tableView.showsHorizontalScrollIndicator = YES;
+        [_tableView registerClass:[VideoCell class] forCellReuseIdentifier:cellID];
+        
+    }
+    return _tableView;
+}
 @end
