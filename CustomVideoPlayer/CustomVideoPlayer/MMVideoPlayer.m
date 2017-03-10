@@ -79,7 +79,7 @@
         //set sliderView minValue and maxValue
         if ([self.interface respondsToSelector:@selector(setSliderMinimumValue:maximumValue:)]) {
             [self.interface setSliderMinimumValue:CMTimeGetSeconds(kCMTimeZero)
-                                     maximumValue:CMTimeGetSeconds(self.playerItem.duration)];
+                                     maximumValue:CMTimeGetSeconds(self.asset.duration)];
         }
         
         //set videoTitle
@@ -116,7 +116,8 @@
     self.timeObserver = [self.player addPeriodicTimeObserverForInterval:interval
                                                                   queue:mainQueue
                                                              usingBlock:callBack];
-}
+    
+   }
 
 - (void)_observeOfTheEndPointOfVedioPlayer {
     __weak MMVideoPlayer *weakSelf = self;
@@ -143,7 +144,6 @@
         return;
     }
     [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
-    
     if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
         // Get the status change from the change dictionary
@@ -167,45 +167,21 @@
 }
 
 - (void)_getThumbnailsFormVideoFile {
-    AVAssetImageGenerator * imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:self.asset];
-    imageGenerator.maximumSize = CGSizeMake(200, 0);
-    CMTime duration = self.playerItem.duration;
-//    NSMutableArray *thumabnaisArray = [NSMutableArray array];
-    NSMutableArray *times = [NSMutableArray array];
-    CMTimeValue increment = duration.value / 5;
-    CMTimeValue currentValue = 2.0 * duration.timescale;
-    while (currentValue <= duration.value) {
-        CMTime time = CMTimeMake(currentValue, duration.timescale);
-        [times addObject:[NSValue valueWithCMTime:time]];
-        currentValue += increment;
-    }
+    [self.asset getThumbnailsCount:20
+                          duration:self.playerItem.duration
+                      maxImageSize:CGSizeMake(kMMThumbnailsImageWidth , 0) success:^(NSArray *responseObject) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSMutableArray *array = [NSMutableArray arrayWithCapacity:responseObject.count];
+            for (NSDictionary *dic in responseObject) {
+                ThumbnailsImage *image =  [ThumbnailsImage thumbnailsImage:dic[@"image"] photoTime:[dic[@"actualTime"] floatValue]];
+                [array addObject:image];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:kMMFinishedGeneratThumbnailsImageNotification object:array];
+        });
+    } failure:^(NSError *error) {
+        NSLog(@"error code == %@", [error localizedDescription]);
+    }];
     
-    __block NSUInteger imageCount = times.count;
-    __block NSMutableArray *images = [NSMutableArray array];
-    
-    AVAssetImageGeneratorCompletionHandler handler = ^(CMTime requestedTime,
-                                                       CGImageRef imageRef,
-                                                       CMTime actualTime,
-                                                       AVAssetImageGeneratorResult result,
-                                                       NSError *error) {
-        
-        if (result == AVAssetImageGeneratorSucceeded) {                     // 拿到图片的每一帧
-           ThumbnailsImage *image =  [ThumbnailsImage thumbnailsImage:[UIImage imageWithCGImage:imageRef] photoTime:CMTimeGetSeconds(actualTime)];
-            [images addObject:image];
-        } else {
-            NSLog(@"Error: %@", [error localizedDescription]);
-        }
-        
-        // If the decremented image count is at 0, we're all done.
-        if (--imageCount == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kMMFinishedGeneratThumbnailsImageNotification object:images];
-            });
-        }
-    };
-    
-    [imageGenerator generateCGImagesAsynchronouslyForTimes:times       // 8
-                                              completionHandler:handler];
 }
 #pragma mark - MMPlayerActionDelegate
 - (void)play {

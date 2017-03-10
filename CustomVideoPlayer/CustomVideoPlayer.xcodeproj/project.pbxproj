@@ -17,6 +17,8 @@
 		75C4C8271E70EED000A7320D /* ThumbnailsImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8261E70EED000A7320D /* ThumbnailsImage.m */; };
 		75C4C82A1E70F62A00A7320D /* ThumbnailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8291E70F62A00A7320D /* ThumbnailsView.m */; };
 		75C4C8301E7156B300A7320D /* NSTimer+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C82F1E7156B300A7320D /* NSTimer+Extension.m */; };
+		75C4C8331E727E6C00A7320D /* AVPlayerItem+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8321E727E6C00A7320D /* AVPlayerItem+Extension.m */; };
+		75C4C8351E7286E100A7320D /* b.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75C4C8341E7286E100A7320D /* b.mp4 */; };
 		75F745531E63BC4900F5F775 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745521E63BC4900F5F775 /* main.m */; };
 		75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745551E63BC4900F5F775 /* AppDelegate.m */; };
 		75F745591E63BC4900F5F775 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745581E63BC4900F5F775 /* ViewController.m */; };
@@ -68,6 +70,9 @@
 		75C4C8291E70F62A00A7320D /* ThumbnailsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailsView.m; sourceTree = "<group>"; };
 		75C4C82E1E7156B300A7320D /* NSTimer+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+Extension.h"; sourceTree = "<group>"; };
 		75C4C82F1E7156B300A7320D /* NSTimer+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Extension.m"; sourceTree = "<group>"; };
+		75C4C8311E727E6C00A7320D /* AVPlayerItem+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVPlayerItem+Extension.h"; sourceTree = "<group>"; };
+		75C4C8321E727E6C00A7320D /* AVPlayerItem+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVPlayerItem+Extension.m"; sourceTree = "<group>"; };
+		75C4C8341E7286E100A7320D /* b.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = b.mp4; sourceTree = "<group>"; };
 		75F7454E1E63BC4900F5F775 /* CustomVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75F745521E63BC4900F5F775 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		75F745541E63BC4900F5F775 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -144,6 +149,8 @@
 				75C4C8221E70EC8500A7320D /* UIImage+Thumabnails.m */,
 				75C4C82E1E7156B300A7320D /* NSTimer+Extension.h */,
 				75C4C82F1E7156B300A7320D /* NSTimer+Extension.m */,
+				75C4C8311E727E6C00A7320D /* AVPlayerItem+Extension.h */,
+				75C4C8321E727E6C00A7320D /* AVPlayerItem+Extension.m */,
 			);
 			path = MMCategory;
 			sourceTree = "<group>";
@@ -210,6 +217,7 @@
 		75F745511E63BC4900F5F775 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				75C4C8341E7286E100A7320D /* b.mp4 */,
 				75051E1B1E6ED7FA0003C7CE /* hubblecast.m4v */,
 				75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */,
 				75F745881E63F7E300F5F775 /* a.mp4 */,
@@ -375,6 +383,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75C4C8351E7286E100A7320D /* b.mp4 in Resources */,
 				75051E1A1E6E55FB0003C7CE /* 中国合伙人.mp4 in Resources */,
 				75F745611E63BC4900F5F775 /* LaunchScreen.storyboard in Resources */,
 				75051E1C1E6ED7FA0003C7CE /* hubblecast.m4v in Resources */,
@@ -414,6 +423,7 @@
 				750678E31E691B690007253F /* AVAsset+Extension.m in Sources */,
 				752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */,
 				75C4C8301E7156B300A7320D /* NSTimer+Extension.m in Sources */,
+				75C4C8331E727E6C00A7320D /* AVPlayerItem+Extension.m in Sources */,
 				75F745591E63BC4900F5F775 /* ViewController.m in Sources */,
 				75F745941E6414AC00F5F775 /* MMVideoPlayerView.m in Sources */,
 				75C4C82A1E70F62A00A7320D /* ThumbnailsView.m in Sources */,
