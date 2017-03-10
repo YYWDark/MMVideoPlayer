@@ -19,6 +19,8 @@
 		75C4C8301E7156B300A7320D /* NSTimer+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C82F1E7156B300A7320D /* NSTimer+Extension.m */; };
 		75C4C8331E727E6C00A7320D /* AVPlayerItem+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8321E727E6C00A7320D /* AVPlayerItem+Extension.m */; };
 		75C4C8351E7286E100A7320D /* b.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75C4C8341E7286E100A7320D /* b.mp4 */; };
+		75C4C83A1E72C09E00A7320D /* VideoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8391E72C09E00A7320D /* VideoListViewController.m */; };
+		75C4C83C1E72C1C000A7320D /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75C4C83B1E72C1C000A7320D /* data.plist */; };
 		75F745531E63BC4900F5F775 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745521E63BC4900F5F775 /* main.m */; };
 		75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745551E63BC4900F5F775 /* AppDelegate.m */; };
 		75F745591E63BC4900F5F775 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745581E63BC4900F5F775 /* ViewController.m */; };
@@ -73,6 +75,9 @@
 		75C4C8311E727E6C00A7320D /* AVPlayerItem+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVPlayerItem+Extension.h"; sourceTree = "<group>"; };
 		75C4C8321E727E6C00A7320D /* AVPlayerItem+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVPlayerItem+Extension.m"; sourceTree = "<group>"; };
 		75C4C8341E7286E100A7320D /* b.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = b.mp4; sourceTree = "<group>"; };
+		75C4C8381E72C09E00A7320D /* VideoListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoListViewController.h; path = ../VideoListViewController.h; sourceTree = "<group>"; };
+		75C4C8391E72C09E00A7320D /* VideoListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoListViewController.m; path = ../VideoListViewController.m; sourceTree = "<group>"; };
+		75C4C83B1E72C1C000A7320D /* data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = data.plist; sourceTree = "<group>"; };
 		75F7454E1E63BC4900F5F775 /* CustomVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75F745521E63BC4900F5F775 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		75F745541E63BC4900F5F775 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -205,10 +210,13 @@
 				75F745551E63BC4900F5F775 /* AppDelegate.m */,
 				75F745571E63BC4900F5F775 /* ViewController.h */,
 				75F745581E63BC4900F5F775 /* ViewController.m */,
+				75C4C8381E72C09E00A7320D /* VideoListViewController.h */,
+				75C4C8391E72C09E00A7320D /* VideoListViewController.m */,
 				75F7455A1E63BC4900F5F775 /* Main.storyboard */,
 				75F7455D1E63BC4900F5F775 /* Assets.xcassets */,
 				75F7455F1E63BC4900F5F775 /* LaunchScreen.storyboard */,
 				75F745621E63BC4900F5F775 /* Info.plist */,
+				75C4C83B1E72C1C000A7320D /* data.plist */,
 				75F745511E63BC4900F5F775 /* Supporting Files */,
 			);
 			path = CustomVideoPlayer;
@@ -389,6 +397,7 @@
 				75051E1C1E6ED7FA0003C7CE /* hubblecast.m4v in Resources */,
 				75F745891E63F7E300F5F775 /* a.mp4 in Resources */,
 				75F7455E1E63BC4900F5F775 /* Assets.xcassets in Resources */,
+				75C4C83C1E72C1C000A7320D /* data.plist in Resources */,
 				75F7455C1E63BC4900F5F775 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -420,6 +429,7 @@
 				752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */,
 				75F7458C1E640D4100F5F775 /* MMVideoPlayer.m in Sources */,
 				75F745971E641BBC00F5F775 /* MMPlayerLayerView.m in Sources */,
+				75C4C83A1E72C09E00A7320D /* VideoListViewController.m in Sources */,
 				750678E31E691B690007253F /* AVAsset+Extension.m in Sources */,
 				752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */,
 				75C4C8301E7156B300A7320D /* NSTimer+Extension.m in Sources */,
