@@ -91,10 +91,12 @@ static NSString *cellIdentifer = @"ThumbnailsCell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"点击indexPath == %@",indexPath);
     ThumbnailsImage *image = self.dataArray[indexPath.row];
-    if ([self.superview respondsToSelector:@selector(setCurrentTime:)]) {
-        [self.superview setCurrentTime:image.photoTime];
+//    if ([self.superview respondsToSelector:@selector(setCurrentTime:)]) {
+//        [self.superview setCurrentTime:image.photoTime];
+//    }
+    if ([self.delegate respondsToSelector:@selector(thumbnailsView:theImageTime:)]) {
+        [self.delegate thumbnailsView:self theImageTime:image.photoTime];
     }
-    
     
 }
 #pragma mark - get

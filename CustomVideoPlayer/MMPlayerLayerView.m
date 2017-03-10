@@ -21,7 +21,7 @@ static CGFloat const TimeLableHeight = 40.0f;
 static CGFloat const ThumbnailsViewHeight = 75.0f;
 static CGFloat const AnimationDuration = 0.35;
 
-@interface MMPlayerLayerView ()
+@interface MMPlayerLayerView ()<ThumbnailsViewDelegate>
 @property (nonatomic, strong) UIView *topBarView;
 @property (nonatomic, strong) UIView *bottomBarView;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -118,6 +118,7 @@ static CGFloat const AnimationDuration = 0.35;
        
     }];
 }
+
 #pragma mark - action
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (self.isToolShown == NO) {
@@ -184,6 +185,22 @@ static CGFloat const AnimationDuration = 0.35;
     }
 }
 
+#pragma mark - ThumbnailsViewDelegate
+- (void)thumbnailsView:(ThumbnailsView *)view theImageTime:(NSTimeInterval)time {
+    if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
+        [self.timer invalidate];
+        [self.delegate willDragToChangeCurrentTime];
+    }
+
+    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+        [self.delegate setVideoPlayerCurrentTime:time];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
+        [self _resetTimer];
+        [self.delegate didFinishedDragToChangeCurrentTime];
+    }
+}
 #pragma mark - MMUpdateUIInterface
 - (void)setTitle:(NSString *)title {
     self.titleLabel.text = title;
@@ -299,6 +316,7 @@ static CGFloat const AnimationDuration = 0.35;
 - (ThumbnailsView *)thumbnailsView {
     if (_thumbnailsView == nil) {
         _thumbnailsView = [[ThumbnailsView alloc] init];
+        _thumbnailsView.delegate = self;
     }
     return _thumbnailsView;
 }

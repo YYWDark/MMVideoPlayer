@@ -14,12 +14,14 @@
 @property (nonatomic, strong) ThumbnailsImage *imageContent;
 @end
 
-@interface ThumbnailsView : UIView
 
+@protocol ThumbnailsViewDelegate;
+@interface ThumbnailsView : UIView
+@property (nonatomic, weak) id<ThumbnailsViewDelegate> delegate;
 @end
 
 
 
 @protocol ThumbnailsViewDelegate <NSObject>
-
+- (void)thumbnailsView:(ThumbnailsView *)view theImageTime:(NSTimeInterval)time;
 @end
