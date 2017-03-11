@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "VideoLayout.h"
 @interface VideoCell : UITableViewCell
-
+@property (nonatomic, strong) VideoLayout *layout;
 @end
