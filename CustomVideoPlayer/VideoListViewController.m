@@ -9,6 +9,7 @@
 #import "VideoListViewController.h"
 #import "VideoModel.h"
 #import "VideoCell.h"
+#import "VideoLayout.h"
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
 static NSString *cellID = @"VideoListViewController";
 @interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -37,7 +38,8 @@ static NSString *cellID = @"VideoListViewController";
             VideoModel *model = [VideoModel videomodelWithCover:dic[@"cover"]
                                                        videoUrl:dic[@"mp4_url"]
                                                      videoTitle:dic[@"title"]];
-            [self.dataArr addObject:model];
+            VideoLayout *layout = [[VideoLayout alloc] initWithSourceData:model];
+            [self.dataArr addObject:layout];
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -55,8 +57,8 @@ static NSString *cellID = @"VideoListViewController";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     VideoCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
-    VideoModel *model     = self.dataArr[indexPath.row];
-    cell.textLabel.text   = model.title ;
+    VideoLayout *layout = self.dataArr[indexPath.row];
+    cell.textLabel.text = layout.model.title ;
     return cell;
 }
 

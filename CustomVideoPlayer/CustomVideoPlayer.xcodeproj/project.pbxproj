@@ -13,6 +13,8 @@
 		750678E31E691B690007253F /* AVAsset+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678E21E691B690007253F /* AVAsset+Extension.m */; };
 		752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+Extension.m */; };
 		752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+Extension.m */; };
+		759BE4CC1E73C3420067B180 /* VideoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 759BE4CB1E73C3420067B180 /* VideoLayout.m */; };
+		759BE4CF1E73C4C40067B180 /* NSObject+Calculate.m in Sources */ = {isa = PBXBuildFile; fileRef = 759BE4CE1E73C4C40067B180 /* NSObject+Calculate.m */; };
 		75C4C8231E70EC8500A7320D /* UIImage+Thumabnails.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8221E70EC8500A7320D /* UIImage+Thumabnails.m */; };
 		75C4C8271E70EED000A7320D /* ThumbnailsImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8261E70EED000A7320D /* ThumbnailsImage.m */; };
 		75C4C82A1E70F62A00A7320D /* ThumbnailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8291E70F62A00A7320D /* ThumbnailsView.m */; };
@@ -65,6 +67,10 @@
 		752E29091E657DE1009AA362 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
 		752E290A1E657DE1009AA362 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		752E290E1E66CF45009AA362 /* MMPlayerActionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMPlayerActionDelegate.h; sourceTree = "<group>"; };
+		759BE4CA1E73C3420067B180 /* VideoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoLayout.h; path = ../VideoLayout.h; sourceTree = "<group>"; };
+		759BE4CB1E73C3420067B180 /* VideoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoLayout.m; path = ../VideoLayout.m; sourceTree = "<group>"; };
+		759BE4CD1E73C4C40067B180 /* NSObject+Calculate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Calculate.h"; sourceTree = "<group>"; };
+		759BE4CE1E73C4C40067B180 /* NSObject+Calculate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Calculate.m"; sourceTree = "<group>"; };
 		75C4C8211E70EC8500A7320D /* UIImage+Thumabnails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Thumabnails.h"; sourceTree = "<group>"; };
 		75C4C8221E70EC8500A7320D /* UIImage+Thumabnails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Thumabnails.m"; sourceTree = "<group>"; };
 		75C4C8251E70EED000A7320D /* ThumbnailsImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailsImage.h; sourceTree = "<group>"; };
@@ -145,6 +151,8 @@
 		752E29041E657DE1009AA362 /* MMCategory */ = {
 			isa = PBXGroup;
 			children = (
+				759BE4CD1E73C4C40067B180 /* NSObject+Calculate.h */,
+				759BE4CE1E73C4C40067B180 /* NSObject+Calculate.m */,
 				752E29071E657DE1009AA362 /* UIColor+Extension.h */,
 				752E29081E657DE1009AA362 /* UIColor+Extension.m */,
 				752E29091E657DE1009AA362 /* UIView+Extension.h */,
@@ -209,6 +217,8 @@
 				75F745981E641BC600F5F775 /* View */,
 				75F745541E63BC4900F5F775 /* AppDelegate.h */,
 				75F745551E63BC4900F5F775 /* AppDelegate.m */,
+				759BE4CA1E73C3420067B180 /* VideoLayout.h */,
+				759BE4CB1E73C3420067B180 /* VideoLayout.m */,
 				75F745571E63BC4900F5F775 /* ViewController.h */,
 				75F745581E63BC4900F5F775 /* ViewController.m */,
 				75C4C83D1E72C6CE00A7320D /* VideoModel.h */,
@@ -433,10 +443,12 @@
 				75C4C83F1E72C6CE00A7320D /* VideoModel.m in Sources */,
 				75051E181E6E53F10003C7CE /* NSString+Format.m in Sources */,
 				75C4C8271E70EED000A7320D /* ThumbnailsImage.m in Sources */,
+				759BE4CC1E73C3420067B180 /* VideoLayout.m in Sources */,
 				752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */,
 				75F7458C1E640D4100F5F775 /* MMVideoPlayer.m in Sources */,
 				75F745971E641BBC00F5F775 /* MMPlayerLayerView.m in Sources */,
 				75C4C83A1E72C09E00A7320D /* VideoListViewController.m in Sources */,
+				759BE4CF1E73C4C40067B180 /* NSObject+Calculate.m in Sources */,
 				750678E31E691B690007253F /* AVAsset+Extension.m in Sources */,
 				752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */,
 				75C4C8301E7156B300A7320D /* NSTimer+Extension.m in Sources */,

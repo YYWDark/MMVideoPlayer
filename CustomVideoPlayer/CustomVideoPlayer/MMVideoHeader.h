@@ -16,6 +16,7 @@
 #import "NSString+Format.h"
 #import "UIImage+Thumabnails.h"
 #import "NSTimer+Extension.h"
+#import "NSObject+Calculate.h"
 /**********************************************************************/
 #define kScreenHeigth [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth  [UIScreen mainScreen].bounds.size.width
