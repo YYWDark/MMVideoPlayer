@@ -25,14 +25,20 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [self initVideoPlayerAndRelevantSetting];
+        self.topViewStatus = MMTopViewHiddenStatus;
+       
     }
     return self;
 }
 
-- (instancetype)initWithURL:(NSURL *)videoUrl {
-    self.videoUrl = videoUrl;
-    self = [self init];
+- (instancetype)initWithURL:(NSURL *)videoUrl
+              topViewStatus:(MMTopViewStatus)status{
+    self = [super init];
+    if (self) {
+         _videoUrl = videoUrl;
+        _topViewStatus = status;
+        [self initVideoPlayerAndRelevantSetting];
+    }
     return self;
 }
 
@@ -43,6 +49,7 @@
                       @"commonMetadata",
                       @"availableMediaCharacteristicsWithMediaSelectionOptions"
                       ];
+    
     self.asset = [AVAsset assetWithURL:self.videoUrl];
     self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset
                            automaticallyLoadedAssetKeys:keys];
@@ -51,16 +58,24 @@
      self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self _initSubView];
     
+    
 }
 
 - (void)dealloc {
-  [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+//  [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
 }
 
-#pragma mark - public methods
+- (void)stopPlay {
+    [self.player pause];
+    [self.player.currentItem cancelPendingSeeks];
+    [self.player.currentItem.asset cancelLoading];
+    self.playerItem = nil;
+    self.asset = nil;
+    self.player = nil;
+}
 #pragma mark - private methods
 - (void)_initSubView {
-    self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player];
+    self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player topViewStatus:self.topViewStatus];
     self.interface = self.videoPlayerView.interface;
     self.interface.delegate = self;
 }
@@ -217,6 +232,12 @@
 - (void)didFinishedDragToChangeCurrentTime {
     [self _timerObserveOfVedioPlayer];
     [self.player play];
+}
+#pragma mark - set 
+- (void)setVideoUrl:(NSURL *)videoUrl {
+    _videoUrl = videoUrl;
+    [self stopPlay];
+    [self initVideoPlayerAndRelevantSetting];
 }
 #pragma mark - get
 - (UIView *)view {

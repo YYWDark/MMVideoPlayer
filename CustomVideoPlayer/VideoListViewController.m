@@ -10,12 +10,14 @@
 #import "VideoModel.h"
 #import "VideoCell.h"
 #import "VideoLayout.h"
+#import "MMVideoPlayer.h"
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
 static NSString *cellID = @"VideoListViewController";
 @interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
 @property (nonatomic, strong) NSIndexPath *lastPlayingIndexPath;
+@property (nonatomic, strong) MMVideoPlayer *player;
 @end
 
 @implementation VideoListViewController
@@ -58,6 +60,8 @@ static NSString *cellID = @"VideoListViewController";
             layout.model.isPlaying = NO;
             [self.tableView reloadRowsAtIndexPaths:@[self.lastPlayingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             self.lastPlayingIndexPath = nil;
+            [self.player stopPlay];
+            self.player = nil;
         }
     }
 }
@@ -79,7 +83,7 @@ static NSString *cellID = @"VideoListViewController";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     VideoLayout *layout = self.dataArr[indexPath.row];
-    if (layout.model.isPlaying) {//播放
+    if (layout.model.isPlaying) {
         
     }else {
         layout.model.isPlaying = YES;
@@ -89,10 +93,29 @@ static NSString *cellID = @"VideoListViewController";
               layout.model.isPlaying = NO;
               [self.tableView reloadRowsAtIndexPaths:@[self.lastPlayingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
         }
-      
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         self.lastPlayingIndexPath = indexPath;
+        
+        VideoCell *cell = [self.tableView cellForRowAtIndexPath:self.lastPlayingIndexPath];
+        [self playVideoWithTargetView:cell.videoPalyerView];
     }
+}
+
+- (void)playVideoWithTargetView:(UIView *)targetView{
+    NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"];
+    if (self.player.view.superview ) {
+        [self.player.view removeFromSuperview];
+    }
+    
+    if (self.player == nil) {
+        self.player = [[MMVideoPlayer alloc] initWithURL:locationUrl topViewStatus:MMTopViewHiddenStatus];
+    }else{
+        self.player.videoUrl = [[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"];
+    }
+   
+        self.player.view.frame = targetView.frame;
+        [targetView addSubview:self.player.view];
+
 }
 #pragma mark - Getter
 - (UITableView *)tableView{

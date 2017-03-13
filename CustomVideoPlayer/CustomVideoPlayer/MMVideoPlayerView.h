@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "MMUpdateUIInterface.h"
-
+#import "MMStatusHeader.h"
 @interface MMVideoPlayerView : UIView
 @property (nonatomic, weak) id<MMUpdateUIInterface> interface;
-- (instancetype)initWithPlayer:(AVPlayer *)player;
+@property (nonatomic, assign) MMTopViewStatus topViewStatus;
+- (instancetype)initWithPlayer:(AVPlayer *)player
+                 topViewStatus:(MMTopViewStatus)status;
 
 @end

@@ -18,14 +18,16 @@
     return [AVPlayerLayer class];
 }
 
-- (instancetype)initWithPlayer:(AVPlayer *)player {
+- (instancetype)initWithPlayer:(AVPlayer *)player
+                 topViewStatus:(MMTopViewStatus)status {
     self = [super initWithFrame:CGRectZero];
     if (self) {
         self.backgroundColor = [UIColor blackColor];
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight |
         UIViewAutoresizingFlexibleWidth;
         [(AVPlayerLayer *) [self layer] setPlayer:player];
-        self.playerLayerView = [[MMPlayerLayerView alloc] init];
+        self.playerLayerView = [[MMPlayerLayerView alloc] initWithFrame:self.bounds topViewStatus:status];
+//        self.playerLayerView.topViewStatus = status;
         [self addSubview:self.playerLayerView];
     }
     return self;

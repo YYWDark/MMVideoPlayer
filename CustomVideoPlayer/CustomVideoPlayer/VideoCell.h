@@ -10,4 +10,6 @@
 #import "VideoLayout.h"
 @interface VideoCell : UITableViewCell
 @property (nonatomic, strong) VideoLayout *layout;
+@property (nonatomic, strong) UIView *videoPalyerView;
+- (void)playVideo;
 @end

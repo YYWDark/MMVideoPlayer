@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "MMUpdateUIInterface.h"
-
+#import "MMVideoHeader.h"
 @interface MMPlayerLayerView : UIView <MMUpdateUIInterface>
+
 @property (nonatomic, weak) id <MMPlayerActionDelegate> delegate;
 @property (nonatomic, assign) BOOL isToolHidden;
+@property (nonatomic, assign) MMTopViewStatus topViewStatus;
+- (instancetype)initWithFrame:(CGRect)frame
+                topViewStatus:(MMTopViewStatus)status;
 - (void)setCurrentTime:(NSTimeInterval)time;
 @end

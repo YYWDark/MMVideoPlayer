@@ -89,6 +89,7 @@
 		75C4C83E1E72C6CE00A7320D /* VideoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoModel.m; path = ../VideoModel.m; sourceTree = "<group>"; };
 		75C4C8401E72CC1700A7320D /* VideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCell.h; sourceTree = "<group>"; };
 		75C4C8411E72CC1700A7320D /* VideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCell.m; sourceTree = "<group>"; };
+		75C4C8431E76824C00A7320D /* MMStatusHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMStatusHeader.h; sourceTree = "<group>"; };
 		75F7454E1E63BC4900F5F775 /* CustomVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75F745521E63BC4900F5F775 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		75F745541E63BC4900F5F775 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -278,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				75F745911E640F3600F5F775 /* MMVideoHeader.h */,
+				75C4C8431E76824C00A7320D /* MMStatusHeader.h */,
 			);
 			name = Header;
 			sourceTree = "<group>";

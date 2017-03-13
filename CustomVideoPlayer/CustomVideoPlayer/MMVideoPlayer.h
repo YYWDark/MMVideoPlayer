@@ -12,6 +12,8 @@
 @interface MMVideoPlayer : NSObject
 @property (nonatomic, strong, readonly) UIView *view;
 @property (nonatomic, strong) NSURL *videoUrl;
-
-- (instancetype)initWithURL:(NSURL *)videoUrl;
+@property (nonatomic, assign) MMTopViewStatus topViewStatus;
+- (instancetype)initWithURL:(NSURL *)videoUrl
+              topViewStatus:(MMTopViewStatus)status;
+- (void)stopPlay;
 @end

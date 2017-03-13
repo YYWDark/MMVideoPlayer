@@ -10,7 +10,7 @@
 
 @interface VideoModel : NSObject
 @property (nonatomic, copy) NSString *cover;
-@property (nonatomic, copy) NSString *mp4_url;
+@property (nonatomic, strong) NSURL *mp4_url;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign) BOOL isPlaying;
 

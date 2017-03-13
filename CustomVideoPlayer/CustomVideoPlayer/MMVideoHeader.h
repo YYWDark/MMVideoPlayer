@@ -10,6 +10,7 @@
 #define MMVideoHeader_h
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
+#import "MMStatusHeader.h"
 #import "UIView+Extension.h"
 #import "UIColor+Extension.h"
 #import "AVAsset+Extension.h"

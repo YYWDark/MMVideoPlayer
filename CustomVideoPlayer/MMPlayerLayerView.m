@@ -7,9 +7,10 @@
 //
 
 #import "MMPlayerLayerView.h"
-#import "MMVideoHeader.h"
 #import "ThumbnailsView.h"
 
+#define SuperViewHeight CGRectGetHeight(self.superview.frame)
+#define SuperViewWidth CGRectGetWidth(self.superview.frame)
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
 static CGFloat const HorizontalMargin = 20.0;
@@ -38,9 +39,11 @@ static CGFloat const AnimationDuration = 0.35;
 @end
 
 @implementation MMPlayerLayerView
-- (instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame
+                topViewStatus:(MMTopViewStatus)status {
     self = [super initWithFrame:frame];
     if (self) {
+        self.topViewStatus = status;
         self.isToolShown = YES;
         [self initUI];
         [self _resetTimer];
@@ -49,11 +52,14 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)initUI {
-    [self addSubview:self.thumbnailsView];
-    [self addSubview:self.topBarView];
-    [self.topBarView addSubview:self.closeButton];
-    [self.topBarView addSubview:self.titleLabel];
-    [self.topBarView addSubview:self.showIndexImageUIButton];
+    if (self.topViewStatus == MMTopViewDisplayStatus) {
+        [self addSubview:self.thumbnailsView];
+        [self addSubview:self.topBarView];
+        [self.topBarView addSubview:self.closeButton];
+        [self.topBarView addSubview:self.titleLabel];
+        [self.topBarView addSubview:self.showIndexImageUIButton];
+    }
+   
     [self addSubview:self.bottomBarView];
     [self.bottomBarView addSubview:self.playButton];
     [self.bottomBarView addSubview:self.sliderView];
@@ -64,17 +70,18 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(kScreenHeigth - BottomBarViewHeight - ThumbnailsViewHeight): kScreenHeigth, kScreenWidth,ThumbnailsViewHeight);
-    self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, kScreenWidth, TopBarViewHeight);
-    self.closeButton.frame = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
-    self.showIndexImageUIButton.frame = CGRectMake(kScreenWidth - HorizontalMargin - IconSize, 0, IconSize, IconSize);
-    self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.showIndexImageUIButton.left - self.closeButton.right, TopBarViewHeight);
+    if (self.topViewStatus == MMTopViewDisplayStatus) {
+        self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(SuperViewHeight - BottomBarViewHeight - ThumbnailsViewHeight): SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
+        self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
+        self.closeButton.frame = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
+        self.showIndexImageUIButton.frame = CGRectMake(SuperViewWidth - HorizontalMargin - IconSize, 0, IconSize, IconSize);
+        self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.showIndexImageUIButton.left - self.closeButton.right, TopBarViewHeight);
+    }
     
-    
-    self.bottomBarView.frame = CGRectMake(0, self.isToolShown?kScreenHeigth - BottomBarViewHeight : kScreenHeigth , kScreenWidth, BottomBarViewHeight);
+    self.bottomBarView.frame = CGRectMake(0, self.isToolShown?SuperViewHeight - BottomBarViewHeight : SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
     self.playButton.frame  = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
     self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
-    self.endTimeLabel.frame = CGRectMake(kScreenWidth - TimeLableWidth - HorizontalMargin, self.playButton.top, TimeLableWidth, TimeLableHeight);
+    self.endTimeLabel.frame = CGRectMake(SuperViewWidth - TimeLableWidth - HorizontalMargin, self.playButton.top, TimeLableWidth, TimeLableHeight);
     self.sliderView.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
     
 }
@@ -88,8 +95,8 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)_showToolView {
     [self _resetTimer];
     [UIView  animateWithDuration:.35 animations:^{
-        self.topBarView.frame = CGRectMake(0, 0, kScreenWidth, TopBarViewHeight);
-        self.bottomBarView.frame = CGRectMake(0, kScreenHeigth - BottomBarViewHeight , kScreenWidth, BottomBarViewHeight);
+        self.topBarView.frame = CGRectMake(0, 0, SuperViewWidth, TopBarViewHeight);
+        self.bottomBarView.frame = CGRectMake(0, SuperViewHeight - BottomBarViewHeight , SuperViewWidth, BottomBarViewHeight);
     } completion:^(BOOL finished) {
         self.isToolShown = YES;
     }];
@@ -97,10 +104,10 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)_hideToolView {
     [UIView  animateWithDuration:.25 animations:^{
-        self.topBarView.frame = CGRectMake(0, - TopBarViewHeight, kScreenWidth, TopBarViewHeight);
-        self.bottomBarView.frame = CGRectMake(0, kScreenHeigth , kScreenWidth, BottomBarViewHeight);
+        self.topBarView.frame = CGRectMake(0, - TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
+        self.bottomBarView.frame = CGRectMake(0, SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
         if (self.showIndexImageUIButton.selected == YES) {
-           self.thumbnailsView.frame = CGRectMake(0, kScreenHeigth, kScreenWidth,ThumbnailsViewHeight);
+           self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
             self.showIndexImageUIButton.selected = NO;
         }
     } completion:^(BOOL finished) {
@@ -110,17 +117,18 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)_resetTimer {
+    if (self.topViewStatus == MMTopViewHiddenStatus) return;
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:5.0f firing:^{
         if (self.timer.isValid && self.isToolShown) {
              [self _hideToolView];
         }
-       
     }];
 }
 
 #pragma mark - action
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if (self.topViewStatus == MMTopViewHiddenStatus) return;
     if (self.isToolShown == NO) {
         [self _showToolView];
     }else {
@@ -137,17 +145,15 @@ static CGFloat const AnimationDuration = 0.35;
     [UIView animateWithDuration: AnimationDuration  animations:^{
         if (button.selected == YES) {
             [self _resetTimer];
-            self.thumbnailsView.frame = CGRectMake(0, kScreenHeigth, kScreenWidth,ThumbnailsViewHeight);
+            self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
         }else {
             [self.timer invalidate];
-            self.thumbnailsView.frame = CGRectMake(0, kScreenHeigth -  ThumbnailsViewHeight - BottomBarViewHeight, kScreenWidth,ThumbnailsViewHeight);
+            self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight -  ThumbnailsViewHeight - BottomBarViewHeight, SuperViewWidth,ThumbnailsViewHeight);
         }
     } completion:^(BOOL finished) {
         button.selected = !button.selected;
     }];
-    
 
-  
 }
 
 - (void)respondToPlayAction:(UIButton *)button {
