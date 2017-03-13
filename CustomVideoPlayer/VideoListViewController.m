@@ -15,6 +15,7 @@ static NSString *cellID = @"VideoListViewController";
 @interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
+@property (nonatomic, strong) NSIndexPath *lastPlayingIndexPath;
 @end
 
 @implementation VideoListViewController
@@ -22,7 +23,7 @@ static NSString *cellID = @"VideoListViewController";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.edgesForExtendedLayout = NO;
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor blackColor];
     self.dataArr = [NSMutableArray array];
     [self _fetchDataFromNetWorking];
 }
@@ -48,9 +49,19 @@ static NSString *cellID = @"VideoListViewController";
     }];
     [task resume];
 }
-
-
 #pragma mark - UITableViewDataSource
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.lastPlayingIndexPath != nil) {
+        VideoCell *cell = [self.tableView cellForRowAtIndexPath:self.lastPlayingIndexPath];
+        if (![self.tableView.visibleCells containsObject:cell]) {
+            VideoLayout *layout = self.dataArr[self.lastPlayingIndexPath.row];
+            layout.model.isPlaying = NO;
+            [self.tableView reloadRowsAtIndexPaths:@[self.lastPlayingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            self.lastPlayingIndexPath = nil;
+        }
+    }
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
    VideoLayout *layout = self.dataArr[indexPath.row];
     return layout.totalHeight;
@@ -67,17 +78,33 @@ static NSString *cellID = @"VideoListViewController";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    VideoLayout *layout = self.dataArr[indexPath.row];
+    if (layout.model.isPlaying) {//播放
+        
+    }else {
+        layout.model.isPlaying = YES;
+        
+        if (self.lastPlayingIndexPath != nil) {
+              VideoLayout *layout = self.dataArr[self.lastPlayingIndexPath.row];
+              layout.model.isPlaying = NO;
+              [self.tableView reloadRowsAtIndexPaths:@[self.lastPlayingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }
+      
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        self.lastPlayingIndexPath = indexPath;
+    }
 }
 #pragma mark - Getter
 - (UITableView *)tableView{
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height  ) style:UITableViewStylePlain];
+        _tableView.backgroundColor = [UIColor blackColor];
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.scrollEnabled = YES;
         _tableView.showsVerticalScrollIndicator = YES;
         _tableView.showsHorizontalScrollIndicator = YES;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         [_tableView registerClass:[VideoCell class] forCellReuseIdentifier:cellID];
         
     }

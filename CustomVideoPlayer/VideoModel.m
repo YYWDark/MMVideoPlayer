@@ -9,6 +9,14 @@
 #import "VideoModel.h"
 
 @implementation VideoModel
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.isPlaying = NO;
+    }
+    return self;
+}
+
 + (instancetype)videomodelWithCover:(NSString *)cover
                            videoUrl:(NSString *)mp4_url
                          videoTitle:(NSString *)title {

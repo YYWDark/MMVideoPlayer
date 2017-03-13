@@ -20,7 +20,7 @@
 
 - (void)_calculateLayoutInformation:(VideoModel *)model {
     self.videoPalyerViewHeight = 200.0f;
-    self.titleLabelHeight = [NSObject heightFromString:model.title withFont:[UIFont systemFontOfSize:12] constraintToWidth:2000];
+    self.titleLabelHeight = [NSObject heightFromString:model.title withFont:[UIFont systemFontOfSize:16] constraintToWidth:2000];
     self.totalHeight += self.videoPalyerViewHeight;
     self.totalHeight += self.titleLabelHeight;
 }

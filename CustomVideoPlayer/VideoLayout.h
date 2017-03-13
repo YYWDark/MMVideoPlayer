@@ -14,6 +14,6 @@
 @property (nonatomic, assign) CGFloat titleLabelHeight;
 @property (nonatomic, assign) CGFloat totalHeight;
 @property (nonatomic, strong) VideoModel *model;
-- (instancetype)initWithSourceData:(VideoModel *)model;
 
+- (instancetype)initWithSourceData:(VideoModel *)model;
 @end

@@ -12,6 +12,7 @@
 @property (nonatomic, copy) NSString *cover;
 @property (nonatomic, copy) NSString *mp4_url;
 @property (nonatomic, copy) NSString *title;
+@property (nonatomic, assign) BOOL isPlaying;
 
 + (instancetype)videomodelWithCover:(NSString *)cover
                            videoUrl:(NSString *)mp4_url
