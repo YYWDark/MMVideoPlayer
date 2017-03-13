@@ -51,6 +51,10 @@ static NSString *cellID = @"VideoListViewController";
 
 
 #pragma mark - UITableViewDataSource
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+   VideoLayout *layout = self.dataArr[indexPath.row];
+    return layout.totalHeight;
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArr.count;
 }
@@ -58,7 +62,7 @@ static NSString *cellID = @"VideoListViewController";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     VideoCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
     VideoLayout *layout = self.dataArr[indexPath.row];
-    cell.textLabel.text = layout.model.title ;
+    cell.layout = layout;
     return cell;
 }
 

@@ -7,6 +7,8 @@
 //
 
 #import "VideoCell.h"
+#import "MMVideoHeader.h"
+#import <SDWebImage/SD>
 @interface VideoCell ()
 @property (nonatomic, strong) UIView *videoPalyerView;
 @property (nonatomic, strong) UIImageView *thumbnailView;
@@ -25,6 +27,15 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    self.videoPalyerView.frame = CGRectMake(0, 0, kScreenWidth, _layout.videoPalyerViewHeight);
+    self.titleLabel.frame = CGRectMake(0, self.videoPalyerView.bottom, kScreenWidth, _layout.titleLabelHeight);
+}
+#pragma mark - set
+- (void)setLayout:(VideoLayout *)layout {
+    _layout = layout;
+    
+    self.titleLabel.text = layout.model.title;
+//    self.thumbnailView
 }
 #pragma mark - get
 - (UIView *)videoPalyerView {
@@ -47,6 +58,7 @@
 - (UILabel *)titleLabel {
     if (_titleLabel == nil) {
         _titleLabel = [[UILabel alloc] init];
+        _titleLabel.font = [UIFont systemFontOfSize:12];
     }
     return _titleLabel;
 }
