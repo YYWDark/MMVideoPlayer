@@ -50,9 +50,14 @@
                       @"availableMediaCharacteristicsWithMediaSelectionOptions"
                       ];
     
-    self.asset = [AVAsset assetWithURL:self.videoUrl];
-    self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset
-                           automaticallyLoadedAssetKeys:keys];
+    if ([self.videoUrl.absoluteString rangeOfString:@"http"].location != NSNotFound) {
+        self.playerItem = [AVPlayerItem playerItemWithURL:self.videoUrl];
+    }else {
+        self.asset = [AVAsset assetWithURL:self.videoUrl];
+        self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset
+                               automaticallyLoadedAssetKeys:keys];
+    }
+    
     [self _addObserver];
     //add Observer to observe the movie status
      self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
@@ -66,9 +71,13 @@
 }
 
 - (void)stopPlay {
+//    [self.playerItem  removeObserver:self forKeyPath:@"loadedTimeRanges"];
+  
     [self.player pause];
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
+//    [self.player removeObserveWithPlayerItem:self.player.currentItem];
+//    [self.playerItem  removeObserver:self forKeyPath:@"status"];
     self.playerItem = nil;
     self.asset = nil;
     self.player = nil;
@@ -85,6 +94,11 @@
                  forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus
                     options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                     context:&kMMPlayerItemStatusContext];
+    
+//    [self.playerItem addObserver:self
+//                      forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges
+//                         options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+//                         context:&kMMPlayerItemStatusContext];
 }
 
 
@@ -173,11 +187,20 @@
                 break;
             case AVPlayerItemStatusFailed:
                 // Failed. Examine AVPlayerItem.error
+                NSLog(@"Examine AVPlayerItem.error");
                 break;
             case AVPlayerItemStatusUnknown:
                 // Not ready
                 break;
         }
+    }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges]) {
+      NSArray *array = self.playerItem.loadedTimeRanges;
+      CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓冲时间范围
+        float startSeconds = CMTimeGetSeconds(timeRange.start);
+        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+        NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
+        NSLog(@"totalBuffer：%.2f",totalBuffer);
+        
     }
 }
 

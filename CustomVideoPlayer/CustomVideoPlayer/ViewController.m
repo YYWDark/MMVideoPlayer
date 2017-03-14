@@ -8,12 +8,14 @@
 
 #import "ViewController.h"
 #import "VideoListViewController.h"
+#import "MMVideoPlayer.h"
 static const CGFloat kNavigationHeight = 0.0;
 static NSString *cellID = @"UITableViewCell";
-
+#define url @"http://flv2.bn.netease.com/tvmrepo/2017/3/C/D/ECEFPU0CD/SD/ECEFPU0CD-mobile.mp4"
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
+@property (nonatomic, strong) MMVideoPlayer *player;
 @end
 
 @implementation ViewController
@@ -22,6 +24,12 @@ static NSString *cellID = @"UITableViewCell";
     [super viewDidLoad];
     self.navigationItem.title = @"Video Type";
     [self.view addSubview:self.tableView];
+//         self.navigationController.navigationBar.hidden = YES;
+//         NSURL *remoteUrl  =  [NSURL URLWithString:url];
+//         NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
+//         self.player = [[MMVideoPlayer alloc] initWithURL:locationUrl topViewStatus:MMTopViewDisplayStatus];
+//         self.player.view.frame = self.view.frame;
+//        [self.view addSubview:self.player.view];
 }
 
 #pragma mark - UITableViewDataSource

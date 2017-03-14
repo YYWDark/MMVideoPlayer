@@ -25,6 +25,7 @@ static const NSString *kMMPlayerItemStatusContext;
 static CGFloat  const kMMThumbnailsImageWidth   = 120.0f;
 static CGFloat  const kMMVideoPlayerRefreshTime = 0.5f;
 static NSString * const kMMVideoKVOKeyPathPlayerItemStatus = @"status";
+static NSString * const kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges = @"loadedTimeRanges";
 static NSString * const kMMFinishedGeneratThumbnailsImageNotification = @"kMMFinishedGeneratThumbnailsImageNotification";
 /**********************************************************************/
 typedef NS_ENUM(NSUInteger, MMVideoVideoUrlType) {
