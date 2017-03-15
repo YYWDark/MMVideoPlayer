@@ -11,7 +11,7 @@
 #import "MMVideoPlayer.h"
 static const CGFloat kNavigationHeight = 0.0;
 static NSString *cellID = @"UITableViewCell";
-#define url @"http://flv2.bn.netease.com/tvmrepo/2017/3/C/D/ECEFPU0CD/SD/ECEFPU0CD-mobile.mp4"
+#define url @"http://bos.nj.bpc.baidu.com/tieba-smallvideo/11772_3c435014fb2dd9a5fd56a57cc369f6a0.mp4"
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
@@ -22,14 +22,14 @@ static NSString *cellID = @"UITableViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"Video Type";
-    [self.view addSubview:self.tableView];
-//         self.navigationController.navigationBar.hidden = YES;
-//         NSURL *remoteUrl  =  [NSURL URLWithString:url];
-//         NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
-//         self.player = [[MMVideoPlayer alloc] initWithURL:locationUrl topViewStatus:MMTopViewDisplayStatus];
-//         self.player.view.frame = self.view.frame;
-//        [self.view addSubview:self.player.view];
+//    self.navigationItem.title = @"Video Type";
+//    [self.view addSubview:self.tableView];
+         self.navigationController.navigationBar.hidden = YES;
+         NSURL *remoteUrl  =  [NSURL URLWithString:url];
+         NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
+         self.player = [[MMVideoPlayer alloc] initWithURL:remoteUrl topViewStatus:MMTopViewDisplayStatus];
+         self.player.view.frame = self.view.frame;
+        [self.view addSubview:self.player.view];
 }
 
 #pragma mark - UITableViewDataSource

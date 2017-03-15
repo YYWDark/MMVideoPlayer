@@ -49,11 +49,11 @@
                       @"commonMetadata",
                       @"availableMediaCharacteristicsWithMediaSelectionOptions"
                       ];
-    
+    self.asset = [AVAsset assetWithURL:self.videoUrl];
     if ([self.videoUrl.absoluteString rangeOfString:@"http"].location != NSNotFound) {
         self.playerItem = [AVPlayerItem playerItemWithURL:self.videoUrl];
     }else {
-        self.asset = [AVAsset assetWithURL:self.videoUrl];
+//        self.asset = [AVAsset assetWithURL:self.videoUrl];
         self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset
                                automaticallyLoadedAssetKeys:keys];
     }
@@ -66,18 +66,15 @@
     
 }
 
-- (void)dealloc {
-//  [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
-}
+
 
 - (void)stopPlay {
 //    [self.playerItem  removeObserver:self forKeyPath:@"loadedTimeRanges"];
-  
+    
     [self.player pause];
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
-//    [self.player removeObserveWithPlayerItem:self.player.currentItem];
-//    [self.playerItem  removeObserver:self forKeyPath:@"status"];
+    [self.player replaceCurrentItemWithPlayerItem:nil];
     self.playerItem = nil;
     self.asset = nil;
     self.player = nil;
@@ -95,10 +92,10 @@
                     options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                     context:&kMMPlayerItemStatusContext];
     
-//    [self.playerItem addObserver:self
-//                      forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges
-//                         options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-//                         context:&kMMPlayerItemStatusContext];
+    [self.playerItem addObserver:self
+                      forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges
+                         options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+                         context:&kMMPlayerItemStatusContext];
 }
 
 
@@ -172,8 +169,9 @@
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
-    [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+  
     if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
+        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
         // Get the status change from the change dictionary
         NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
@@ -194,11 +192,13 @@
                 break;
         }
     }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges]) {
+//      [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges];
       NSArray *array = self.playerItem.loadedTimeRanges;
       CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓冲时间范围
         float startSeconds = CMTimeGetSeconds(timeRange.start);
         float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
+        NSLog(@"totalBuffer13");
         NSLog(@"totalBuffer：%.2f",totalBuffer);
         
     }
