@@ -33,7 +33,7 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
 @property (nonatomic, strong) ThumbnailsView *thumbnailsView;
-
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, assign) BOOL isToolShown;
 @end
@@ -66,6 +66,8 @@ static CGFloat const AnimationDuration = 0.35;
     [self.bottomBarView addSubview:self.currentTimeLabel];
     [self.bottomBarView addSubview:self.endTimeLabel];
     
+    [self addSubview: self.indicatorView];
+    
 }
 
 - (void)layoutSubviews {
@@ -83,7 +85,8 @@ static CGFloat const AnimationDuration = 0.35;
     self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
     self.endTimeLabel.frame = CGRectMake(SuperViewWidth - TimeLableWidth - HorizontalMargin, self.playButton.top, TimeLableWidth, TimeLableHeight);
     self.sliderView.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
-    
+    self.indicatorView.size = CGSizeMake(30, 30);
+    self.indicatorView.center = self.center;
 }
 
 - (void)setCurrentTime:(NSTimeInterval)time {
@@ -213,6 +216,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration {
+    [self.indicatorView stopAnimating];
     NSUInteger currentSeconds = time;
     self.currentTimeLabel.text = [NSString formatSeconds:currentSeconds];
     self.endTimeLabel.text = [NSString formatSeconds:duration];
@@ -229,6 +233,13 @@ static CGFloat const AnimationDuration = 0.35;
     self.playButton.selected = NO;
 }
 
+
+- (void)showActivityIndicatorView {
+    if (self.playButton.selected == YES) {
+     [self.indicatorView startAnimating];
+    }
+    
+}
 #pragma mark - get
 - (UIButton *)closeButton {
     if (_closeButton == nil) {
@@ -325,5 +336,13 @@ static CGFloat const AnimationDuration = 0.35;
         _thumbnailsView.delegate = self;
     }
     return _thumbnailsView;
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (_indicatorView == nil) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        [_indicatorView startAnimating];
+    }
+    return _indicatorView;
 }
 @end

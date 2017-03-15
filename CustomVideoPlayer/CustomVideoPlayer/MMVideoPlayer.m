@@ -59,6 +59,7 @@
     }
     
     [self _addObserver];
+    [self _addNoyification];
     //add Observer to observe the movie status
      self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self _initSubView];
@@ -69,8 +70,6 @@
 
 
 - (void)stopPlay {
-//    [self.playerItem  removeObserver:self forKeyPath:@"loadedTimeRanges"];
-    
     [self.player pause];
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
@@ -78,6 +77,7 @@
     self.playerItem = nil;
     self.asset = nil;
     self.player = nil;
+    
 }
 #pragma mark - private methods
 - (void)_initSubView {
@@ -97,6 +97,14 @@
                          options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                          context:&kMMPlayerItemStatusContext];
 }
+
+- (void)_addNoyification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemNewAccessLogEntryNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemPlaybackStalledNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
+    
+}
+
 
 
 - (void)_initPlayerSetting {
@@ -137,13 +145,27 @@
          NSTimeInterval duration = CMTimeGetSeconds(weakSelf.playerItem.duration);
         if ([weakSelf.interface respondsToSelector:@selector(setCurrentTime:duration:)]) {
             [weakSelf.interface setCurrentTime:currentTime duration:duration];
+            
+          
+            NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
+            NSLog(@"totalBuffer == %lf",totalBuffer);
         }
     };
     self.timeObserver = [self.player addPeriodicTimeObserverForInterval:interval
                                                                   queue:mainQueue
                                                              usingBlock:callBack];
     
-   }
+}
+
+- (NSTimeInterval)availableDurationWithplayerItem:(AVPlayerItem *)playerItem
+{
+    NSArray *loadedTimeRanges = [playerItem loadedTimeRanges];
+    CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];// 获取缓冲区域
+    NSTimeInterval startSeconds = CMTimeGetSeconds(timeRange.start);
+    NSTimeInterval durationSeconds = CMTimeGetSeconds(timeRange.duration);
+    NSTimeInterval result = startSeconds + durationSeconds;// 计算缓冲总进度
+    return result;
+}
 
 - (void)_observeOfTheEndPointOfVedioPlayer {
     __weak MMVideoPlayer *weakSelf = self;
@@ -160,6 +182,18 @@
 }
 
 #pragma mark - action
+
+- (void)AVPlayerItemNewAccessLogEntryNotification:(NSNotification *)notification {
+    NSLog(@"卡顿");
+    
+    [self.interface showActivityIndicatorView];
+}
+
+- (void)AVPlayerItemPlaybackStalledNotification:(NSNotification *)notification {
+    NSLog(@"暂停");
+    
+    //    [self.interface showActivityIndicatorView];
+}
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -192,13 +226,9 @@
                 break;
         }
     }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges]) {
-//      [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges];
-      NSArray *array = self.playerItem.loadedTimeRanges;
-      CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓冲时间范围
-        float startSeconds = CMTimeGetSeconds(timeRange.start);
-        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
-        NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
-    
+      [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges];
+        NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
+        NSLog(@"totalBuffer == %lf",totalBuffer);
     }
 }
 
@@ -254,6 +284,7 @@
     [self _timerObserveOfVedioPlayer];
     [self.player play];
 }
+
 #pragma mark - set 
 - (void)setVideoUrl:(NSURL *)videoUrl {
     _videoUrl = videoUrl;

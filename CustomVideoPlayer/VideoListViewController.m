@@ -51,6 +51,11 @@ static NSString *cellID = @"VideoListViewController";
     }];
     [task resume];
 }
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.player stopPlay];
+}
 #pragma mark - UITableViewDataSource
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.lastPlayingIndexPath != nil) {
@@ -97,20 +102,20 @@ static NSString *cellID = @"VideoListViewController";
         self.lastPlayingIndexPath = indexPath;
         
         VideoCell *cell = [self.tableView cellForRowAtIndexPath:self.lastPlayingIndexPath];
-        [self playVideoWithTargetView:cell.videoPalyerView];
+        [self playVideoWithTargetView:cell.videoPalyerView url:layout.model.mp4_url];
     }
 }
 
-- (void)playVideoWithTargetView:(UIView *)targetView{
-    NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"];
+- (void)playVideoWithTargetView:(UIView *)targetView url:(NSURL *)url{
+//    NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"];
     if (self.player.view.superview ) {
         [self.player.view removeFromSuperview];
     }
     
     if (self.player == nil) {
-        self.player = [[MMVideoPlayer alloc] initWithURL:locationUrl topViewStatus:MMTopViewHiddenStatus];
+        self.player = [[MMVideoPlayer alloc] initWithURL:url topViewStatus:MMTopViewHiddenStatus];
     }else{
-        self.player.videoUrl = [[NSBundle mainBundle] URLForResource:@"中国合伙人" withExtension:@"mp4"];
+        self.player.videoUrl = url;
     }
    
         self.player.view.frame = targetView.frame;

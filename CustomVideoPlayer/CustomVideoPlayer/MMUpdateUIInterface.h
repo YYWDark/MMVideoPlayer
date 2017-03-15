@@ -15,4 +15,5 @@
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration;
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime;
 - (void)callTheActionWiththeEndOfVideo;
+- (void)showActivityIndicatorView;
 @end
