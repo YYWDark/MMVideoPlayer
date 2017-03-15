@@ -25,6 +25,7 @@
 		75C4C83C1E72C1C000A7320D /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75C4C83B1E72C1C000A7320D /* data.plist */; };
 		75C4C83F1E72C6CE00A7320D /* VideoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C83E1E72C6CE00A7320D /* VideoModel.m */; };
 		75C4C8421E72CC1700A7320D /* VideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8411E72CC1700A7320D /* VideoCell.m */; };
+		75C4C89F1E79667400A7320D /* MMSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C89E1E79667400A7320D /* MMSlider.m */; };
 		75F745531E63BC4900F5F775 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745521E63BC4900F5F775 /* main.m */; };
 		75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745551E63BC4900F5F775 /* AppDelegate.m */; };
 		75F745591E63BC4900F5F775 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745581E63BC4900F5F775 /* ViewController.m */; };
@@ -90,6 +91,8 @@
 		75C4C8401E72CC1700A7320D /* VideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCell.h; sourceTree = "<group>"; };
 		75C4C8411E72CC1700A7320D /* VideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCell.m; sourceTree = "<group>"; };
 		75C4C8431E76824C00A7320D /* MMStatusHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMStatusHeader.h; sourceTree = "<group>"; };
+		75C4C89D1E79667400A7320D /* MMSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMSlider.h; sourceTree = "<group>"; };
+		75C4C89E1E79667400A7320D /* MMSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMSlider.m; sourceTree = "<group>"; };
 		75F7454E1E63BC4900F5F775 /* CustomVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75F745521E63BC4900F5F775 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		75F745541E63BC4900F5F775 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -287,6 +290,8 @@
 		75F745981E641BC600F5F775 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				75C4C89D1E79667400A7320D /* MMSlider.h */,
+				75C4C89E1E79667400A7320D /* MMSlider.m */,
 				75F745921E6414AC00F5F775 /* MMVideoPlayerView.h */,
 				75F745931E6414AC00F5F775 /* MMVideoPlayerView.m */,
 				75F745951E641BBC00F5F775 /* MMPlayerLayerView.h */,
@@ -533,6 +538,7 @@
 				75F745941E6414AC00F5F775 /* MMVideoPlayerView.m in Sources */,
 				75C4C82A1E70F62A00A7320D /* ThumbnailsView.m in Sources */,
 				75F745561E63BC4900F5F775 /* AppDelegate.m in Sources */,
+				75C4C89F1E79667400A7320D /* MMSlider.m in Sources */,
 				75F745531E63BC4900F5F775 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
