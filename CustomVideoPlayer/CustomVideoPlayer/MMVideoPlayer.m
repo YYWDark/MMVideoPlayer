@@ -198,9 +198,7 @@
         float startSeconds = CMTimeGetSeconds(timeRange.start);
         float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
-        NSLog(@"totalBuffer13");
-        NSLog(@"totalBuffer：%.2f",totalBuffer);
-        
+    
     }
 }
 
