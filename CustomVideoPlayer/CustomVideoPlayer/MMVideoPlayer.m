@@ -26,7 +26,6 @@
     self = [super init];
     if (self) {
         self.topViewStatus = MMTopViewHiddenStatus;
-       
     }
     return self;
 }
@@ -53,7 +52,6 @@
     if ([self.videoUrl.absoluteString rangeOfString:@"http"].location != NSNotFound) {
         self.playerItem = [AVPlayerItem playerItemWithURL:self.videoUrl];
     }else {
-//        self.asset = [AVAsset assetWithURL:self.videoUrl];
         self.playerItem = [AVPlayerItem playerItemWithAsset:self.asset
                                automaticallyLoadedAssetKeys:keys];
     }
