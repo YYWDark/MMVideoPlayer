@@ -67,6 +67,7 @@
 
 - (void)stopPlay {
     [self.player pause];
+    [self.player removeTimeObserver:self.timeObserver];
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
     [self.player replaceCurrentItemWithPlayerItem:nil];
