@@ -252,6 +252,10 @@ static CGFloat const AnimationDuration = 0.35;
     self.slider.value = time;
 }
 
+- (void)setCacheTime:(NSTimeInterval)time {
+    self.slider.cacheValue = time;
+}
+
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime {
     self.slider.minimumValue = (NSUInteger)minTime;
     self.slider.maximumValue = (NSUInteger)maxTime;

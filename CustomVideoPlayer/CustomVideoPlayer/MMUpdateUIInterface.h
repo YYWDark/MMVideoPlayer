@@ -13,6 +13,7 @@
 @property (nonatomic, weak) id<MMPlayerActionDelegate> delegate;
 - (void)setTitle:(NSString *)title;
 - (void)setCurrentTime:(NSTimeInterval)time duration:(NSTimeInterval)duration;
+- (void)setCacheTime:(NSTimeInterval)time;
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime;
 - (void)callTheActionWiththeEndOfVideo;
 - (void)showActivityIndicatorView;

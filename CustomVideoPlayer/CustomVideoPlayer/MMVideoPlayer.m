@@ -19,6 +19,7 @@
 @property (nonatomic, weak) id<MMUpdateUIInterface> interface;
 @property (nonatomic, weak) id timeObserver;
 @property (nonatomic, weak) id itemEndObserver;
+@property (nonatomic, assign) BOOL isObserverRemoved;
 @end
 @implementation MMVideoPlayer
 #pragma mark - life cycle
@@ -64,8 +65,17 @@
 }
 
 
+//- (void)dealloc {
+//    [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+//    
+//}
 
 - (void)stopPlay {
+    if (self.isObserverRemoved == NO) {
+        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+        self.isObserverRemoved = YES;
+    }
+   
     [self.player pause];
     [self.player removeTimeObserver:self.timeObserver];
     [self.player.currentItem cancelPendingSeeks];
@@ -76,6 +86,8 @@
     self.player = nil;
     
 }
+
+
 #pragma mark - private methods
 - (void)_initSubView {
     self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player topViewStatus:self.topViewStatus];
@@ -88,17 +100,18 @@
                  forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus
                     options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                     context:&kMMPlayerItemStatusContext];
-    
-    [self.playerItem addObserver:self
-                      forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges
-                         options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-                         context:&kMMPlayerItemStatusContext];
+    self.isObserverRemoved = NO;
+//    
+//    [self.playerItem addObserver:self
+//                      forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges
+//                         options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+//                         context:&kMMPlayerItemStatusContext];
 }
 
 - (void)_addNoyification {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemNewAccessLogEntryNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemPlaybackStalledNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemPlaybackStalledNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
     
 }
 
@@ -126,12 +139,12 @@
         
         //play the video
         [self.player play];
+        if(self.topViewStatus == MMTopViewDisplayStatus){
+           [self _getThumbnailsFormVideoFile]; 
+        }
         
-        [self _getThumbnailsFormVideoFile];
     });
 }
-
-
 
 - (void)_timerObserveOfVedioPlayer {
     CMTime interval = CMTimeMakeWithSeconds(kMMVideoPlayerRefreshTime, NSEC_PER_SEC);
@@ -142,10 +155,11 @@
          NSTimeInterval duration = CMTimeGetSeconds(weakSelf.playerItem.duration);
         if ([weakSelf.interface respondsToSelector:@selector(setCurrentTime:duration:)]) {
             [weakSelf.interface setCurrentTime:currentTime duration:duration];
-            
-          
+        }
+        if ([weakSelf.interface respondsToSelector:@selector(setCacheTime:)]) {
             NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
             NSLog(@"totalBuffer == %lf",totalBuffer);
+            [weakSelf.interface setCacheTime:totalBuffer];
         }
     };
     self.timeObserver = [self.player addPeriodicTimeObserverForInterval:interval
@@ -181,16 +195,10 @@
 #pragma mark - action
 
 - (void)AVPlayerItemNewAccessLogEntryNotification:(NSNotification *)notification {
-    NSLog(@"卡顿");
-    
     [self.interface showActivityIndicatorView];
 }
 
-- (void)AVPlayerItemPlaybackStalledNotification:(NSNotification *)notification {
-    NSLog(@"暂停");
-    
-    //    [self.interface showActivityIndicatorView];
-}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -200,9 +208,10 @@
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
-  
+   
+    NSLog(@"11111111111111111111111111111");
     if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
-        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+       
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
         // Get the status change from the change dictionary
         NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
@@ -217,16 +226,15 @@
             case AVPlayerItemStatusFailed:
                 // Failed. Examine AVPlayerItem.error
                 NSLog(@"Examine AVPlayerItem.error remove loadedTimeRanges observe");
-                [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges];
+                 [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+                self.isObserverRemoved = YES;
                 break;
             case AVPlayerItemStatusUnknown:
+                [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+                self.isObserverRemoved = YES;
                 // Not ready
                 break;
         }
-    }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges]) {
-      [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges];
-        NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
-        NSLog(@"totalBuffer == %lf",totalBuffer);
     }
 }
 
@@ -245,7 +253,6 @@
     } failure:^(NSError *error) {
         NSLog(@"error code == %@", [error localizedDescription]);
     }];
-    
 }
 #pragma mark - MMPlayerActionDelegate
 - (void)play {

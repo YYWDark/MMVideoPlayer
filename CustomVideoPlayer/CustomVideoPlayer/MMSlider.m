@@ -47,7 +47,7 @@ static const CGFloat lineHeight = 2.0f;
     _minimumValue = 0.0;
     _maximumValue = 1.0;
     
-    _cacheTrackColor = [UIColor yellowColor];
+    _cacheTrackColor = [UIColor lightGrayColor];
     _thumbTintColor  = [UIColor whiteColor];
     _sliderTrackColor = [UIColor redColor];
     _circleTintColor  = [UIColor whiteColor];

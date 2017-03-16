@@ -91,6 +91,7 @@ static NSString *cellID = @"VideoListViewController";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (self.lastPlayingIndexPath.row == indexPath.row) return;
     VideoLayout *layout = self.dataArr[indexPath.row];
     if (layout.model.isPlaying) {
         
