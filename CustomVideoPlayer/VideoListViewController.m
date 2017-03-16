@@ -35,6 +35,10 @@ static NSString *cellID = @"VideoListViewController";
     NSURLSession *session  = [NSURLSession sharedSession];
     //dataTask所有的任务都是由session引起的
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error != nil) {
+            NSLog(@"网络无数据");
+            return;
+        }
         NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
         NSArray *array = jsonDict[@"VAP4BFR16"];
         [array enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL * _Nonnull stop) {

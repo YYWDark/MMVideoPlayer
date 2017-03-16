@@ -8,6 +8,7 @@
 
 #import "MMPlayerLayerView.h"
 #import "ThumbnailsView.h"
+#import "MMSlider.h"
 
 #define SuperViewHeight CGRectGetHeight(self.superview.frame)
 #define SuperViewWidth CGRectGetWidth(self.superview.frame)
@@ -22,13 +23,13 @@ static CGFloat const TimeLableHeight = 40.0f;
 static CGFloat const ThumbnailsViewHeight = 75.0f;
 static CGFloat const AnimationDuration = 0.35;
 
-@interface MMPlayerLayerView ()<ThumbnailsViewDelegate>
+@interface MMPlayerLayerView ()<ThumbnailsViewDelegate, MMSliderDelegate>
 @property (nonatomic, strong) UIView *topBarView;
 @property (nonatomic, strong) UIView *bottomBarView;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *showIndexImageUIButton;
 @property (nonatomic, strong) UIButton *playButton;
-@property (nonatomic, strong) UISlider *sliderView;
+//@property (nonatomic, strong) UISlider *sliderView;
 @property (nonatomic, strong) UILabel  *currentTimeLabel;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
@@ -36,6 +37,7 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, assign) BOOL isToolShown;
+@property (nonatomic, strong) MMSlider *slider;
 @end
 
 @implementation MMPlayerLayerView
@@ -62,7 +64,7 @@ static CGFloat const AnimationDuration = 0.35;
    
     [self addSubview:self.bottomBarView];
     [self.bottomBarView addSubview:self.playButton];
-    [self.bottomBarView addSubview:self.sliderView];
+    [self.bottomBarView addSubview:self.slider];
     [self.bottomBarView addSubview:self.currentTimeLabel];
     [self.bottomBarView addSubview:self.endTimeLabel];
     
@@ -84,7 +86,7 @@ static CGFloat const AnimationDuration = 0.35;
     self.playButton.frame  = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
     self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
     self.endTimeLabel.frame = CGRectMake(SuperViewWidth - TimeLableWidth - HorizontalMargin, self.playButton.top, TimeLableWidth, TimeLableHeight);
-    self.sliderView.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
+    self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
     self.indicatorView.size = CGSizeMake(30, 30);
     self.indicatorView.center = self.center;
 }
@@ -94,6 +96,7 @@ static CGFloat const AnimationDuration = 0.35;
         [self.delegate setVideoPlayerCurrentTime:time];
     }
 }
+
 #pragma mark - private method
 - (void)_showToolView {
     [self _resetTimer];
@@ -193,6 +196,32 @@ static CGFloat const AnimationDuration = 0.35;
         [self.delegate willDragToChangeCurrentTime];
     }
 }
+#pragma mark - MMSliderDelegate
+- (void)sliderWillRespondsToPanGestureRecognizer:(MMSlider *)slider {
+    if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
+        [self.timer invalidate];
+        [self.delegate willDragToChangeCurrentTime];
+    }
+}
+
+- (void)sliderDidFinishedRespondsToPanGestureRecognizer:(MMSlider *)slider {
+    if ([self.delegate respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
+        [self _resetTimer];
+        [self.delegate didFinishedDragToChangeCurrentTime];
+    }
+}
+
+- (void)sliderPanGestureRecognizer:(MMSlider *)slider value:(CGFloat)value {
+    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+        [self.delegate setVideoPlayerCurrentTime:value];
+    }
+}
+
+- (void)sliderTapAction:(MMSlider *)slider value:(CGFloat)value {
+    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+        [self.delegate setVideoPlayerCurrentTime:value];
+    }
+}
 
 #pragma mark - ThumbnailsViewDelegate
 - (void)thumbnailsView:(ThumbnailsView *)view theImageTime:(NSTimeInterval)time {
@@ -220,16 +249,16 @@ static CGFloat const AnimationDuration = 0.35;
     NSUInteger currentSeconds = time;
     self.currentTimeLabel.text = [NSString formatSeconds:currentSeconds];
     self.endTimeLabel.text = [NSString formatSeconds:duration];
-    self.sliderView.value = time;
+    self.slider.value = time;
 }
 
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime {
-    self.sliderView.minimumValue = (NSUInteger)minTime;
-    self.sliderView.maximumValue = (NSUInteger)maxTime;
+    self.slider.minimumValue = (NSUInteger)minTime;
+    self.slider.maximumValue = (NSUInteger)maxTime;
 }
 
 - (void)callTheActionWiththeEndOfVideo {
-    self.sliderView.value = 0.0;
+    self.slider.value = 0.0;
     self.playButton.selected = NO;
 }
 
@@ -271,18 +300,18 @@ static CGFloat const AnimationDuration = 0.35;
     return _playButton;
 }
 
-- (UISlider *)sliderView {
-    if (_sliderView == nil) {
-        _sliderView = [[UISlider alloc] init];
-        _sliderView.minimumTrackTintColor = [UIColor whiteColor];
-        _sliderView.maximumTrackTintColor = [UIColor lightGrayColor];
-        [_sliderView setThumbImage:[UIImage imageNamed:@"cm2_fm_playbar_btn"] forState:UIControlStateNormal];
-        [_sliderView addTarget:self action:@selector(respondToSliderValueChangedAction:) forControlEvents:UIControlEventValueChanged];
-        [_sliderView addTarget:self action:@selector(respondToTouchUpAction:) forControlEvents:UIControlEventTouchUpInside];
-        [_sliderView addTarget:self action:@selector(respondToTouchDownAction:) forControlEvents:UIControlEventTouchDown];
-    }
-    return _sliderView;
-}
+//- (UISlider *)sliderView {
+//    if (_sliderView == nil) {
+//        _sliderView = [[UISlider alloc] init];
+//        _sliderView.minimumTrackTintColor = [UIColor whiteColor];
+//        _sliderView.maximumTrackTintColor = [UIColor lightGrayColor];
+//        [_sliderView setThumbImage:[UIImage imageNamed:@"cm2_fm_playbar_btn"] forState:UIControlStateNormal];
+//        [_sliderView addTarget:self action:@selector(respondToSliderValueChangedAction:) forControlEvents:UIControlEventValueChanged];
+//        [_sliderView addTarget:self action:@selector(respondToTouchUpAction:) forControlEvents:UIControlEventTouchUpInside];
+//        [_sliderView addTarget:self action:@selector(respondToTouchDownAction:) forControlEvents:UIControlEventTouchDown];
+//    }
+//    return _sliderView;
+//}
 
 - (UILabel *)currentTimeLabel {
     if (_currentTimeLabel == nil) {
@@ -344,5 +373,13 @@ static CGFloat const AnimationDuration = 0.35;
         [_indicatorView startAnimating];
     }
     return _indicatorView;
+}
+
+- (MMSlider *)slider {
+    if (_slider == nil) {
+        _slider = [[MMSlider alloc] initWithFrame:CGRectZero];
+        _slider.delegate = self;
+    }
+    return _slider;
 }
 @end

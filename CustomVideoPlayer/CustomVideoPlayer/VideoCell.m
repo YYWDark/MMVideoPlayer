@@ -13,6 +13,7 @@
 @property (nonatomic, strong) UIImageView *thumbnailView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIButton *actionButton;
+
 @end
 @implementation VideoCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -37,13 +38,6 @@
     
 }
 
-- (void)playVideo {
-//    NSURL *remoteUrl  =  [NSURL URLWithString:@"http://flv2.bn.netease.com/videolib3/1703/10/fzWKV7960/SD/fzWKV7960-mobile.mp4"];
-//         NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
-//         MMVideoPlayer *player = [[MMVideoPlayer alloc] initWithURL:remoteUrl];
-//         self.player.view.frame = self.videoPalyerView.frame;
-//        [self.view addSubview:self.player.view];
-}
 #pragma mark - set
 - (void)setLayout:(VideoLayout *)layout {
     _layout = layout;
@@ -58,7 +52,6 @@
 - (UIView *)videoPalyerView {
     if (_videoPalyerView == nil) {
         _videoPalyerView = [[UIView alloc] init];
-//        _videoPalyerView.backgroundColor = [UIColor greenColor];
     }
     return _videoPalyerView;
 }
@@ -83,4 +76,5 @@
     }
     return _titleLabel;
 }
+
 @end

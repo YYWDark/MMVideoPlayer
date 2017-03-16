@@ -61,8 +61,6 @@
     //add Observer to observe the movie status
      self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self _initSubView];
-    
-    
 }
 
 
@@ -217,7 +215,8 @@
                 break;
             case AVPlayerItemStatusFailed:
                 // Failed. Examine AVPlayerItem.error
-                NSLog(@"Examine AVPlayerItem.error");
+                NSLog(@"Examine AVPlayerItem.error remove loadedTimeRanges observe");
+                [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges];
                 break;
             case AVPlayerItemStatusUnknown:
                 // Not ready

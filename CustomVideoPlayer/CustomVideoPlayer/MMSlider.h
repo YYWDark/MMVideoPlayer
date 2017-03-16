@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UIColor *sliderTrackColor;
 @property (nonatomic, strong) UIColor *cacheTrackColor;
 @property (nonatomic, strong) UIColor *thumbTintColor;
+@property (nonatomic, strong) UIColor *circleTintColor;
 
 @property (nonatomic, weak) id<MMSliderDelegate> delegate;
 @end
