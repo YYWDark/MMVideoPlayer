@@ -27,4 +27,23 @@
     model.title = title;
     return model;
 }
+
+- (instancetype)initWithSourceDictionary:(NSDictionary *)sourceDic {
+    self = [super init];
+    if (self) {
+        [self analysisSourceDictionary:sourceDic];
+    }
+    return self;
+}
+
+
+
+- (void)analysisSourceDictionary:(NSDictionary *)sourceDic {
+    self.cover = sourceDic[@"cover"];
+    self.title = sourceDic[@"title"];
+    self.ptime = sourceDic[@"ptime"];
+    self.topicName = sourceDic[@"topicName"];
+    self.mp4_url = [NSURL URLWithString:sourceDic[@"mp4_url"]];
+    
+}
 @end

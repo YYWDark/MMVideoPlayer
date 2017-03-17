@@ -33,7 +33,6 @@ static NSString *cellID = @"VideoListViewController";
 - (void)_fetchDataFromNetWorking {
     NSURL *url = [NSURL URLWithString:videoListUrl];
     NSURLSession *session  = [NSURLSession sharedSession];
-    //dataTask所有的任务都是由session引起的
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error != nil) {
             NSLog(@"网络无数据");
@@ -42,9 +41,7 @@ static NSString *cellID = @"VideoListViewController";
         NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
         NSArray *array = jsonDict[@"VAP4BFR16"];
         [array enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL * _Nonnull stop) {
-            VideoModel *model = [VideoModel videomodelWithCover:dic[@"cover"]
-                                                       videoUrl:dic[@"mp4_url"]
-                                                     videoTitle:dic[@"title"]];
+            VideoModel *model = [[VideoModel alloc] initWithSourceDictionary:dic];
             VideoLayout *layout = [[VideoLayout alloc] initWithSourceData:model];
             [self.dataArr addObject:layout];
         }];
