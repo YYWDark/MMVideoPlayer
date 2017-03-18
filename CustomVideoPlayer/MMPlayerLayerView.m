@@ -14,7 +14,7 @@
 #define SuperViewWidth CGRectGetWidth(self.superview.frame)
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
-static CGFloat const HorizontalMargin = 20.0;
+static CGFloat const HorizontalMargin = 5.0;
 static CGFloat const IconSize = 40.0;
 static CGFloat const SliderViewHeight = 30.0;
 static CGFloat const DistanceBetweenHorizontalViews = 5.0f;

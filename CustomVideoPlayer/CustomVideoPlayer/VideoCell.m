@@ -18,7 +18,9 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) CALayer *line;
+@property (nonatomic, strong) UIView * shadowView;
 @end
+
 
 @implementation VideoCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -33,7 +35,7 @@
         [self addSubview:self.thumbnailView];
         [self addSubview:self.titleLabel];
         [self.layer addSublayer:self.line];
-        
+        [self addSubview:self.shadowView];
     }
     return self;
 }
@@ -43,14 +45,14 @@
     self.photoView.frame = CGRectMake(_layout.horizontalMargin, _layout.verticalMargin, _layout.photoViewSide, _layout.photoViewSide);
     self.nameLabel.frame = CGRectMake(self.photoView.right + 5 , self.photoView.top, 150, _layout.nameLabelHeight);
     self.timeLabel.frame = CGRectMake(self.photoView.right + 5 , self.nameLabel.bottom, 150, _layout.timeLabelHeight);
-    self.videoPalyerView.frame = CGRectMake(self.photoView.left, self.photoView.bottom + _layout.verticalMargin, kScreenWidth, _layout.videoPalyerViewHeight);
+    self.videoPalyerView.frame = CGRectMake(0, self.photoView.bottom + _layout.verticalMargin, kScreenWidth, _layout.videoPalyerViewHeight);
     self.thumbnailView.frame   = CGRectMake(0, self.videoPalyerView.top, kScreenWidth, _layout.videoPalyerViewHeight);
     self.titleLabel.frame = CGRectMake(self.photoView.left, self.videoPalyerView.bottom + _layout.verticalMargin, kScreenWidth - 2*_layout.horizontalMargin, _layout.titleLabelHeight);
     
     _actionButton.size = CGSizeMake(50, 50);
     _actionButton.center = _thumbnailView.center;
-    self.line.frame = CGRectMake(0,_layout.totalHeight -1 ,kScreenWidth, 1);
-    
+    self.line.frame = CGRectMake(0,_layout.totalHeight - 1.0/[UIScreen mainScreen].scale ,kScreenWidth, 1.0/[UIScreen mainScreen].scale);
+    self.shadowView.frame = CGRectMake(0, 0, kScreenWidth, _layout.totalHeight);
 }
 
 #pragma mark - set
@@ -61,6 +63,7 @@
     self.titleLabel.text = layout.model.title;
     self.thumbnailView.hidden = layout.model.isPlaying;
     self.videoPalyerView.hidden = !layout.model.isPlaying;
+    self.shadowView.hidden = layout.model.isPlaying;
     [self.thumbnailView sd_setImageWithURL:[NSURL URLWithString:layout.model.cover] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         
     }];
@@ -87,7 +90,7 @@
 - (UIImageView *)photoView {
     if (_photoView == nil) {
         _photoView = [[UIImageView alloc] init];
-        _photoView.image = [UIImage imageNamed:@"Icon_Play"];
+        _photoView.image = [UIImage imageNamed:@"Icon_Photo"];
     }
     return _photoView;
 }
@@ -112,10 +115,10 @@
 - (UILabel *)titleLabel {
     if (_titleLabel == nil) {
         _titleLabel = [[UILabel alloc] init];
-        _titleLabel.font = [UIFont systemFontOfSize:16];
+        _titleLabel.font = [UIFont systemFontOfSize:14];
         _titleLabel.numberOfLines = 0;
         _titleLabel.textColor = [UIColor lightGrayColor];
-        _titleLabel.textAlignment = NSTextAlignmentCenter;
+        
     }
     return _titleLabel;
 }
@@ -123,8 +126,17 @@
 - (CALayer *)line {
     if (_line == nil) {
         _line = [CALayer layer];
-        _line.backgroundColor = [UIColor colorWithHexString:@"E0E0E0"].CGColor;
+        _line.backgroundColor = [UIColor lightGrayColor].CGColor;
     }
     return _line;
+}
+
+- (UIView *)shadowView {
+    if (_shadowView == nil) {
+        _shadowView = [[UIView alloc] init];
+        _shadowView.backgroundColor = [UIColor blackColor];
+        _shadowView.alpha = .8;
+    }
+    return _shadowView;
 }
 @end

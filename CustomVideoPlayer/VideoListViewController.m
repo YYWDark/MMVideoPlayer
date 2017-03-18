@@ -120,7 +120,7 @@ static NSString *cellID = @"VideoListViewController";
         self.player.videoUrl = url;
     }
    
-        self.player.view.frame = targetView.frame;
+        self.player.view.frame = targetView.bounds;
         [targetView addSubview:self.player.view];
 
 }
