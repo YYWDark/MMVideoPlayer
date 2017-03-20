@@ -8,13 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import "MMVideoHeader.h"
+@protocol MMVideoPlayerDelegate;
 
 @interface MMVideoPlayer : NSObject
 @property (nonatomic, strong, readonly) UIView *view;
 @property (nonatomic, strong) NSURL *videoUrl;
 @property (nonatomic, assign) MMTopViewStatus topViewStatus;
-
+@property (nonatomic, weak) id<MMVideoPlayerDelegate> delegate;
 - (instancetype)initWithURL:(NSURL *)videoUrl
               topViewStatus:(MMTopViewStatus)status;
 - (void)stopPlay;
+
+@end
+
+@protocol MMVideoPlayerDelegate <NSObject>
+- (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer;
 @end

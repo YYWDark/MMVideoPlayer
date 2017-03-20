@@ -64,12 +64,6 @@
     [self _initSubView];
 }
 
-
-//- (void)dealloc {
-//    [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
-//    
-//}
-
 - (void)stopPlay {
     if (self.isObserverRemoved == NO) {
         [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
@@ -80,7 +74,6 @@
     [self.player removeTimeObserver:self.timeObserver];
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
-    [self.player replaceCurrentItemWithPlayerItem:nil];
     self.playerItem = nil;
     self.asset = nil;
     self.player = nil;
@@ -101,21 +94,12 @@
                     options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                     context:&kMMPlayerItemStatusContext];
     self.isObserverRemoved = NO;
-//    
-//    [self.playerItem addObserver:self
-//                      forKeyPath:kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges
-//                         options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-//                         context:&kMMPlayerItemStatusContext];
 }
 
 - (void)_addNoyification {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemNewAccessLogEntryNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
-    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemPlaybackStalledNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
-    
+
 }
-
-
 
 - (void)_initPlayerSetting {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -158,7 +142,7 @@
         }
         if ([weakSelf.interface respondsToSelector:@selector(setCacheTime:)]) {
             NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
-            NSLog(@"totalBuffer == %lf",totalBuffer);
+//            NSLog(@"totalBuffer == %lf",totalBuffer);
             [weakSelf.interface setCacheTime:totalBuffer];
         }
     };
@@ -181,9 +165,12 @@
 - (void)_observeOfTheEndPointOfVedioPlayer {
     __weak MMVideoPlayer *weakSelf = self;
     void (^callback)(NSNotification *note) = ^(NSNotification *notification) {
-         NSLog(@"the end of video");
         if ([weakSelf.interface respondsToSelector:@selector(callTheActionWiththeEndOfVideo)]) {
            [weakSelf.interface callTheActionWiththeEndOfVideo];
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(videoPlayerFinished:)]) {
+            [self.delegate videoPlayerFinished:self];
         }
     };
     self.itemEndObserver = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
@@ -209,7 +196,6 @@
         return;
     }
    
-    NSLog(@"11111111111111111111111111111");
     if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemStatus]) {
        
         AVPlayerItemStatus status = AVPlayerItemStatusUnknown;

@@ -21,7 +21,7 @@
 
 - (void)_calculateLayoutInformation:(VideoModel *)model {
     self.horizontalMargin = 15.0f;
-    self.verticalMargin = 8.0f;
+    self.verticalMargin = 15.0f;
     self.photoViewSide= 30.0;
     self.nameLabelHeight = 15.0f;
     self.timeLabelHeight = 15.0f;

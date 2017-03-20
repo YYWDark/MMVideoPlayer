@@ -24,12 +24,6 @@ static NSString *cellID = @"UITableViewCell";
     [super viewDidLoad];
     self.navigationItem.title = @"Video Type";
     [self.view addSubview:self.tableView];
-//         self.navigationController.navigationBar.hidden = YES;
-//         NSURL *remoteUrl  =  [NSURL URLWithString:url];
-//         NSURL *locationUrl  = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
-//         self.player = [[MMVideoPlayer alloc] initWithURL:locationUrl topViewStatus:MMTopViewDisplayStatus];
-//         self.player.view.frame = self.view.frame;
-//        [self.view addSubview:self.player.view];
 }
 
 #pragma mark - UITableViewDataSource

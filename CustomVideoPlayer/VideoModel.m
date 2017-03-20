@@ -22,7 +22,7 @@
                          videoTitle:(NSString *)title {
     VideoModel *model = [[VideoModel alloc] init];
     model.cover = cover;
-//    model.mp4_url = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
+    model.mp4_url = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
     model.mp4_url = [NSURL URLWithString:mp4_url];
     model.title = title;
     return model;
@@ -43,7 +43,7 @@
     self.title = sourceDic[@"title"];
     self.ptime = sourceDic[@"ptime"];
     self.topicName = sourceDic[@"topicName"];
-    self.mp4_url = [NSURL URLWithString:sourceDic[@"mp4_url"]];
-    
+//    self.mp4_url = [NSURL URLWithString:sourceDic[@"mp4_url"]];
+    self.mp4_url = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
 }
 @end
