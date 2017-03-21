@@ -60,7 +60,7 @@ static NSString *cellID = @"VideoListViewController";
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self.player stopPlay];
+    [self.player stopPlaying];
 }
 
 
@@ -131,6 +131,7 @@ static NSString *cellID = @"VideoListViewController";
     if (layout.model.isPlaying) { //当播放的时候跳到下个页面
         VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
         detailVC.mp4_url = layout.model.mp4_url;
+        detailVC.seekTime = [self.player currentTimeOfPlayerItem];
         [self.navigationController pushViewController:detailVC animated:YES];
     }else {
         [self cellScrollToTopWithIndexPath:indexPath];
@@ -145,6 +146,7 @@ static NSString *cellID = @"VideoListViewController";
     
     if (self.player == nil) {
         self.player = [[MMVideoPlayer alloc] initWithURL:url topViewStatus:MMTopViewHiddenStatus];
+        self.player.delegate = self;
     }else{
         self.player.videoUrl = url;
     }
@@ -156,6 +158,15 @@ static NSString *cellID = @"VideoListViewController";
 
 #pragma mark - MMVideoPlayerDelegate
 - (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
+//    if (self.lastPlayingIndexPath.row == self.dataArr.count - 1 ) {
+//        self.lastPlayingIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+//    }else {
+//        self.lastPlayingIndexPath = [NSIndexPath indexPathForRow:self.lastPlayingIndexPath.row + 1 inSection:0]
+//    }
+    NSUInteger row = (self.lastPlayingIndexPath.row == self.dataArr.count - 1 )?0:(self.lastPlayingIndexPath.row + 1);
+    NSIndexPath *currentIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+    [self cellScrollToTopWithIndexPath:currentIndexPath];
+    [self exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
    
 }
 #pragma mark - Getter

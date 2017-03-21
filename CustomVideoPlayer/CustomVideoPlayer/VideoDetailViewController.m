@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.player = [[MMVideoPlayer alloc] initWithURL:self.mp4_url topViewStatus:MMTopViewDisplayStatus];
+    self.player = [[MMVideoPlayer alloc] initWithURL:self.mp4_url topViewStatus:MMTopViewDisplayStatus playerTime:_seekTime];
     self.player.view.frame = self.view.frame;
     [self.view addSubview:self.player.view];
 }
@@ -28,7 +28,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self.player stopPlay];
+    [self.player stopPlaying];
 }
 /*
 #pragma mark - Navigation

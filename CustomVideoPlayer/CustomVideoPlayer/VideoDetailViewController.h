@@ -10,4 +10,5 @@
 
 @interface VideoDetailViewController : UIViewController
 @property (nonatomic, strong) NSURL *mp4_url;      //视频url
+@property (nonatomic, assign) NSTimeInterval seekTime;
 @end

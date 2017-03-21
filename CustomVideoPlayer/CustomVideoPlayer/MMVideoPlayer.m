@@ -20,6 +20,7 @@
 @property (nonatomic, weak) id timeObserver;
 @property (nonatomic, weak) id itemEndObserver;
 @property (nonatomic, assign) BOOL isObserverRemoved;
+@property (nonatomic, assign) NSTimeInterval seekTime;
 @end
 @implementation MMVideoPlayer
 #pragma mark - life cycle
@@ -37,7 +38,18 @@
     if (self) {
          _videoUrl = videoUrl;
         _topViewStatus = status;
+        _seekTime = 0.0;
         [self initVideoPlayerAndRelevantSetting];
+    }
+    return self;
+}
+
+- (instancetype)initWithURL:(NSURL *)videoUrl
+              topViewStatus:(MMTopViewStatus)status
+                 playerTime:(NSTimeInterval)seekTime {
+    self = [self initWithURL:videoUrl topViewStatus:status];
+    if (self) {
+        _seekTime = seekTime;
     }
     return self;
 }
@@ -64,7 +76,7 @@
     [self _initSubView];
 }
 
-- (void)stopPlay {
+- (void)stopPlaying {
     if (self.isObserverRemoved == NO) {
         [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
         self.isObserverRemoved = YES;
@@ -80,6 +92,17 @@
     
 }
 
+- (void)pausePlaying {
+    [self pause];
+}
+
+- (void)startPlaying {
+    [self play];
+}
+#pragma mark - public method
+- (NSTimeInterval)currentTimeOfPlayerItem {
+    return CMTimeGetSeconds(self.playerItem.currentTime);
+}
 
 #pragma mark - private methods
 - (void)_initSubView {
@@ -123,6 +146,7 @@
         
         //play the video
         [self.player play];
+        [self.player seekToTime:CMTimeMakeWithSeconds(_seekTime, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         if(self.topViewStatus == MMTopViewDisplayStatus){
            [self _getThumbnailsFormVideoFile]; 
         }
@@ -177,6 +201,7 @@
                                                                              object:self.playerItem
                                                                               queue:[NSOperationQueue mainQueue]
                                                                          usingBlock:callback];
+    
 }
 
 #pragma mark - action
@@ -279,7 +304,7 @@
 #pragma mark - set 
 - (void)setVideoUrl:(NSURL *)videoUrl {
     _videoUrl = videoUrl;
-    [self stopPlay];
+    [self stopPlaying];
     [self initVideoPlayerAndRelevantSetting];
 }
 #pragma mark - get

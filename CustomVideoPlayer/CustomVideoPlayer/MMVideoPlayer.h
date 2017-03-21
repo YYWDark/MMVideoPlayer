@@ -15,9 +15,17 @@
 @property (nonatomic, strong) NSURL *videoUrl;
 @property (nonatomic, assign) MMTopViewStatus topViewStatus;
 @property (nonatomic, weak) id<MMVideoPlayerDelegate> delegate;
+
 - (instancetype)initWithURL:(NSURL *)videoUrl
               topViewStatus:(MMTopViewStatus)status;
-- (void)stopPlay;
+- (instancetype)initWithURL:(NSURL *)videoUrl
+              topViewStatus:(MMTopViewStatus)status
+                 playerTime:(NSTimeInterval)seekTime;
+
+- (void)stopPlaying;
+- (void)pausePlaying;
+- (void)startPlaying;
+- (NSTimeInterval)currentTimeOfPlayerItem;
 
 @end
 
