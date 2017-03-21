@@ -33,6 +33,11 @@ static NSString *cellID = @"VideoListViewController";
     [self _fetchDataFromNetWorking];
 }
 
+- (void)dealloc {
+    [self.player stopPlaying];
+     self.player = nil;
+}
+#pragma mark - private method
 - (void)_fetchDataFromNetWorking {
     NSURL *url = [NSURL URLWithString:videoListUrl];
     NSURLSession *session  = [NSURLSession sharedSession];
@@ -58,18 +63,13 @@ static NSString *cellID = @"VideoListViewController";
     [task resume];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [self.player stopPlaying];
+- (void)_updateCellVideoPlayer {
+    NSIndexPath *currentIndexPath = [self _findThePlayerCellIndexPath];
+    [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
 }
 
 
-- (void)updateCellVideoPlayer {
-    NSIndexPath *currentIndexPath = [self findThePlayerCellIndexPath];
-    [self exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
-}
-
-- (void)exchangeVideoCurrentIndexPath:(NSIndexPath *)currentIndexPath
+- (void)_exchangeVideoCurrentIndexPath:(NSIndexPath *)currentIndexPath
                         lastIndexPath:(NSIndexPath *)lastIndexPath {
     if (currentIndexPath.row == lastIndexPath.row && lastIndexPath != nil) return;
     if (self.lastPlayingIndexPath != nil) {
@@ -86,29 +86,41 @@ static NSString *cellID = @"VideoListViewController";
     self.lastPlayingIndexPath = currentIndexPath;
 }
 
-- (NSIndexPath *)findThePlayerCellIndexPath {
+- (NSIndexPath *)_findThePlayerCellIndexPath {
     for (VideoCell *cell in self.tableView.visibleCells) {
         CGRect rect = [self.tableView convertRect:cell.frame toView:self.view];
         if (CGRectContainsPoint(rect,CGPointMake(0, linePositionY))) {
             return [self.tableView indexPathForCell:cell];
         }
     }
-    
     return nil;
 }
 
-- (void)cellScrollToTopWithIndexPath:(NSIndexPath *)indexPath {
+- (void)_cellScrollToTopWithIndexPath:(NSIndexPath *)indexPath {
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+- (void)_presentViewController:(VideoLayout *)layout {
+    VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
+    detailVC.mp4_url = layout.model.mp4_url;
+    detailVC.seekTime = [self.player currentTimeOfPlayerItem];
+    detailVC.block = ^(NSTimeInterval seekTime) {
+        [self.player seekTime:seekTime];
+        [self.player startPlaying];
+    };
+    [self presentViewController:detailVC animated:YES completion:^{
+        [self.player pausePlaying];
+    }];
 }
 #pragma mark - UITableViewDataSource
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (decelerate == 0) {
-       [self updateCellVideoPlayer];
+       [self _updateCellVideoPlayer];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self updateCellVideoPlayer];
+    [self _updateCellVideoPlayer];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -129,13 +141,10 @@ static NSString *cellID = @"VideoListViewController";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     VideoLayout *layout = self.dataArr[indexPath.row];
     if (layout.model.isPlaying) { //当播放的时候跳到下个页面
-        VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
-        detailVC.mp4_url = layout.model.mp4_url;
-        detailVC.seekTime = [self.player currentTimeOfPlayerItem];
-        [self.navigationController pushViewController:detailVC animated:YES];
+        [self _presentViewController:layout];
     }else {
-        [self cellScrollToTopWithIndexPath:indexPath];
-        [self exchangeVideoCurrentIndexPath:indexPath lastIndexPath:self.lastPlayingIndexPath];
+        [self _cellScrollToTopWithIndexPath:indexPath];
+        [self _exchangeVideoCurrentIndexPath:indexPath lastIndexPath:self.lastPlayingIndexPath];
     }
 }
 
@@ -143,7 +152,6 @@ static NSString *cellID = @"VideoListViewController";
     if (self.player.view.superview ) {
         [self.player.view removeFromSuperview];
     }
-    
     if (self.player == nil) {
         self.player = [[MMVideoPlayer alloc] initWithURL:url topViewStatus:MMTopViewHiddenStatus];
         self.player.delegate = self;
@@ -158,15 +166,10 @@ static NSString *cellID = @"VideoListViewController";
 
 #pragma mark - MMVideoPlayerDelegate
 - (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
-//    if (self.lastPlayingIndexPath.row == self.dataArr.count - 1 ) {
-//        self.lastPlayingIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//    }else {
-//        self.lastPlayingIndexPath = [NSIndexPath indexPathForRow:self.lastPlayingIndexPath.row + 1 inSection:0]
-//    }
     NSUInteger row = (self.lastPlayingIndexPath.row == self.dataArr.count - 1 )?0:(self.lastPlayingIndexPath.row + 1);
     NSIndexPath *currentIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
-    [self cellScrollToTopWithIndexPath:currentIndexPath];
-    [self exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
+    [self _cellScrollToTopWithIndexPath:currentIndexPath];
+    [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
    
 }
 #pragma mark - Getter
@@ -182,7 +185,6 @@ static NSString *cellID = @"VideoListViewController";
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.decelerationRate = .01;
         [_tableView registerClass:[VideoCell class] forCellReuseIdentifier:cellID];
-        
     }
     return _tableView;
 }

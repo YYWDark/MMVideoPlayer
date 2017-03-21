@@ -8,7 +8,7 @@
 
 #import "VideoDetailViewController.h"
 #import "MMVideoPlayer.h"
-@interface VideoDetailViewController ()
+@interface VideoDetailViewController () <MMVideoPlayerDelegate>
 @property (nonatomic, strong) MMVideoPlayer *player;
 @end
 
@@ -18,6 +18,7 @@
     [super viewDidLoad];
     self.player = [[MMVideoPlayer alloc] initWithURL:self.mp4_url topViewStatus:MMTopViewDisplayStatus playerTime:_seekTime];
     self.player.view.frame = self.view.frame;
+    self.player.delegate = self;
     [self.view addSubview:self.player.view];
 }
 
@@ -26,18 +27,20 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+- (void)dealloc {
     [self.player stopPlaying];
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - MMVideoPlayerDelegate
+- (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
+    
 }
-*/
 
+- (void)videoPlayerViewWillDismiss:(MMVideoPlayer *)videoPlayer {
+    NSTimeInterval time = [self.player currentTimeOfPlayerItem];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.block) {
+            self.block(time);
+        }
+    }];
+}
 @end

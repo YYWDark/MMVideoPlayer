@@ -26,9 +26,11 @@
 - (void)pausePlaying;
 - (void)startPlaying;
 - (NSTimeInterval)currentTimeOfPlayerItem;
-
+- (void)seekTime:(NSTimeInterval)seekTime;
 @end
 
 @protocol MMVideoPlayerDelegate <NSObject>
+@optional
 - (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer;
+- (void)videoPlayerViewWillDismiss:(MMVideoPlayer *)videoPlayer;
 @end

@@ -76,20 +76,16 @@
     [self _initSubView];
 }
 
-- (void)stopPlaying {
-    if (self.isObserverRemoved == NO) {
-        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
-        self.isObserverRemoved = YES;
-    }
-   
-    [self.player pause];
-    [self.player removeTimeObserver:self.timeObserver];
-    [self.player.currentItem cancelPendingSeeks];
-    [self.player.currentItem.asset cancelLoading];
-    self.playerItem = nil;
-    self.asset = nil;
-    self.player = nil;
+- (void)dealloc {
     
+}
+#pragma mark - public method
+- (NSTimeInterval)currentTimeOfPlayerItem {
+    return CMTimeGetSeconds(self.playerItem.currentTime);
+}
+
+- (void)seekTime:(NSTimeInterval)seekTime {
+    [self.player seekToTime:CMTimeMakeWithSeconds(seekTime, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
 
 - (void)pausePlaying {
@@ -99,11 +95,20 @@
 - (void)startPlaying {
     [self play];
 }
-#pragma mark - public method
-- (NSTimeInterval)currentTimeOfPlayerItem {
-    return CMTimeGetSeconds(self.playerItem.currentTime);
-}
 
+- (void)stopPlaying {
+    if (self.isObserverRemoved == NO) {
+        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+        self.isObserverRemoved = YES;
+    }
+    [self.player pause];
+    [self.player removeTimeObserver:self.timeObserver];
+    [self.player.currentItem cancelPendingSeeks];
+    [self.player.currentItem.asset cancelLoading];
+    self.playerItem = nil;
+    self.asset = nil;
+    self.player = nil;
+}
 #pragma mark - private methods
 - (void)_initSubView {
     self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player topViewStatus:self.topViewStatus];
@@ -146,7 +151,8 @@
         
         //play the video
         [self.player play];
-        [self.player seekToTime:CMTimeMakeWithSeconds(_seekTime, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+//        [self.player seekToTime:CMTimeMakeWithSeconds(_seekTime, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+        [self seekTime:_seekTime];
         if(self.topViewStatus == MMTopViewDisplayStatus){
            [self _getThumbnailsFormVideoFile]; 
         }
@@ -301,6 +307,11 @@
     [self.player play];
 }
 
+- (void)didTapCloseButton {
+    if ([self.delegate respondsToSelector:@selector(videoPlayerViewWillDismiss:)]) {
+        [self.delegate videoPlayerViewWillDismiss:self];
+    }
+}
 #pragma mark - set 
 - (void)setVideoUrl:(NSURL *)videoUrl {
     _videoUrl = videoUrl;

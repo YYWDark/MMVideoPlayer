@@ -16,4 +16,5 @@
 - (void)willDragToChangeCurrentTime;
 - (void)setVideoPlayerCurrentTime:(NSTimeInterval)time;
 - (void)didFinishedDragToChangeCurrentTime;
+- (void)didTapCloseButton;
 @end

@@ -29,7 +29,6 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *showIndexImageUIButton;
 @property (nonatomic, strong) UIButton *playButton;
-//@property (nonatomic, strong) UISlider *sliderView;
 @property (nonatomic, strong) UILabel  *currentTimeLabel;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
@@ -143,8 +142,11 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)respondToCloseAction:(UIButton *)button {
-    [self.timer invalidate];
-    self.timer = nil;
+    if ([self.delegate respondsToSelector:@selector(didTapCloseButton)]) {
+        [self.timer invalidate];
+        self.timer = nil;
+        [self.delegate didTapCloseButton];
+    }
 }
 
 - (void)respondToShowIndexImageAction:(UIButton *)button {

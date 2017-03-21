@@ -17,4 +17,5 @@
 - (instancetype)initWithFrame:(CGRect)frame
                 topViewStatus:(MMTopViewStatus)status;
 - (void)setCurrentTime:(NSTimeInterval)time;
+
 @end
