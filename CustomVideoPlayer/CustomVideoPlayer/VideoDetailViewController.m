@@ -8,6 +8,7 @@
 
 #import "VideoDetailViewController.h"
 #import "MMVideoPlayer.h"
+#import "YY.h"
 @interface VideoDetailViewController () <MMVideoPlayerDelegate>
 @property (nonatomic, strong) MMVideoPlayer *player;
 @end
@@ -27,8 +28,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
+- (void)dealloc {    
     [self.player stopPlaying];
+    [self.player removeNotification];
+     self.player = nil;
+    
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 #pragma mark - MMVideoPlayerDelegate
 - (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
@@ -42,5 +50,10 @@
             self.block(time);
         }
     }];
+}
+
+- (void)videoPlayerViewWillChangeTheOrientation:(MMVideoPlayer *)videoPlayer {
+//    self.view.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
+//      self.view.transform = CGAffineTransformMakeRotation(-M_PI / 2);
 }
 @end

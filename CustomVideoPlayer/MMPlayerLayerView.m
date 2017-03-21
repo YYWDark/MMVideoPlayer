@@ -10,11 +10,12 @@
 #import "ThumbnailsView.h"
 #import "MMSlider.h"
 
+//#define MMDEBUG 
 #define SuperViewHeight CGRectGetHeight(self.superview.frame)
 #define SuperViewWidth CGRectGetWidth(self.superview.frame)
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
-static CGFloat const HorizontalMargin = 5.0;
+static CGFloat const HorizontalMargin = 0.0;
 static CGFloat const IconSize = 40.0;
 static CGFloat const SliderViewHeight = 30.0;
 static CGFloat const DistanceBetweenHorizontalViews = 5.0f;
@@ -29,14 +30,16 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *showIndexImageUIButton;
 @property (nonatomic, strong) UIButton *playButton;
+@property (nonatomic, strong) UIButton *fullScreenButton;
 @property (nonatomic, strong) UILabel  *currentTimeLabel;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
 @property (nonatomic, strong) ThumbnailsView *thumbnailsView;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) NSTimer *timer;
-@property (nonatomic, assign) BOOL isToolShown;
 @property (nonatomic, strong) MMSlider *slider;
+@property (nonatomic, assign) BOOL isToolShown;
+@property (nonatomic, assign) BOOL isPortraitOrientation;
 @end
 
 @implementation MMPlayerLayerView
@@ -44,6 +47,7 @@ static CGFloat const AnimationDuration = 0.35;
                 topViewStatus:(MMTopViewStatus)status {
     self = [super initWithFrame:frame];
     if (self) {
+        self.isPortraitOrientation = YES;
         self.topViewStatus = status;
         self.isToolShown = YES;
         [self initUI];
@@ -66,6 +70,7 @@ static CGFloat const AnimationDuration = 0.35;
     [self.bottomBarView addSubview:self.slider];
     [self.bottomBarView addSubview:self.currentTimeLabel];
     [self.bottomBarView addSubview:self.endTimeLabel];
+    [self.bottomBarView addSubview:self.fullScreenButton];
     
     [self addSubview: self.indicatorView];
     
@@ -73,21 +78,26 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    if (self.topViewStatus == MMTopViewDisplayStatus) {
-        self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(SuperViewHeight - BottomBarViewHeight - ThumbnailsViewHeight): SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
-        self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
-        self.closeButton.frame = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
-        self.showIndexImageUIButton.frame = CGRectMake(SuperViewWidth - HorizontalMargin - IconSize, 0, IconSize, IconSize);
-        self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.showIndexImageUIButton.left - self.closeButton.right, TopBarViewHeight);
+    
+    if (self.isPortraitOrientation) {
+        if (self.topViewStatus == MMTopViewDisplayStatus) {
+            self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(SuperViewHeight - BottomBarViewHeight - ThumbnailsViewHeight): SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
+            self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
+            self.closeButton.frame = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
+            self.showIndexImageUIButton.frame = CGRectMake(SuperViewWidth - HorizontalMargin - IconSize, 0, IconSize, IconSize);
+            self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.showIndexImageUIButton.left - self.closeButton.right, TopBarViewHeight);
+        }
+        
+        self.bottomBarView.frame = CGRectMake(0, self.isToolShown?SuperViewHeight - BottomBarViewHeight : SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
+        self.playButton.frame  = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
+        self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
+        self.fullScreenButton.frame = CGRectMake(SuperViewWidth - HorizontalMargin - IconSize, self.playButton.top, IconSize, IconSize);
+        self.endTimeLabel.frame = CGRectMake(self.fullScreenButton.left - DistanceBetweenHorizontalViews - TimeLableWidth, self.playButton.top, TimeLableWidth, TimeLableHeight);
+        self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
+        self.indicatorView.size = CGSizeMake(30, 30);
+        self.indicatorView.center = self.center;
     }
     
-    self.bottomBarView.frame = CGRectMake(0, self.isToolShown?SuperViewHeight - BottomBarViewHeight : SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
-    self.playButton.frame  = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
-    self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
-    self.endTimeLabel.frame = CGRectMake(SuperViewWidth - TimeLableWidth - HorizontalMargin, self.playButton.top, TimeLableWidth, TimeLableHeight);
-    self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
-    self.indicatorView.size = CGSizeMake(30, 30);
-    self.indicatorView.center = self.center;
 }
 
 - (void)setCurrentTime:(NSTimeInterval)time {
@@ -96,6 +106,9 @@ static CGFloat const AnimationDuration = 0.35;
     }
 }
 
+- (void)dealloc {
+    NSLog(@"MMPlayerLayerView dealloc");
+}
 #pragma mark - private method
 - (void)_showToolView {
     [self _resetTimer];
@@ -113,7 +126,7 @@ static CGFloat const AnimationDuration = 0.35;
         self.bottomBarView.frame = CGRectMake(0, SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
         if (self.showIndexImageUIButton.selected == YES) {
            self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
-            self.showIndexImageUIButton.selected = NO;
+           self.showIndexImageUIButton.selected = NO;
         }
     } completion:^(BOOL finished) {
         self.isToolShown = NO;
@@ -147,6 +160,17 @@ static CGFloat const AnimationDuration = 0.35;
         self.timer = nil;
         [self.delegate didTapCloseButton];
     }
+}
+
+- (void)respondToFullScreenAction:(UIButton *)button {
+    NSLog(@"respondToFullScreenAction");
+//    self.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
+    
+//    [self removeFromSuperview];
+//    [[UIApplication sharedApplication].keyWindow addSubview:self];
+//     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
+//    [self setNeedsLayout];
+    
 }
 
 - (void)respondToShowIndexImageAction:(UIButton *)button {
@@ -268,12 +292,56 @@ static CGFloat const AnimationDuration = 0.35;
     self.playButton.selected = NO;
 }
 
-
 - (void)showActivityIndicatorView {
     if (self.playButton.selected == YES) {
      [self.indicatorView startAnimating];
     }
-    
+}
+
+- (void)changeTheViewOrientation:(UIDeviceOrientation)notification {
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (orientation == UIDeviceOrientationLandscapeLeft) {
+        [self _leftOrientation];
+        NSLog(@"UIDeviceOrientationLandscapeLeft");
+    }else if (orientation == UIDeviceOrientationLandscapeRight) {
+        [self _rightOrientation];
+        NSLog(@"UIDeviceOrientationLandscapeRight");
+    }else if (orientation == UIDeviceOrientationPortrait) {
+        [self _portraitOrientation];
+        NSLog(@"UIDeviceOrientationPortrait");
+    }
+}
+
+- (void)_rightOrientation {
+    self.isPortraitOrientation = NO;
+   [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
+//    [[UIApplication sharedApplication].keyWindow addSubview:self.superview];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
+//        self.superview.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
+//        self.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
+        self.frame = [[UIApplication sharedApplication].keyWindow bounds];
+        self.bottomBarView.frame = CGRectMake(0, CGRectGetWidth(self.frame) - BottomBarViewHeight , CGRectGetHeight(self.frame), BottomBarViewHeight);
+    }];
+}
+
+- (void)_leftOrientation {
+    self.isPortraitOrientation = NO;
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
+//    [[UIApplication sharedApplication].keyWindow addSubview:self.superview];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.transform = CGAffineTransformMakeRotation(M_PI / 2);
+        self.frame = [[UIApplication sharedApplication].keyWindow bounds];
+//        self.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
+        self.bottomBarView.frame = CGRectMake(0, CGRectGetWidth(self.frame) - BottomBarViewHeight , CGRectGetHeight(self.frame), BottomBarViewHeight);
+    }];
+}
+
+- (void)_portraitOrientation {
+   self.isPortraitOrientation = YES;
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
+   self.transform = CGAffineTransformMakeRotation(0);
+   self.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
 }
 #pragma mark - get
 - (UIButton *)closeButton {
@@ -302,29 +370,36 @@ static CGFloat const AnimationDuration = 0.35;
         [_playButton setImage:[UIImage imageNamed:@"Icon_Play"] forState:UIControlStateNormal];
         [_playButton setImage:[UIImage imageNamed:@"Icon_Pause"] forState:UIControlStateSelected];
         [_playButton addTarget:self action:@selector(respondToPlayAction:) forControlEvents:UIControlEventTouchUpInside];
+#ifdef MMDEBUG
+        _playButton.backgroundColor = [UIColor greenColor];
+#endif
     }
     return _playButton;
 }
 
-//- (UISlider *)sliderView {
-//    if (_sliderView == nil) {
-//        _sliderView = [[UISlider alloc] init];
-//        _sliderView.minimumTrackTintColor = [UIColor whiteColor];
-//        _sliderView.maximumTrackTintColor = [UIColor lightGrayColor];
-//        [_sliderView setThumbImage:[UIImage imageNamed:@"cm2_fm_playbar_btn"] forState:UIControlStateNormal];
-//        [_sliderView addTarget:self action:@selector(respondToSliderValueChangedAction:) forControlEvents:UIControlEventValueChanged];
-//        [_sliderView addTarget:self action:@selector(respondToTouchUpAction:) forControlEvents:UIControlEventTouchUpInside];
-//        [_sliderView addTarget:self action:@selector(respondToTouchDownAction:) forControlEvents:UIControlEventTouchDown];
-//    }
-//    return _sliderView;
-//}
+- (UIButton *)fullScreenButton {
+    if (_fullScreenButton == nil) {
+        _fullScreenButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_fullScreenButton setImage:[UIImage imageNamed:@"Icon_zoomIn"] forState:UIControlStateSelected];
+        [_fullScreenButton setImage:[UIImage imageNamed:@"Icon_zoomOut"] forState:UIControlStateNormal];
+        [_fullScreenButton addTarget:self action:@selector(respondToFullScreenAction:) forControlEvents:UIControlEventTouchUpInside];
+#ifdef MMDEBUG
+        _fullScreenButton.backgroundColor = [UIColor greenColor];
+#endif
+    }
+    return _fullScreenButton;
+}
 
 - (UILabel *)currentTimeLabel {
     if (_currentTimeLabel == nil) {
         _currentTimeLabel = [[UILabel alloc] init];
         _currentTimeLabel.font = [UIFont systemFontOfSize:11];
-        _currentTimeLabel.text = @"00:00";
+        _currentTimeLabel.text = @"--:--";
         _currentTimeLabel.textColor =[UIColor whiteColor];
+        _currentTimeLabel.textAlignment = NSTextAlignmentCenter;
+#ifdef MMDEBUG
+        _currentTimeLabel.backgroundColor = [UIColor redColor];
+#endif
     }
     return _currentTimeLabel;
 }
@@ -334,7 +409,11 @@ static CGFloat const AnimationDuration = 0.35;
         _endTimeLabel = [[UILabel alloc] init];
         _endTimeLabel.font = [UIFont systemFontOfSize:11];
         _endTimeLabel.textColor = [UIColor whiteColor];
-        _endTimeLabel.text = @"00:00";
+        _endTimeLabel.text = @"--:--";
+        _endTimeLabel.textAlignment = NSTextAlignmentCenter;
+#ifdef MMDEBUG
+        _endTimeLabel.backgroundColor = [UIColor redColor];
+#endif
     }
     return _endTimeLabel;
 }
@@ -385,6 +464,9 @@ static CGFloat const AnimationDuration = 0.35;
     if (_slider == nil) {
         _slider = [[MMSlider alloc] initWithFrame:CGRectZero];
         _slider.delegate = self;
+#ifdef MMDEBUG
+        _slider.backgroundColor = [UIColor purpleColor];
+#endif
     }
     return _slider;
 }

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MMPlayerActionDelegate.h"
-
+#import <UIKit/UIKit.h>
 @protocol MMUpdateUIInterface <NSObject>
 @property (nonatomic, weak) id<MMPlayerActionDelegate> delegate;
 - (void)setTitle:(NSString *)title;
@@ -17,4 +17,5 @@
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime;
 - (void)callTheActionWiththeEndOfVideo;
 - (void)showActivityIndicatorView;
+- (void)changeTheViewOrientation:(UIDeviceOrientation)notification;
 @end

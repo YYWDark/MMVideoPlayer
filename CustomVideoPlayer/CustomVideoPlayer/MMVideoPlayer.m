@@ -34,12 +34,13 @@
 
 - (instancetype)initWithURL:(NSURL *)videoUrl
               topViewStatus:(MMTopViewStatus)status{
-    self = [super init];
+    self = [self init];
     if (self) {
          _videoUrl = videoUrl;
         _topViewStatus = status;
         _seekTime = 0.0;
         [self initVideoPlayerAndRelevantSetting];
+        [self _addNoyification];
     }
     return self;
 }
@@ -70,14 +71,21 @@
     }
     
     [self _addObserver];
-    [self _addNoyification];
+   
     //add Observer to observe the movie status
      self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self _initSubView];
 }
 
 - (void)dealloc {
-    
+    [self removeNotification];
+}
+
+- (void)removeNotification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
+    if (self.topViewStatus== MMTopViewDisplayStatus) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemNewAccessLogEntryNotification object:nil];
+    }
 }
 #pragma mark - public method
 - (NSTimeInterval)currentTimeOfPlayerItem {
@@ -101,6 +109,7 @@
         [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
         self.isObserverRemoved = YES;
     }
+//    [self.videoPlayerView removeFromSuperview];
     [self.player pause];
     [self.player removeTimeObserver:self.timeObserver];
     [self.player.currentItem cancelPendingSeeks];
@@ -108,6 +117,7 @@
     self.playerItem = nil;
     self.asset = nil;
     self.player = nil;
+    self.videoPlayerView = nil;
 }
 #pragma mark - private methods
 - (void)_initSubView {
@@ -125,8 +135,11 @@
 }
 
 - (void)_addNoyification {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AVPlayerItemNewAccessLogEntryNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemNewAccessLogEntryNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
+    if (self.topViewStatus== MMTopViewDisplayStatus) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
+    }
+   
 }
 
 - (void)_initPlayerSetting {
@@ -210,13 +223,49 @@
     
 }
 
-#pragma mark - action
+- (void)_getThumbnailsFormVideoFile {
+    [self.asset getThumbnailsCount:20
+                          duration:self.playerItem.duration
+                      maxImageSize:CGSizeMake(kMMThumbnailsImageWidth , 0) success:^(NSArray *responseObject) {
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              NSMutableArray *array = [NSMutableArray arrayWithCapacity:responseObject.count];
+                              for (NSDictionary *dic in responseObject) {
+                                  ThumbnailsImage *image =  [ThumbnailsImage thumbnailsImage:dic[@"image"] photoTime:[dic[@"actualTime"] floatValue]];
+                                  [array addObject:image];
+                              }
+                              [[NSNotificationCenter defaultCenter] postNotificationName:kMMFinishedGeneratThumbnailsImageNotification object:array];
+                          });
+                      } failure:^(NSError *error) {
+                          NSLog(@"error code == %@", [error localizedDescription]);
+                      }];
+}
 
-- (void)AVPlayerItemNewAccessLogEntryNotification:(NSNotification *)notification {
+#pragma mark - notification
+- (void)playerItemNewAccessLogEntryNotification:(NSNotification *)notification {
     [self.interface showActivityIndicatorView];
 }
 
+- (void)orientationDidChangeNotification:(NSNotification *)notification {
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+//    if (orientation == UIDeviceOrientationLandscapeLeft) {
+//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
+//        NSLog(@"UIDeviceOrientationLandscapeLeft");
+//    }else if (orientation == UIDeviceOrientationLandscapeRight) {
+//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
+//        NSLog(@"UIDeviceOrientationLandscapeRight");
+//    }else if (orientation == UIDeviceOrientationPortrait) {
+//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
+//        NSLog(@"UIDeviceOrientationPortrait");
+//    }
+    
+//    [self.interface changeTheViewOrientation:orientation];
+    
+//    if ([self.delegate respondsToSelector:@selector(videoPlayerViewWillChangeTheOrientation:)]) {
+//        [self.delegate videoPlayerViewWillChangeTheOrientation:self];
+//    }
+}
 
+#pragma mark - action
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -255,22 +304,6 @@
     }
 }
 
-- (void)_getThumbnailsFormVideoFile {
-    [self.asset getThumbnailsCount:20
-                          duration:self.playerItem.duration
-                      maxImageSize:CGSizeMake(kMMThumbnailsImageWidth , 0) success:^(NSArray *responseObject) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSMutableArray *array = [NSMutableArray arrayWithCapacity:responseObject.count];
-            for (NSDictionary *dic in responseObject) {
-                ThumbnailsImage *image =  [ThumbnailsImage thumbnailsImage:dic[@"image"] photoTime:[dic[@"actualTime"] floatValue]];
-                [array addObject:image];
-            }
-            [[NSNotificationCenter defaultCenter] postNotificationName:kMMFinishedGeneratThumbnailsImageNotification object:array];
-        });
-    } failure:^(NSError *error) {
-        NSLog(@"error code == %@", [error localizedDescription]);
-    }];
-}
 #pragma mark - MMPlayerActionDelegate
 - (void)play {
     //if video is finished, replay!

@@ -35,7 +35,9 @@ static NSString *cellID = @"VideoListViewController";
 
 - (void)dealloc {
     [self.player stopPlaying];
+    [self.player removeNotification];
      self.player = nil;
+    
 }
 #pragma mark - private method
 - (void)_fetchDataFromNetWorking {
@@ -101,6 +103,7 @@ static NSString *cellID = @"VideoListViewController";
 }
 
 - (void)_presentViewController:(VideoLayout *)layout {
+    [self.player pausePlaying];
     VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
     detailVC.mp4_url = layout.model.mp4_url;
     detailVC.seekTime = [self.player currentTimeOfPlayerItem];
@@ -109,7 +112,7 @@ static NSString *cellID = @"VideoListViewController";
         [self.player startPlaying];
     };
     [self presentViewController:detailVC animated:YES completion:^{
-        [self.player pausePlaying];
+      
     }];
 }
 #pragma mark - UITableViewDataSource
@@ -142,6 +145,14 @@ static NSString *cellID = @"VideoListViewController";
     VideoLayout *layout = self.dataArr[indexPath.row];
     if (layout.model.isPlaying) { //当播放的时候跳到下个页面
         [self _presentViewController:layout];
+//        VideoCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+//        CGRect rect = [self.tableView convertRect:cell.videoPalyerView.frame toView:[UIApplication sharedApplication].keyWindow];
+//        [cell.videoPalyerView removeFromSuperview];
+//        [UIView animateWithDuration:3 animations:^{
+//            cell.videoPalyerView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
+//          [[UIApplication sharedApplication].keyWindow addSubview:cell.videoPalyerView];
+//        }];
+       
     }else {
         [self _cellScrollToTopWithIndexPath:indexPath];
         [self _exchangeVideoCurrentIndexPath:indexPath lastIndexPath:self.lastPlayingIndexPath];
