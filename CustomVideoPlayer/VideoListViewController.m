@@ -204,7 +204,7 @@ static NSString *cellID = @"VideoListViewController";
     if (_line == nil) {
         _line = [CALayer layer];
         _line.frame = CGRectMake(0, linePositionY,kScreenWidth, 3.0/[UIScreen mainScreen].scale);
-        _line.backgroundColor = [UIColor redColor].CGColor;
+        _line.backgroundColor = [UIColor greenColor].CGColor;
     }
     return _line;
 }

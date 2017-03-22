@@ -9,10 +9,17 @@
 #import "MMPlayerLayerView.h"
 #import "ThumbnailsView.h"
 #import "MMSlider.h"
-
-#define MMDEBUG 
+//#define MMDEBUG 
 #define SuperViewHeight CGRectGetHeight(self.frame)
 #define SuperViewWidth CGRectGetWidth(self.frame)
+#define kOrientation  [UIDevice currentDevice].orientation
+
+typedef NS_ENUM(NSUInteger, MMPlayerLayerViewOrientation) {
+    MMPlayerLayerViewOrientationLandscapeLeft,
+    MMPlayerLayerViewOrientationLandscapeRight,
+    MMPlayerLayerViewOrientationLandscapePortrait, //default
+};
+
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
 static CGFloat const HorizontalMargin = 0.0;
@@ -23,7 +30,6 @@ static CGFloat const TimeLableWidth = 40.0f;
 static CGFloat const TimeLableHeight = 40.0f;
 static CGFloat const ThumbnailsViewHeight = 75.0f;
 static CGFloat const AnimationDuration = 0.35;
-
 @interface MMPlayerLayerView ()<ThumbnailsViewDelegate, MMSliderDelegate>
 @property (nonatomic, strong) UIView *topBarView;
 @property (nonatomic, strong) UIView *bottomBarView;
@@ -39,35 +45,22 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) MMSlider *slider;
+@property (nonatomic, assign) MMPlayerLayerViewOrientation viewOrientation;
 @property (nonatomic, assign) BOOL isToolShown;
-@property (nonatomic, assign) BOOL isPortraitOrientation;
 @property (nonatomic, assign) CGFloat totalWidth;
 @property (nonatomic, assign) CGFloat totalHeight;
 @end
 
 @implementation MMPlayerLayerView
-//- (instancetype)initWithFrame:(CGRect)frame
-//                topViewStatus:(MMTopViewStatus)status {
-//    self = [super initWithFrame:frame];
-//    if (self) {
-//        self.isPortraitOrientation = YES;
-//        self.topViewStatus = status;
-//        self.isToolShown = YES;
-//        [self initUI];
-//        [self _resetTimer];
-//    }
-//    return self;
-//}
-
 - (instancetype)initWithFrame:(CGRect)frame
                 topViewStatus:(MMTopViewStatus)status
                        player:(AVPlayer *)player {
     self = [super initWithFrame:frame];
     if (self) {
-        self.isPortraitOrientation = YES;
+
         self.topViewStatus = status;
         self.isToolShown = YES;
-        
+        self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
        
         
         self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
@@ -104,7 +97,6 @@ static CGFloat const AnimationDuration = 0.35;
     CGFloat totalHeight = self.totalHeight;
     CGFloat totalWidth  = self.totalWidth;
     self.playerLayer.frame = self.bounds;
-//    if (self.isPortraitOrientation) { //竖屏布局
         if (self.topViewStatus == MMTopViewDisplayStatus) {
             self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(totalHeight - BottomBarViewHeight - ThumbnailsViewHeight): totalHeight, totalWidth,ThumbnailsViewHeight);
             self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, totalWidth, TopBarViewHeight);
@@ -114,20 +106,13 @@ static CGFloat const AnimationDuration = 0.35;
         }
         
         self.bottomBarView.frame = CGRectMake(0, self.isToolShown?totalHeight - BottomBarViewHeight : totalHeight , totalWidth, BottomBarViewHeight);
-        self.playButton.frame  = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
+        self.playButton.frame  = CGRectMake(HorizontalMargin, BottomBarViewHeight - IconSize, IconSize, IconSize);
         self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
         self.fullScreenButton.frame = CGRectMake(totalWidth - HorizontalMargin - IconSize, self.playButton.top, IconSize, IconSize);
         self.endTimeLabel.frame = CGRectMake(self.fullScreenButton.left - DistanceBetweenHorizontalViews - TimeLableWidth, self.playButton.top, TimeLableWidth, TimeLableHeight);
         self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
         self.indicatorView.size = CGSizeMake(30, 30);
         self.indicatorView.center = self.center;
-//}
-//        self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, SuperViewHeight, TopBarViewHeight);
-//        self.bottomBarView.frame = CGRectMake(0, self.isToolShown?SuperViewWidth - BottomBarViewHeight : SuperViewWidth , SuperViewHeight, BottomBarViewHeight);
-    
-    
-    
-    
 }
 
 - (void)setCurrentTime:(NSTimeInterval)time {
@@ -143,8 +128,8 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)_showToolView {
     [self _resetTimer];
     [UIView  animateWithDuration:.35 animations:^{
-        self.topBarView.frame = CGRectMake(0, 0, SuperViewWidth, TopBarViewHeight);
-        self.bottomBarView.frame = CGRectMake(0, SuperViewHeight - BottomBarViewHeight , SuperViewWidth, BottomBarViewHeight);
+        self.topBarView.frame = CGRectMake(0, 0, self.totalWidth, TopBarViewHeight);
+        self.bottomBarView.frame = CGRectMake(0, self.totalHeight - BottomBarViewHeight , self.totalWidth, BottomBarViewHeight);
     } completion:^(BOOL finished) {
         self.isToolShown = YES;
     }];
@@ -152,10 +137,10 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)_hideToolView {
     [UIView  animateWithDuration:.35 animations:^{
-        self.topBarView.frame = CGRectMake(0, - TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
-        self.bottomBarView.frame = CGRectMake(0, SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
+        self.topBarView.frame = CGRectMake(0, - TopBarViewHeight, self.totalWidth, TopBarViewHeight);
+        self.bottomBarView.frame = CGRectMake(0, self.totalHeight , self.totalWidth, BottomBarViewHeight);
         if (self.showIndexImageUIButton.selected == YES) {
-           self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
+           self.thumbnailsView.frame = CGRectMake(0, self.totalHeight, self.totalWidth,ThumbnailsViewHeight);
            self.showIndexImageUIButton.selected = NO;
         }
     } completion:^(BOOL finished) {
@@ -169,7 +154,7 @@ static CGFloat const AnimationDuration = 0.35;
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:5.0f firing:^{
         if (self.timer.isValid && self.isToolShown) {
-//             [self _hideToolView];
+             [self _hideToolView];
         }
     }];
 }
@@ -194,12 +179,12 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)respondToFullScreenAction:(UIButton *)button {
     NSLog(@"respondToFullScreenAction");
-//    self.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
-    
-//    [self removeFromSuperview];
-//    [[UIApplication sharedApplication].keyWindow addSubview:self];
-//     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
-//    [self setNeedsLayout];
+    if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait) {
+        [self _leftOrientation];
+      
+    }else if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight || self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft){
+        [self _portraitOrientation];
+    }
     
 }
 
@@ -207,10 +192,10 @@ static CGFloat const AnimationDuration = 0.35;
     [UIView animateWithDuration: AnimationDuration  animations:^{
         if (button.selected == YES) {
             [self _resetTimer];
-            self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
+            self.thumbnailsView.frame = CGRectMake(0, self.totalHeight, self.totalWidth,ThumbnailsViewHeight);
         }else {
             [self.timer invalidate];
-            self.thumbnailsView.frame = CGRectMake(0, SuperViewHeight -  ThumbnailsViewHeight - BottomBarViewHeight, SuperViewWidth,ThumbnailsViewHeight);
+            self.thumbnailsView.frame = CGRectMake(0, self.totalHeight -  ThumbnailsViewHeight - BottomBarViewHeight, self.totalWidth,ThumbnailsViewHeight);
         }
     } completion:^(BOOL finished) {
         button.selected = !button.selected;
@@ -329,47 +314,52 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)changeTheViewOrientation:(UIDeviceOrientation)notification {
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-    if (orientation == UIDeviceOrientationLandscapeLeft) {
+//    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (kOrientation == UIDeviceOrientationLandscapeLeft) {
         [self _leftOrientation];
         NSLog(@"UIDeviceOrientationLandscapeLeft");
-    }else if (orientation == UIDeviceOrientationLandscapeRight) {
+    }else if (kOrientation == UIDeviceOrientationLandscapeRight) {
         [self _rightOrientation];
         NSLog(@"UIDeviceOrientationLandscapeRight");
-    }else if (orientation == UIDeviceOrientationPortrait) {
+    }else if (kOrientation == UIDeviceOrientationPortrait) {
         [self _portraitOrientation];
         NSLog(@"UIDeviceOrientationPortrait");
     }
 }
 
 - (void)_rightOrientation {
-    self.isPortraitOrientation = NO;
+    if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight) return;
+    self.viewOrientation = MMPlayerLayerViewOrientationLandscapeRight;
+    self.fullScreenButton.selected = YES;
    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
     [self updateConstraintsIfNeeded];
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
     }];
 }
 
 - (void)_leftOrientation {
-    self.isPortraitOrientation = NO;
+    if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft) return;
+    self.viewOrientation = MMPlayerLayerViewOrientationLandscapeLeft;
+    self.fullScreenButton.selected = YES;
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
      [self updateConstraintsIfNeeded];
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(M_PI / 2);
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
     }];
 }
 
 - (void)_portraitOrientation {
-   self.isPortraitOrientation = YES;
+    if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait) return;
+    self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
+    self.fullScreenButton.selected = NO;
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
     [self updateConstraintsIfNeeded];
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(0);
         self.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
-        
     }];
 }
 #pragma mark - get
@@ -509,11 +499,10 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (CGFloat)totalWidth {
-//    CGFloat totalWidth  = self.isPortraitOrientation?SuperViewWidth:SuperViewHeight;
-    return self.isPortraitOrientation?SuperViewWidth:SuperViewHeight;
+    return (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait)?SuperViewWidth:SuperViewHeight;
 }
 
 - (CGFloat)totalHeight {
-    return self.isPortraitOrientation?SuperViewHeight:SuperViewWidth;
+    return (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait)?SuperViewHeight:SuperViewWidth;
 }
 @end
