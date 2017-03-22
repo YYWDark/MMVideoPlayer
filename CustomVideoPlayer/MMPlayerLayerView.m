@@ -41,6 +41,8 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
 @property (nonatomic, strong) AVPlayerLayer *playerLayer;
+@property (nonatomic, strong) UIView *orginSuperView;
+@property (nonatomic, assign) CGRect orginFrame;
 @property (nonatomic, strong) ThumbnailsView *thumbnailsView;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) NSTimer *timer;
@@ -106,7 +108,7 @@ static CGFloat const AnimationDuration = 0.35;
         }
         
         self.bottomBarView.frame = CGRectMake(0, self.isToolShown?totalHeight - BottomBarViewHeight : totalHeight , totalWidth, BottomBarViewHeight);
-        self.playButton.frame  = CGRectMake(HorizontalMargin, BottomBarViewHeight - IconSize, IconSize, IconSize);
+        self.playButton.frame  = CGRectMake(HorizontalMargin, (BottomBarViewHeight - IconSize)/2, IconSize, IconSize);
         self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
         self.fullScreenButton.frame = CGRectMake(totalWidth - HorizontalMargin - IconSize, self.playButton.top, IconSize, IconSize);
         self.endTimeLabel.frame = CGRectMake(self.fullScreenButton.left - DistanceBetweenHorizontalViews - TimeLableWidth, self.playButton.top, TimeLableWidth, TimeLableHeight);
@@ -179,8 +181,9 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)respondToFullScreenAction:(UIButton *)button {
     NSLog(@"respondToFullScreenAction");
+    [self _resetTimer];
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait) {
-        [self _leftOrientation];
+       [self _leftOrientation];
       
     }else if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight || self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft){
         [self _portraitOrientation];
@@ -204,6 +207,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)respondToPlayAction:(UIButton *)button {
+    [self _resetTimer];
     button.selected = !button.selected;
     if (button.selected == YES) {
         if ([self.delegate respondsToSelector:@selector(play)]) {
@@ -215,28 +219,28 @@ static CGFloat const AnimationDuration = 0.35;
         }
     }
 }
-
-- (void)respondToSliderValueChangedAction:(UISlider *)slider {
-    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
-        [self.delegate setVideoPlayerCurrentTime:slider.value];
-    }
-}
-
-//touch up slider
-- (void)respondToTouchUpAction:(UISlider *)slider {
-    if ([self.delegate respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
-        [self _resetTimer];
-        [self.delegate didFinishedDragToChangeCurrentTime];
-    }
-}
-
-//touch down slider
-- (void)respondToTouchDownAction:(UISlider *)slider {
-    if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
-        [self.timer invalidate];
-        [self.delegate willDragToChangeCurrentTime];
-    }
-}
+//
+//- (void)respondToSliderValueChangedAction:(UISlider *)slider {
+//    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+//        [self.delegate setVideoPlayerCurrentTime:slider.value];
+//    }
+//}
+//
+////touch up slider
+//- (void)respondToTouchUpAction:(UISlider *)slider {
+//    if ([self.delegate respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
+//        [self _resetTimer];
+//        [self.delegate didFinishedDragToChangeCurrentTime];
+//    }
+//}
+//
+////touch down slider
+//- (void)respondToTouchDownAction:(UISlider *)slider {
+//    if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
+//        [self.timer invalidate];
+//        [self.delegate willDragToChangeCurrentTime];
+//    }
+//}
 #pragma mark - MMSliderDelegate
 - (void)sliderWillRespondsToPanGestureRecognizer:(MMSlider *)slider {
     if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
@@ -260,6 +264,7 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)sliderTapAction:(MMSlider *)slider value:(CGFloat)value {
     if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+        [self _resetTimer];
         [self.delegate setVideoPlayerCurrentTime:value];
     }
 }
@@ -331,11 +336,20 @@ static CGFloat const AnimationDuration = 0.35;
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapeRight;
     self.fullScreenButton.selected = YES;
+    self.closeButton.hidden = YES;
+    self.thumbnailsView.hidden = YES;
+    if (self.orginSuperView == nil) {
+        self.orginSuperView = self.superview;
+        self.orginFrame = self.frame;
+    }
+    [[UIApplication sharedApplication].keyWindow addSubview:self];
    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
     [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
+    }completion:^(BOOL finished) {
+        self.thumbnailsView.hidden = NO;
     }];
 }
 
@@ -343,11 +357,21 @@ static CGFloat const AnimationDuration = 0.35;
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapeLeft;
     self.fullScreenButton.selected = YES;
+    self.closeButton.hidden = YES;
+    self.thumbnailsView.hidden = YES;
+    if (self.orginSuperView == nil) {
+        self.orginSuperView = self.superview;
+        self.orginFrame = self.frame;
+    }
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:self];
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
      [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(M_PI / 2);
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
+    }completion:^(BOOL finished) {
+        self.thumbnailsView.hidden = NO;
     }];
 }
 
@@ -355,12 +379,20 @@ static CGFloat const AnimationDuration = 0.35;
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
     self.fullScreenButton.selected = NO;
+    self.thumbnailsView.hidden = YES;
+    [self.orginSuperView addSubview:self];
+    self.orginSuperView = nil;
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
     [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(0);
-        self.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
+        self.frame = self.orginFrame;
+        
+    }completion:^(BOOL finished) {
+        self.closeButton.hidden = NO;
+        self.thumbnailsView.hidden = NO;
     }];
+
 }
 #pragma mark - get
 - (UIButton *)closeButton {

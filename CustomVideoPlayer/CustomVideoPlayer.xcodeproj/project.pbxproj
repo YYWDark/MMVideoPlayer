@@ -12,7 +12,6 @@
 		75051E1A1E6E55FB0003C7CE /* 中国合伙人.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */; };
 		75051E1C1E6ED7FA0003C7CE /* hubblecast.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 75051E1B1E6ED7FA0003C7CE /* hubblecast.m4v */; };
 		750678E31E691B690007253F /* AVAsset+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678E21E691B690007253F /* AVAsset+Extension.m */; };
-		752AFEFC1E8131CC0034775A /* YY.m in Sources */ = {isa = PBXBuildFile; fileRef = 752AFEFB1E8131CC0034775A /* YY.m */; };
 		752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+Extension.m */; };
 		752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+Extension.m */; };
 		754900931E7FDDDC00240AC9 /* VideoDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 754900921E7FDDDC00240AC9 /* VideoDetailViewController.m */; };
@@ -67,8 +66,6 @@
 		75051E1B1E6ED7FA0003C7CE /* hubblecast.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = hubblecast.m4v; sourceTree = "<group>"; };
 		750678E11E691B690007253F /* AVAsset+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAsset+Extension.h"; sourceTree = "<group>"; };
 		750678E21E691B690007253F /* AVAsset+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAsset+Extension.m"; sourceTree = "<group>"; };
-		752AFEFA1E8131CC0034775A /* YY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YY.h; sourceTree = "<group>"; };
-		752AFEFB1E8131CC0034775A /* YY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YY.m; sourceTree = "<group>"; };
 		752E29071E657DE1009AA362 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
 		752E29081E657DE1009AA362 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
 		752E29091E657DE1009AA362 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
@@ -233,8 +230,6 @@
 				75F745991E641F2200F5F775 /* Protocol */,
 				75F745981E641BC600F5F775 /* View */,
 				75F745541E63BC4900F5F775 /* AppDelegate.h */,
-				752AFEFA1E8131CC0034775A /* YY.h */,
-				752AFEFB1E8131CC0034775A /* YY.m */,
 				75F745551E63BC4900F5F775 /* AppDelegate.m */,
 				759BE4CA1E73C3420067B180 /* VideoLayout.h */,
 				759BE4CB1E73C3420067B180 /* VideoLayout.m */,
@@ -533,7 +528,6 @@
 				75C4C8231E70EC8500A7320D /* UIImage+Thumabnails.m in Sources */,
 				75C4C8421E72CC1700A7320D /* VideoCell.m in Sources */,
 				75C4C83F1E72C6CE00A7320D /* VideoModel.m in Sources */,
-				752AFEFC1E8131CC0034775A /* YY.m in Sources */,
 				75051E181E6E53F10003C7CE /* NSString+Format.m in Sources */,
 				75C4C8271E70EED000A7320D /* ThumbnailsImage.m in Sources */,
 				759BE4CC1E73C3420067B180 /* VideoLayout.m in Sources */,

@@ -114,6 +114,7 @@ static NSString *cellID = @"VideoListViewController";
     [self presentViewController:detailVC animated:YES completion:^{
       
     }];
+//    [self.navigationController pushViewController:detailVC animated:YES];
 }
 #pragma mark - UITableViewDataSource
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -145,14 +146,6 @@ static NSString *cellID = @"VideoListViewController";
     VideoLayout *layout = self.dataArr[indexPath.row];
     if (layout.model.isPlaying) { //当播放的时候跳到下个页面
         [self _presentViewController:layout];
-//        VideoCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-//        CGRect rect = [self.tableView convertRect:cell.videoPalyerView.frame toView:[UIApplication sharedApplication].keyWindow];
-//        [cell.videoPalyerView removeFromSuperview];
-//        [UIView animateWithDuration:3 animations:^{
-//            cell.videoPalyerView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
-//          [[UIApplication sharedApplication].keyWindow addSubview:cell.videoPalyerView];
-//        }];
-       
     }else {
         [self _cellScrollToTopWithIndexPath:indexPath];
         [self _exchangeVideoCurrentIndexPath:indexPath lastIndexPath:self.lastPlayingIndexPath];

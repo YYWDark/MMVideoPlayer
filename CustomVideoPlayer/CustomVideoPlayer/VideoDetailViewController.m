@@ -8,7 +8,6 @@
 
 #import "VideoDetailViewController.h"
 #import "MMVideoPlayer.h"
-#import "YY.h"
 @interface VideoDetailViewController () <MMVideoPlayerDelegate>
 @property (nonatomic, strong) MMVideoPlayer *player;
 @end

@@ -118,7 +118,7 @@
     self.playerItem = nil;
     self.asset = nil;
     self.player = nil;
-    self.videoPlayerView = nil;
+    self.playerLayerView = nil;
 }
 #pragma mark - private methods
 - (void)_initSubView {
@@ -166,7 +166,6 @@
         
         //play the video
         [self.player play];
-//        [self.player seekToTime:CMTimeMakeWithSeconds(_seekTime, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         [self seekTime:_seekTime];
         if(self.topViewStatus == MMTopViewDisplayStatus){
            [self _getThumbnailsFormVideoFile]; 

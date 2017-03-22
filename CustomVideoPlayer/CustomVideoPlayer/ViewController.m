@@ -19,7 +19,6 @@ static NSString *cellID = @"UITableViewCell";
 @end
 
 @implementation ViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"Video Type";
