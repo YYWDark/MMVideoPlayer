@@ -28,7 +28,7 @@
 //        UIViewAutoresizingFlexibleWidth;
 //        [(AVPlayerLayer *) [self layer] setPlayer:player];
         self.playerLayer =   [AVPlayerLayer playerLayerWithPlayer:player];
-        self.playerLayerView = [[MMPlayerLayerView alloc] initWithFrame:self.bounds topViewStatus:status];
+//        self.playerLayerView = [[MMPlayerLayerView alloc] initWithFrame:self.bounds topViewStatus:status];
 //        self.playerLayerView.topViewStatus = status;
         [self.layer addSublayer:self.playerLayer];
         [self addSubview:self.playerLayerView];

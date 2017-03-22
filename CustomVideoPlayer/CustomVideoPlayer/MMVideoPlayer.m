@@ -10,9 +10,10 @@
 #import "MMVideoPlayerView.h"
 #import "MMUpdateUIInterface.h"
 #import "ThumbnailsImage.h"
-
+#import "MMPlayerLayerView.h"
 @interface MMVideoPlayer () <MMPlayerActionDelegate>
 @property (nonatomic, strong) MMVideoPlayerView *videoPlayerView;
+@property (nonatomic, strong) MMPlayerLayerView *playerLayerView;
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AVAsset *asset;
 @property (nonatomic, strong) AVPlayerItem *playerItem;
@@ -121,8 +122,9 @@
 }
 #pragma mark - private methods
 - (void)_initSubView {
-    self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player topViewStatus:self.topViewStatus];
-    self.interface = self.videoPlayerView.interface;
+//    self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player topViewStatus:self.topViewStatus];
+    self.playerLayerView = [[MMPlayerLayerView alloc] initWithFrame:CGRectZero topViewStatus:self.topViewStatus player:self.player];
+    self.interface = self.playerLayerView;
     self.interface.delegate = self;
 }
 
@@ -247,18 +249,7 @@
 
 - (void)orientationDidChangeNotification:(NSNotification *)notification {
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-//    if (orientation == UIDeviceOrientationLandscapeLeft) {
-//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
-//        NSLog(@"UIDeviceOrientationLandscapeLeft");
-//    }else if (orientation == UIDeviceOrientationLandscapeRight) {
-//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
-//        NSLog(@"UIDeviceOrientationLandscapeRight");
-//    }else if (orientation == UIDeviceOrientationPortrait) {
-//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
-//        NSLog(@"UIDeviceOrientationPortrait");
-//    }
-    
-//    [self.interface changeTheViewOrientation:orientation];
+    [self.interface changeTheViewOrientation:orientation];
     
 //    if ([self.delegate respondsToSelector:@selector(videoPlayerViewWillChangeTheOrientation:)]) {
 //        [self.delegate videoPlayerViewWillChangeTheOrientation:self];
@@ -353,6 +344,6 @@
 }
 #pragma mark - get
 - (UIView *)view {
-    return self.videoPlayerView;
+    return self.playerLayerView;
 }
 @end

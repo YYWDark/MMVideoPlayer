@@ -10,9 +10,9 @@
 #import "ThumbnailsView.h"
 #import "MMSlider.h"
 
-//#define MMDEBUG 
-#define SuperViewHeight CGRectGetHeight(self.superview.frame)
-#define SuperViewWidth CGRectGetWidth(self.superview.frame)
+#define MMDEBUG 
+#define SuperViewHeight CGRectGetHeight(self.frame)
+#define SuperViewWidth CGRectGetWidth(self.frame)
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
 static CGFloat const HorizontalMargin = 0.0;
@@ -34,22 +34,46 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UILabel  *currentTimeLabel;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
+@property (nonatomic, strong) AVPlayerLayer *playerLayer;
 @property (nonatomic, strong) ThumbnailsView *thumbnailsView;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) MMSlider *slider;
 @property (nonatomic, assign) BOOL isToolShown;
 @property (nonatomic, assign) BOOL isPortraitOrientation;
+@property (nonatomic, assign) CGFloat totalWidth;
+@property (nonatomic, assign) CGFloat totalHeight;
 @end
 
 @implementation MMPlayerLayerView
+//- (instancetype)initWithFrame:(CGRect)frame
+//                topViewStatus:(MMTopViewStatus)status {
+//    self = [super initWithFrame:frame];
+//    if (self) {
+//        self.isPortraitOrientation = YES;
+//        self.topViewStatus = status;
+//        self.isToolShown = YES;
+//        [self initUI];
+//        [self _resetTimer];
+//    }
+//    return self;
+//}
+
 - (instancetype)initWithFrame:(CGRect)frame
-                topViewStatus:(MMTopViewStatus)status {
+                topViewStatus:(MMTopViewStatus)status
+                       player:(AVPlayer *)player {
     self = [super initWithFrame:frame];
     if (self) {
         self.isPortraitOrientation = YES;
         self.topViewStatus = status;
         self.isToolShown = YES;
+        
+       
+        
+        self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+        self.playerLayer.backgroundColor = [UIColor blackColor].CGColor;
+//        self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+        [self.layer addSublayer:self.playerLayer];
         [self initUI];
         [self _resetTimer];
     }
@@ -71,32 +95,38 @@ static CGFloat const AnimationDuration = 0.35;
     [self.bottomBarView addSubview:self.currentTimeLabel];
     [self.bottomBarView addSubview:self.endTimeLabel];
     [self.bottomBarView addSubview:self.fullScreenButton];
-    
     [self addSubview: self.indicatorView];
     
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
-    if (self.isPortraitOrientation) {
+    CGFloat totalHeight = self.totalHeight;
+    CGFloat totalWidth  = self.totalWidth;
+    self.playerLayer.frame = self.bounds;
+//    if (self.isPortraitOrientation) { //竖屏布局
         if (self.topViewStatus == MMTopViewDisplayStatus) {
-            self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(SuperViewHeight - BottomBarViewHeight - ThumbnailsViewHeight): SuperViewHeight, SuperViewWidth,ThumbnailsViewHeight);
-            self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
+            self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(totalHeight - BottomBarViewHeight - ThumbnailsViewHeight): totalHeight, totalWidth,ThumbnailsViewHeight);
+            self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, totalWidth, TopBarViewHeight);
             self.closeButton.frame = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
-            self.showIndexImageUIButton.frame = CGRectMake(SuperViewWidth - HorizontalMargin - IconSize, 0, IconSize, IconSize);
+            self.showIndexImageUIButton.frame = CGRectMake(self.topBarView.width - HorizontalMargin - IconSize, 0, IconSize, IconSize);
             self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.showIndexImageUIButton.left - self.closeButton.right, TopBarViewHeight);
         }
         
-        self.bottomBarView.frame = CGRectMake(0, self.isToolShown?SuperViewHeight - BottomBarViewHeight : SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
+        self.bottomBarView.frame = CGRectMake(0, self.isToolShown?totalHeight - BottomBarViewHeight : totalHeight , totalWidth, BottomBarViewHeight);
         self.playButton.frame  = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
         self.currentTimeLabel.frame = CGRectMake(self.playButton.right + DistanceBetweenHorizontalViews, self.playButton.top, TimeLableWidth, TimeLableHeight);
-        self.fullScreenButton.frame = CGRectMake(SuperViewWidth - HorizontalMargin - IconSize, self.playButton.top, IconSize, IconSize);
+        self.fullScreenButton.frame = CGRectMake(totalWidth - HorizontalMargin - IconSize, self.playButton.top, IconSize, IconSize);
         self.endTimeLabel.frame = CGRectMake(self.fullScreenButton.left - DistanceBetweenHorizontalViews - TimeLableWidth, self.playButton.top, TimeLableWidth, TimeLableHeight);
         self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
         self.indicatorView.size = CGSizeMake(30, 30);
         self.indicatorView.center = self.center;
-    }
+//}
+//        self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, SuperViewHeight, TopBarViewHeight);
+//        self.bottomBarView.frame = CGRectMake(0, self.isToolShown?SuperViewWidth - BottomBarViewHeight : SuperViewWidth , SuperViewHeight, BottomBarViewHeight);
+    
+    
+    
     
 }
 
@@ -121,7 +151,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)_hideToolView {
-    [UIView  animateWithDuration:.25 animations:^{
+    [UIView  animateWithDuration:.35 animations:^{
         self.topBarView.frame = CGRectMake(0, - TopBarViewHeight, SuperViewWidth, TopBarViewHeight);
         self.bottomBarView.frame = CGRectMake(0, SuperViewHeight , SuperViewWidth, BottomBarViewHeight);
         if (self.showIndexImageUIButton.selected == YES) {
@@ -139,7 +169,7 @@ static CGFloat const AnimationDuration = 0.35;
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:5.0f firing:^{
         if (self.timer.isValid && self.isToolShown) {
-             [self _hideToolView];
+//             [self _hideToolView];
         }
     }];
 }
@@ -315,33 +345,32 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)_rightOrientation {
     self.isPortraitOrientation = NO;
    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
-//    [[UIApplication sharedApplication].keyWindow addSubview:self.superview];
+    [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:0.3 animations:^{
         self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
-//        self.superview.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
-//        self.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
-        self.bottomBarView.frame = CGRectMake(0, CGRectGetWidth(self.frame) - BottomBarViewHeight , CGRectGetHeight(self.frame), BottomBarViewHeight);
     }];
 }
 
 - (void)_leftOrientation {
     self.isPortraitOrientation = NO;
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
-//    [[UIApplication sharedApplication].keyWindow addSubview:self.superview];
+     [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:0.3 animations:^{
         self.transform = CGAffineTransformMakeRotation(M_PI / 2);
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
-//        self.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
-        self.bottomBarView.frame = CGRectMake(0, CGRectGetWidth(self.frame) - BottomBarViewHeight , CGRectGetHeight(self.frame), BottomBarViewHeight);
     }];
 }
 
 - (void)_portraitOrientation {
    self.isPortraitOrientation = YES;
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
-   self.transform = CGAffineTransformMakeRotation(0);
-   self.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
+    [self updateConstraintsIfNeeded];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.transform = CGAffineTransformMakeRotation(0);
+        self.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeigth);
+        
+    }];
 }
 #pragma mark - get
 - (UIButton *)closeButton {
@@ -432,6 +461,9 @@ static CGFloat const AnimationDuration = 0.35;
     if (_topBarView == nil) {
         _topBarView = [[UIView alloc] init];
         _topBarView.backgroundColor = [UIColor clearColor];
+#ifdef MMDEBUG
+        _topBarView.backgroundColor = [UIColor redColor];
+#endif
     }
     return _topBarView;
 }
@@ -440,6 +472,11 @@ static CGFloat const AnimationDuration = 0.35;
     if (_bottomBarView == nil) {
         _bottomBarView = [[UIView alloc] init];
         _bottomBarView.backgroundColor = [UIColor clearColor];
+        
+        
+#ifdef MMDEBUG
+        _bottomBarView.backgroundColor = [UIColor yellowColor];
+#endif
     }
     return _bottomBarView;
 }
@@ -469,5 +506,14 @@ static CGFloat const AnimationDuration = 0.35;
 #endif
     }
     return _slider;
+}
+
+- (CGFloat)totalWidth {
+//    CGFloat totalWidth  = self.isPortraitOrientation?SuperViewWidth:SuperViewHeight;
+    return self.isPortraitOrientation?SuperViewWidth:SuperViewHeight;
+}
+
+- (CGFloat)totalHeight {
+    return self.isPortraitOrientation?SuperViewHeight:SuperViewWidth;
 }
 @end
