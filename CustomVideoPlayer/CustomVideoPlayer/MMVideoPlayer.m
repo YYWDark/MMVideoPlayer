@@ -7,12 +7,11 @@
 //
 
 #import "MMVideoPlayer.h"
-#import "MMVideoPlayerView.h"
 #import "MMUpdateUIInterface.h"
 #import "ThumbnailsImage.h"
 #import "MMPlayerLayerView.h"
+
 @interface MMVideoPlayer () <MMPlayerActionDelegate>
-@property (nonatomic, strong) MMVideoPlayerView *videoPlayerView;
 @property (nonatomic, strong) MMPlayerLayerView *playerLayerView;
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AVAsset *asset;
@@ -81,14 +80,14 @@
 - (void)dealloc {
     [self removeNotification];
 }
-
+#pragma mark - public method
 - (void)removeNotification {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
     if (self.topViewStatus== MMTopViewDisplayStatus) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemNewAccessLogEntryNotification object:nil];
     }
 }
-#pragma mark - public method
+
 - (NSTimeInterval)currentTimeOfPlayerItem {
     return CMTimeGetSeconds(self.playerItem.currentTime);
 }
@@ -110,7 +109,6 @@
         [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
         self.isObserverRemoved = YES;
     }
-//    [self.videoPlayerView removeFromSuperview];
     [self.player pause];
     [self.player removeTimeObserver:self.timeObserver];
     [self.player.currentItem cancelPendingSeeks];
@@ -122,7 +120,6 @@
 }
 #pragma mark - private methods
 - (void)_initSubView {
-//    self.videoPlayerView = [[MMVideoPlayerView alloc] initWithPlayer:self.player topViewStatus:self.topViewStatus];
     self.playerLayerView = [[MMPlayerLayerView alloc] initWithFrame:CGRectZero topViewStatus:self.topViewStatus player:self.player];
     self.interface = self.playerLayerView;
     self.interface.delegate = self;
@@ -141,7 +138,8 @@
     if (self.topViewStatus== MMTopViewDisplayStatus) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
     }
-   
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioRouteChangeNotification:) name:AVAudioSessionRouteChangeNotification object:nil];
 }
 
 - (void)_initPlayerSetting {
@@ -186,7 +184,6 @@
         }
         if ([weakSelf.interface respondsToSelector:@selector(setCacheTime:)]) {
             NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
-//            NSLog(@"totalBuffer == %lf",totalBuffer);
             [weakSelf.interface setCacheTime:totalBuffer];
         }
     };
@@ -250,11 +247,33 @@
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     [self.interface changeTheViewOrientation:orientation];
     
-//    if ([self.delegate respondsToSelector:@selector(videoPlayerViewWillChangeTheOrientation:)]) {
-//        [self.delegate videoPlayerViewWillChangeTheOrientation:self];
-//    }
 }
 
+//- (void)audioRouteChangeNotification:(NSNotification *)notification {
+//    NSDictionary *interuptionDict = notification.userInfo;
+//    
+//    NSInteger routeChangeReason = [[interuptionDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+//    
+//    switch (routeChangeReason) {
+//            
+//        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+//            // 耳机插入
+//            break;
+//        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+//        {
+//            // 耳机拔掉
+//            // 拔掉耳机继续播放
+//            [self play];
+//        }
+//            
+//            break;
+//            
+//        case AVAudioSessionRouteChangeReasonCategoryChange:
+//            // called at start - also when other audio wants to play
+//            NSLog(@"AVAudioSessionRouteChangeReasonCategoryChange");
+//            break;
+//    }
+//}
 #pragma mark - action
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object

@@ -21,42 +21,62 @@ static NSString *cellID = @"VideoListViewController";
 @property (nonatomic, strong) NSIndexPath *lastPlayingIndexPath;
 @property (nonatomic, strong) MMVideoPlayer *player;
 @property (nonatomic, strong) CALayer *line;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @end
 
 @implementation VideoListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.edgesForExtendedLayout = NO;
-    self.view.backgroundColor = [UIColor blackColor];
-    self.dataArr = [NSMutableArray array];
-    [self _fetchDataFromNetWorking];
+    
+        NSArray *keys = @[
+                          @"tracks",
+                          @"duration",
+                          @"commonMetadata",
+                          @"availableMediaCharacteristicsWithMediaSelectionOptions"
+                          ];
+        NSURL *assrtUrl = [[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"];
+        AVAsset *asset = [AVAsset assetWithURL:assrtUrl];
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset automaticallyLoadedAssetKeys:keys];
+        AVPlayer  *player = [AVPlayer playerWithPlayerItem:playerItem];
+        AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+        playerLayer.frame=CGRectMake(0, 100, self.view.frame.size.width, 300);
+        [self.view.layer addSublayer:playerLayer];
+        [player play];
+    
+    
+//    self.dataArr = [NSMutableArray array];
+//    [self.view addSubview:self.indicatorView];
+//    [self _fetchDataFromNetWorking];
 }
 
 - (void)dealloc {
     [self.player stopPlaying];
     [self.player removeNotification];
      self.player = nil;
-    
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 #pragma mark - private method
 - (void)_fetchDataFromNetWorking {
     NSURL *url = [NSURL URLWithString:videoListUrl];
     NSURLSession *session  = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error != nil) {
-            NSLog(@"网络无数据");
-            return;
-        }
-        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        NSArray *array = jsonDict[@"VAP4BFR16"];
-        [array enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL * _Nonnull stop) {
-            VideoModel *model = [[VideoModel alloc] initWithSourceDictionary:dic];
-            VideoLayout *layout = [[VideoLayout alloc] initWithSourceData:model];
-            [self.dataArr addObject:layout];
-        }];
-        
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self.indicatorView stopAnimating];
+            if (error != nil) {
+                NSLog(@"网络无数据");
+                return;
+            }
+            NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            NSArray *array = jsonDict[@"VAP4BFR16"];
+            [array enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL * _Nonnull stop) {
+                VideoModel *model = [[VideoModel alloc] initWithSourceDictionary:dic];
+                VideoLayout *layout = [[VideoLayout alloc] initWithSourceData:model];
+                [self.dataArr addObject:layout];
+            }];
             [self.view addSubview:self.tableView];
             [self.view.layer addSublayer:self.line];
             [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -114,7 +134,6 @@ static NSString *cellID = @"VideoListViewController";
     [self presentViewController:detailVC animated:YES completion:^{
       
     }];
-//    [self.navigationController pushViewController:detailVC animated:YES];
 }
 #pragma mark - UITableViewDataSource
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -191,6 +210,17 @@ static NSString *cellID = @"VideoListViewController";
         [_tableView registerClass:[VideoCell class] forCellReuseIdentifier:cellID];
     }
     return _tableView;
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (_indicatorView == nil) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.size = CGSizeMake(30, 30);
+        _indicatorView.center = self.view.center;
+        _indicatorView.color = [UIColor blackColor];
+        [_indicatorView startAnimating];
+    }
+    return _indicatorView;
 }
 
 - (CALayer *)line {

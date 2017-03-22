@@ -31,7 +31,6 @@
     [self.player stopPlaying];
     [self.player removeNotification];
      self.player = nil;
-    
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -51,8 +50,5 @@
     }];
 }
 
-- (void)videoPlayerViewWillChangeTheOrientation:(MMVideoPlayer *)videoPlayer {
-//    self.view.frame = CGRectMake(0, 0, kScreenHeigth, kScreenWidth);
-//      self.view.transform = CGAffineTransformMakeRotation(-M_PI / 2);
-}
+
 @end
