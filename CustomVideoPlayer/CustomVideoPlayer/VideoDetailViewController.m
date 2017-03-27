@@ -22,11 +22,6 @@
     [self.view addSubview:self.player.view];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)dealloc {    
     [self.player stopPlaying];
     [self.player removeNotification];
@@ -38,7 +33,7 @@
 }
 #pragma mark - MMVideoPlayerDelegate
 - (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
-    
+    NSLog(@"video is finished");
 }
 
 - (void)videoPlayerViewWillDismiss:(MMVideoPlayer *)videoPlayer {

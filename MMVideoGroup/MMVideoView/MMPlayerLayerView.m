@@ -172,10 +172,6 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)respondToCloseAction:(UIButton *)button {
-    if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight || self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft) {
-        [self _portraitOrientation];
-        return;
-    }
     if ([self.delegate respondsToSelector:@selector(didTapCloseButton)]) {
         [self.timer invalidate];
         self.timer = nil;
@@ -184,6 +180,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)respondToFullScreenAction:(UIButton *)button {
+    NSLog(@"respondToFullScreenAction");
     [self _resetTimer];
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait) {
        [self _leftOrientation];
@@ -222,7 +219,28 @@ static CGFloat const AnimationDuration = 0.35;
         }
     }
 }
-
+//
+//- (void)respondToSliderValueChangedAction:(UISlider *)slider {
+//    if ([self.delegate respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
+//        [self.delegate setVideoPlayerCurrentTime:slider.value];
+//    }
+//}
+//
+////touch up slider
+//- (void)respondToTouchUpAction:(UISlider *)slider {
+//    if ([self.delegate respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
+//        [self _resetTimer];
+//        [self.delegate didFinishedDragToChangeCurrentTime];
+//    }
+//}
+//
+////touch down slider
+//- (void)respondToTouchDownAction:(UISlider *)slider {
+//    if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
+//        [self.timer invalidate];
+//        [self.delegate willDragToChangeCurrentTime];
+//    }
+//}
 #pragma mark - MMSliderDelegate
 - (void)sliderWillRespondsToPanGestureRecognizer:(MMSlider *)slider {
     if ([self.delegate respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
@@ -301,12 +319,16 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)changeTheViewOrientation:(UIDeviceOrientation)notification {
+//    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (kOrientation == UIDeviceOrientationLandscapeLeft) {
         [self _leftOrientation];
+        NSLog(@"UIDeviceOrientationLandscapeLeft");
     }else if (kOrientation == UIDeviceOrientationLandscapeRight) {
         [self _rightOrientation];
+        NSLog(@"UIDeviceOrientationLandscapeRight");
     }else if (kOrientation == UIDeviceOrientationPortrait) {
         [self _portraitOrientation];
+        NSLog(@"UIDeviceOrientationPortrait");
     }
 }
 
@@ -314,13 +336,14 @@ static CGFloat const AnimationDuration = 0.35;
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapeRight;
     self.fullScreenButton.selected = YES;
+    self.closeButton.hidden = YES;
     self.thumbnailsView.hidden = YES;
     if (self.orginSuperView == nil) {
         self.orginSuperView = self.superview;
         self.orginFrame = self.frame;
     }
     [[UIApplication sharedApplication].keyWindow addSubview:self];
-    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
+   [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeRight] forKey:@"orientation"];
     [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
@@ -334,6 +357,7 @@ static CGFloat const AnimationDuration = 0.35;
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapeLeft;
     self.fullScreenButton.selected = YES;
+    self.closeButton.hidden = YES;
     self.thumbnailsView.hidden = YES;
     if (self.orginSuperView == nil) {
         self.orginSuperView = self.superview;
@@ -365,6 +389,7 @@ static CGFloat const AnimationDuration = 0.35;
         self.frame = self.orginFrame;
         
     }completion:^(BOOL finished) {
+        self.closeButton.hidden = NO;
         self.thumbnailsView.hidden = NO;
     }];
 
