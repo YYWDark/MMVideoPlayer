@@ -9,9 +9,8 @@
 /* Begin PBXBuildFile section */
 		4AE60890041AD017A71CE084 /* libPods-CustomVideoPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7E2243C74850BDCE1551E5 /* libPods-CustomVideoPlayer.a */; };
 		75051E181E6E53F10003C7CE /* NSString+Format.m in Sources */ = {isa = PBXBuildFile; fileRef = 75051E171E6E53F10003C7CE /* NSString+Format.m */; };
-		75051E1A1E6E55FB0003C7CE /* 中国合伙人.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */; };
-		75051E1C1E6ED7FA0003C7CE /* hubblecast.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 75051E1B1E6ED7FA0003C7CE /* hubblecast.m4v */; };
 		750678E31E691B690007253F /* AVAsset+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 750678E21E691B690007253F /* AVAsset+Extension.m */; };
+		751591871E89110F0019DFE4 /* a.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 751591861E89110F0019DFE4 /* a.mp4 */; };
 		752E290C1E657DE1009AA362 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+Extension.m */; };
 		752E290D1E657DE1009AA362 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+Extension.m */; };
 		754900931E7FDDDC00240AC9 /* VideoDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 754900921E7FDDDC00240AC9 /* VideoDetailViewController.m */; };
@@ -21,7 +20,6 @@
 		75C4C8271E70EED000A7320D /* ThumbnailsImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8261E70EED000A7320D /* ThumbnailsImage.m */; };
 		75C4C82A1E70F62A00A7320D /* ThumbnailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8291E70F62A00A7320D /* ThumbnailsView.m */; };
 		75C4C8301E7156B300A7320D /* NSTimer+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C82F1E7156B300A7320D /* NSTimer+Extension.m */; };
-		75C4C8351E7286E100A7320D /* b.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75C4C8341E7286E100A7320D /* b.mp4 */; };
 		75C4C83A1E72C09E00A7320D /* VideoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C8391E72C09E00A7320D /* VideoListViewController.m */; };
 		75C4C83C1E72C1C000A7320D /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75C4C83B1E72C1C000A7320D /* data.plist */; };
 		75C4C83F1E72C6CE00A7320D /* VideoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 75C4C83E1E72C6CE00A7320D /* VideoModel.m */; };
@@ -35,7 +33,6 @@
 		75F745611E63BC4900F5F775 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75F7455F1E63BC4900F5F775 /* LaunchScreen.storyboard */; };
 		75F7456C1E63BC4900F5F775 /* CustomVideoPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F7456B1E63BC4900F5F775 /* CustomVideoPlayerTests.m */; };
 		75F745771E63BC4900F5F775 /* CustomVideoPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745761E63BC4900F5F775 /* CustomVideoPlayerUITests.m */; };
-		75F745891E63F7E300F5F775 /* a.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 75F745881E63F7E300F5F775 /* a.mp4 */; };
 		75F7458C1E640D4100F5F775 /* MMVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F7458B1E640D4100F5F775 /* MMVideoPlayer.m */; };
 		75F745971E641BBC00F5F775 /* MMPlayerLayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 75F745961E641BBC00F5F775 /* MMPlayerLayerView.m */; };
 /* End PBXBuildFile section */
@@ -61,10 +58,9 @@
 		46DAD20979085FB8A49769CD /* Pods-CustomVideoPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CustomVideoPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CustomVideoPlayer/Pods-CustomVideoPlayer.debug.xcconfig"; sourceTree = "<group>"; };
 		75051E161E6E53F10003C7CE /* NSString+Format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Format.h"; sourceTree = "<group>"; };
 		75051E171E6E53F10003C7CE /* NSString+Format.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Format.m"; sourceTree = "<group>"; };
-		75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "中国合伙人.mp4"; sourceTree = "<group>"; };
-		75051E1B1E6ED7FA0003C7CE /* hubblecast.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = hubblecast.m4v; sourceTree = "<group>"; };
 		750678E11E691B690007253F /* AVAsset+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAsset+Extension.h"; sourceTree = "<group>"; };
 		750678E21E691B690007253F /* AVAsset+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAsset+Extension.m"; sourceTree = "<group>"; };
+		751591861E89110F0019DFE4 /* a.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = a.mp4; sourceTree = "<group>"; };
 		752E29071E657DE1009AA362 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
 		752E29081E657DE1009AA362 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
 		752E29091E657DE1009AA362 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
@@ -84,7 +80,6 @@
 		75C4C8291E70F62A00A7320D /* ThumbnailsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailsView.m; sourceTree = "<group>"; };
 		75C4C82E1E7156B300A7320D /* NSTimer+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+Extension.h"; sourceTree = "<group>"; };
 		75C4C82F1E7156B300A7320D /* NSTimer+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Extension.m"; sourceTree = "<group>"; };
-		75C4C8341E7286E100A7320D /* b.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = b.mp4; sourceTree = "<group>"; };
 		75C4C8381E72C09E00A7320D /* VideoListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoListViewController.h; path = ../VideoListViewController.h; sourceTree = "<group>"; };
 		75C4C8391E72C09E00A7320D /* VideoListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoListViewController.m; path = ../VideoListViewController.m; sourceTree = "<group>"; };
 		75C4C83B1E72C1C000A7320D /* data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = data.plist; sourceTree = "<group>"; };
@@ -111,7 +106,6 @@
 		75F745721E63BC4900F5F775 /* CustomVideoPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CustomVideoPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		75F745761E63BC4900F5F775 /* CustomVideoPlayerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomVideoPlayerUITests.m; sourceTree = "<group>"; };
 		75F745781E63BC4900F5F775 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		75F745881E63F7E300F5F775 /* a.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = a.mp4; sourceTree = "<group>"; };
 		75F7458A1E640D4100F5F775 /* MMVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMVideoPlayer.h; sourceTree = "<group>"; };
 		75F7458B1E640D4100F5F775 /* MMVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMVideoPlayer.m; sourceTree = "<group>"; };
 		75F745911E640F3600F5F775 /* MMVideoHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMVideoHeader.h; sourceTree = "<group>"; };
@@ -253,10 +247,7 @@
 		75F745511E63BC4900F5F775 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				75C4C8341E7286E100A7320D /* b.mp4 */,
-				75051E1B1E6ED7FA0003C7CE /* hubblecast.m4v */,
-				75051E191E6E55FB0003C7CE /* 中国合伙人.mp4 */,
-				75F745881E63F7E300F5F775 /* a.mp4 */,
+				751591861E89110F0019DFE4 /* a.mp4 */,
 				75F745521E63BC4900F5F775 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -440,12 +431,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75C4C8351E7286E100A7320D /* b.mp4 in Resources */,
-				75051E1A1E6E55FB0003C7CE /* 中国合伙人.mp4 in Resources */,
 				75F745611E63BC4900F5F775 /* LaunchScreen.storyboard in Resources */,
-				75051E1C1E6ED7FA0003C7CE /* hubblecast.m4v in Resources */,
-				75F745891E63F7E300F5F775 /* a.mp4 in Resources */,
 				75F7455E1E63BC4900F5F775 /* Assets.xcassets in Resources */,
+				751591871E89110F0019DFE4 /* a.mp4 in Resources */,
 				75C4C83C1E72C1C000A7320D /* data.plist in Resources */,
 				75F7455C1E63BC4900F5F775 /* Main.storyboard in Resources */,
 			);

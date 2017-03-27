@@ -28,26 +28,9 @@ static NSString *cellID = @"VideoListViewController";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-        NSArray *keys = @[
-                          @"tracks",
-                          @"duration",
-                          @"commonMetadata",
-                          @"availableMediaCharacteristicsWithMediaSelectionOptions"
-                          ];
-        NSURL *assrtUrl = [[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"];
-        AVAsset *asset = [AVAsset assetWithURL:assrtUrl];
-        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset automaticallyLoadedAssetKeys:keys];
-        AVPlayer  *player = [AVPlayer playerWithPlayerItem:playerItem];
-        AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-        playerLayer.frame=CGRectMake(0, 100, self.view.frame.size.width, 300);
-        [self.view.layer addSublayer:playerLayer];
-        [player play];
-    
-    
-//    self.dataArr = [NSMutableArray array];
-//    [self.view addSubview:self.indicatorView];
-//    [self _fetchDataFromNetWorking];
+    self.dataArr = [NSMutableArray array];
+    [self.view addSubview:self.indicatorView];
+    [self _fetchDataFromNetWorking];
 }
 
 - (void)dealloc {

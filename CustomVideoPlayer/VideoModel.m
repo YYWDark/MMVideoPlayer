@@ -44,6 +44,6 @@
     self.ptime = sourceDic[@"ptime"];
     self.topicName = sourceDic[@"topicName"];
 //    self.mp4_url = [NSURL URLWithString:sourceDic[@"mp4_url"]];
-    self.mp4_url = [[NSBundle mainBundle] URLForResource:@"hubblecast" withExtension:@"m4v"];
+    self.mp4_url = [[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"];
 }
 @end
