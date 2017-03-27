@@ -22,7 +22,6 @@
                          videoTitle:(NSString *)title {
     VideoModel *model = [[VideoModel alloc] init];
     model.cover = cover;
-//    model.mp4_url = [[NSBundle mainBundle] URLForResource:@"hubblecast" withExtension:@"m4v"];
     model.mp4_url = [NSURL URLWithString:mp4_url];
     model.title = title;
     return model;

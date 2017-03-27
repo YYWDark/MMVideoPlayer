@@ -12,6 +12,7 @@
 #import "VideoLayout.h"
 #import "MMVideoPlayer.h"
 #import "VideoDetailViewController.h"
+#import <MJRefresh/MJRefresh.h>
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
 static const CGFloat linePositionY = 200;
 static NSString *cellID = @"VideoListViewController";
@@ -190,6 +191,12 @@ static NSString *cellID = @"VideoListViewController";
         _tableView.showsHorizontalScrollIndicator = YES;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.decelerationRate = .01;
+        _tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+            NSLog(@"上啦加载更多");
+            [_dataArr addObjectsFromArray:_dataArr];
+            [_tableView reloadData];
+            [_tableView.mj_footer endRefreshing];
+        }];
         [_tableView registerClass:[VideoCell class] forCellReuseIdentifier:cellID];
     }
     return _tableView;
