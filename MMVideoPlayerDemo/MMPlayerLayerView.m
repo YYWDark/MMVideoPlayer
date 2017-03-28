@@ -67,7 +67,7 @@ static CGFloat const AnimationDuration = 0.35;
         
         self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
         self.playerLayer.backgroundColor = [UIColor blackColor].CGColor;
-//        self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+        self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
         [self.layer addSublayer:self.playerLayer];
         [self initUI];
         [self _resetTimer];
