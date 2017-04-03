@@ -40,7 +40,7 @@
         _topViewStatus = status;
         _seekTime = 0.0;
         [self initVideoPlayerAndRelevantSetting];
-        [self _addNoyification];
+        [self _addNotification];
     }
     return self;
 }
@@ -82,7 +82,6 @@
 }
 #pragma mark - public method
 - (void)removeNotification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
     if (self.topViewStatus== MMTopViewDisplayStatus) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemNewAccessLogEntryNotification object:nil];
     }
@@ -133,12 +132,8 @@
     self.isObserverRemoved = NO;
 }
 
-- (void)_addNoyification {
+- (void)_addNotification {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemNewAccessLogEntryNotification:) name:AVPlayerItemNewAccessLogEntryNotification object:nil];
-    if (self.topViewStatus== MMTopViewDisplayStatus) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
-    }
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioRouteChangeNotification:) name:AVAudioSessionRouteChangeNotification object:nil];
 }
 
@@ -243,37 +238,33 @@
     [self.interface showActivityIndicatorView];
 }
 
-- (void)orientationDidChangeNotification:(NSNotification *)notification {
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-    [self.interface changeTheViewOrientation:orientation];
+- (void)audioRouteChangeNotification:(NSNotification *)notification {
+    NSDictionary *interuptionDict = notification.userInfo;
     
-}
-
-//- (void)audioRouteChangeNotification:(NSNotification *)notification {
-//    NSDictionary *interuptionDict = notification.userInfo;
-//    
-//    NSInteger routeChangeReason = [[interuptionDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
-//    
-//    switch (routeChangeReason) {
-//            
-//        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
-//            // 耳机插入
-//            break;
-//        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
-//        {
-//            // 耳机拔掉
-//            // 拔掉耳机继续播放
+    NSInteger routeChangeReason = [[interuptionDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+    
+    switch (routeChangeReason) {
+            
+        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+            // 耳机插入
+            NSLog(@"耳机插入");
+            break;
+        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        {
+            // 耳机拔掉
+            // 拔掉耳机继续播放
 //            [self play];
-//        }
-//            
-//            break;
-//            
-//        case AVAudioSessionRouteChangeReasonCategoryChange:
-//            // called at start - also when other audio wants to play
-//            NSLog(@"AVAudioSessionRouteChangeReasonCategoryChange");
-//            break;
-//    }
-//}
+            NSLog(@"耳机拔掉");
+        }
+            
+            break;
+            
+        case AVAudioSessionRouteChangeReasonCategoryChange:
+            // called at start - also when other audio wants to play
+            NSLog(@"AVAudioSessionRouteChangeReasonCategoryChange");
+            break;
+    }
+}
 #pragma mark - action
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object

@@ -59,18 +59,17 @@ static CGFloat const AnimationDuration = 0.35;
                        player:(AVPlayer *)player {
     self = [super initWithFrame:frame];
     if (self) {
-
         self.topViewStatus = status;
         self.isToolShown = YES;
         self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
-       
-        
         self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
         self.playerLayer.backgroundColor = [UIColor blackColor].CGColor;
         self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
         [self.layer addSublayer:self.playerLayer];
         [self initUI];
         [self _resetTimer];
+        [self _addNotification];
+        
     }
     return self;
 }
@@ -125,8 +124,14 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)dealloc {
     NSLog(@"MMPlayerLayerView dealloc");
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
+    
 }
 #pragma mark - private method
+- (void)_addNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
+}
+
 - (void)_showToolView {
     [self _resetTimer];
     [UIView  animateWithDuration:.35 animations:^{
@@ -162,6 +167,16 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 #pragma mark - action
+- (void)orientationDidChangeNotification:(NSNotification *)notification {
+    if (kOrientation == UIDeviceOrientationLandscapeLeft) {
+        [self _leftOrientation];
+    }else if (kOrientation == UIDeviceOrientationLandscapeRight) {
+        [self _rightOrientation];
+    }else if (kOrientation == UIDeviceOrientationPortrait) {
+        [self _portraitOrientation];
+    }
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (self.topViewStatus == MMTopViewHiddenStatus) return;
     if (self.isToolShown == NO) {
@@ -300,15 +315,15 @@ static CGFloat const AnimationDuration = 0.35;
     }
 }
 
-- (void)changeTheViewOrientation:(UIDeviceOrientation)notification {
-    if (kOrientation == UIDeviceOrientationLandscapeLeft) {
-        [self _leftOrientation];
-    }else if (kOrientation == UIDeviceOrientationLandscapeRight) {
-        [self _rightOrientation];
-    }else if (kOrientation == UIDeviceOrientationPortrait) {
-        [self _portraitOrientation];
-    }
-}
+//- (void)changeTheViewOrientation:(UIDeviceOrientation)notification {
+//    if (kOrientation == UIDeviceOrientationLandscapeLeft) {
+//        [self _leftOrientation];
+//    }else if (kOrientation == UIDeviceOrientationLandscapeRight) {
+//        [self _rightOrientation];
+//    }else if (kOrientation == UIDeviceOrientationPortrait) {
+//        [self _portraitOrientation];
+//    }
+//}
 
 - (void)_rightOrientation {
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight) return;

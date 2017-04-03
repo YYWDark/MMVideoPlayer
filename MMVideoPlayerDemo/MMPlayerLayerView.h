@@ -22,7 +22,6 @@
                 topViewStatus:(MMTopViewStatus)status
                        player:(AVPlayer *)player;
 
-
 - (void)setCurrentTime:(NSTimeInterval)time;
 
 @end

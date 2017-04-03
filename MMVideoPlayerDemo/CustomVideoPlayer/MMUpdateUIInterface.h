@@ -17,5 +17,5 @@
 - (void)setSliderMinimumValue:(NSTimeInterval)minTime maximumValue:(NSTimeInterval)maxTime;
 - (void)callTheActionWiththeEndOfVideo;
 - (void)showActivityIndicatorView;
-- (void)changeTheViewOrientation:(UIDeviceOrientation)notification;
+//- (void)changeTheViewOrientation:(UIDeviceOrientation)notification;
 @end
