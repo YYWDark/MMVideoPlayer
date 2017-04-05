@@ -178,7 +178,7 @@
             [weakSelf.interface setCurrentTime:currentTime duration:duration];
         }
         if ([weakSelf.interface respondsToSelector:@selector(setCacheTime:)]) {
-            NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:self.playerItem];
+            NSTimeInterval totalBuffer = [self availableDurationWithplayerItem:weakSelf.playerItem];
             [weakSelf.interface setCacheTime:totalBuffer];
         }
     };
