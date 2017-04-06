@@ -17,7 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.playerView = [[MMPlayerLayerView alloc] initWithFrame:self.view.bounds displayType:MMPlayerLayerViewDisplayWithDefectiveTopBar  sourceUrl:[[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"]];
+    self.playerView = [[MMPlayerLayerView alloc] initWithFrame:self.view.bounds displayType:MMPlayerLayerViewDisplayWithDefectiveTopBar  sourceUrl:[[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"]];
     self.playerView.layerViewDelegate = self;
     [self.view addSubview:self.playerView];
 }
