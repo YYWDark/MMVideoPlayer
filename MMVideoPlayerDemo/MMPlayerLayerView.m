@@ -333,6 +333,8 @@ static CGFloat const AnimationDuration = 0.35;
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
     [self.player setRate:0];
+    self.slider.value = 0.0f;
+    self.slider.cacheValue = 0.0f;
     self.asset = nil;
     self.playerItem = nil;
     self.player = nil;
