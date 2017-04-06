@@ -25,7 +25,7 @@
     self.photoViewSide= 30.0;
     self.nameLabelHeight = 15.0f;
     self.timeLabelHeight = 15.0f;
-    self.videoPalyerViewHeight = 200.0f;
+    self.videoPalyerViewHeight = kScreenWidth*9.0/16.0;
     
     self.titleLabelHeight = [NSObject heightFromString:model.title withFont:[UIFont systemFontOfSize:14] constraintToWidth:kScreenWidth - 2*self.horizontalMargin];
     

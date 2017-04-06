@@ -14,11 +14,7 @@
 #define SuperViewWidth CGRectGetWidth(self.frame)
 #define kOrientation  [UIDevice currentDevice].orientation
 
-typedef NS_ENUM(NSUInteger, MMPlayerLayerViewOrientation) {
-    MMPlayerLayerViewOrientationLandscapeLeft,
-    MMPlayerLayerViewOrientationLandscapeRight,
-    MMPlayerLayerViewOrientationLandscapePortrait, //default
-};
+
 
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
@@ -85,8 +81,6 @@ static CGFloat const AnimationDuration = 0.35;
         [self initUI];
         [self _resetTimer];
         [self _addNotification];
-        
-        
     }
     return self;
 }
@@ -168,7 +162,7 @@ static CGFloat const AnimationDuration = 0.35;
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.playerLayer.backgroundColor = [UIColor blackColor].CGColor;
-    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+//    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.layer insertSublayer:self.playerLayer atIndex:0];
     
 
@@ -270,7 +264,6 @@ static CGFloat const AnimationDuration = 0.35;
             //当前的缓存
             NSTimeInterval totalBuffer = [weakSelf _availableDurationWithplayerItem:weakSelf.playerItem];
             [weakSelf setCacheTime:totalBuffer];
-        
     };
     self.timeObserver = [self.player addPeriodicTimeObserverForInterval:interval
                                                                   queue:mainQueue
@@ -375,6 +368,9 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if ([self.layerViewDelegate respondsToSelector:@selector(videoPlayerViewRespondsToTapPlayerViewAction:)]) {
+        [self.layerViewDelegate videoPlayerViewRespondsToTapPlayerViewAction:self];
+    }
     if (self.displayType == MMPlayerLayerViewDisplayWithOutTopBar) return;
     if (self.isToolShown == NO) {
         [self _showToolView];
@@ -594,6 +590,9 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)_rightOrientation {
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeRight) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapeRight;
+    if ([self.layerViewDelegate respondsToSelector:@selector(playerLayerView:currentViewOrientation:)]) {
+        [self.layerViewDelegate playerLayerView:self currentViewOrientation:MMPlayerLayerViewOrientationLandscapeRight];
+    }
     self.fullScreenButton.selected = YES;
     self.thumbnailsView.hidden = YES;
     if (self.orginSuperView == nil) {
@@ -614,6 +613,9 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)_leftOrientation {
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapeLeft) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapeLeft;
+    if ([self.layerViewDelegate respondsToSelector:@selector(playerLayerView:currentViewOrientation:)]) {
+        [self.layerViewDelegate playerLayerView:self currentViewOrientation:MMPlayerLayerViewOrientationLandscapeLeft];
+    }
     self.fullScreenButton.selected = YES;
     self.thumbnailsView.hidden = YES;
     if (self.orginSuperView == nil) {
@@ -635,6 +637,9 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)_portraitOrientation {
     if (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait) return;
     self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
+    if ([self.layerViewDelegate respondsToSelector:@selector(playerLayerView:currentViewOrientation:)]) {
+        [self.layerViewDelegate playerLayerView:self currentViewOrientation:MMPlayerLayerViewOrientationLandscapePortrait];
+    }
     self.fullScreenButton.selected = NO;
     self.thumbnailsView.hidden = YES;
     [self.orginSuperView addSubview:self];

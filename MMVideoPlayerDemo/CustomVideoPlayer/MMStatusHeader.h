@@ -32,4 +32,10 @@ typedef NS_ENUM(NSUInteger, MMVideoVideoPlayerState) {
     MMVideoVideoPlayerBuffering,
     MMVideoVideoPlayerStop,
 };
+
+typedef NS_ENUM(NSUInteger, MMPlayerLayerViewOrientation) {
+    MMPlayerLayerViewOrientationLandscapeLeft,
+    MMPlayerLayerViewOrientationLandscapeRight,
+    MMPlayerLayerViewOrientationLandscapePortrait, //default
+};
 #endif /* MMStatusHeader_h */

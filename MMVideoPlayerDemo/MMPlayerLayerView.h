@@ -42,9 +42,13 @@
 @optional
 /** 播放结束*/
 - (void)playerLayerViewFinishedPlay:(MMPlayerLayerView *)playerLayerView;
-/** 点击了回退按钮*/
+/** 点击了回退按钮  MMPlayerLayerViewDisplayWithOutTopBar 没有导航栏*/
 - (void)videoPlayerViewRespondsToBackAction:(MMPlayerLayerView *)playerLayerView;
+/** 点击了播放视图*/
+- (void)videoPlayerViewRespondsToTapPlayerViewAction:(MMPlayerLayerView *)playerLayerView;
 /** 当前的播放状态*/
 - (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentPlayState:(MMVideoVideoPlayerState)State;
+/** 当前视图的方向*/
+- (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentViewOrientation:(MMPlayerLayerViewOrientation)viewOrientation;
 
 @end

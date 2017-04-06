@@ -16,39 +16,31 @@
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
 static const CGFloat linePositionY = 200;
 static NSString *cellID = @"VideoListViewController";
-@interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource, MMPlayerLayerViewDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
 @property (nonatomic, strong) NSIndexPath *lastPlayingIndexPath;
-//@property (nonatomic, strong) MMVideoPlayer *player;
 @property (nonatomic, strong) MMPlayerLayerView *playerView;
 @property (nonatomic, strong) CALayer *line;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, strong) UIButton *closeButton;
+
 @end
 
 @implementation VideoListViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.dataArr = [NSMutableArray array];
     [self.view addSubview:self.indicatorView];
     [self _fetchDataFromNetWorking];
-    
-    
 }
 
+/** 隐藏状态栏*/
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    return;
-   VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
-    [self presentViewController:detailVC animated:YES completion:^{
-        
-    }];
-}
 #pragma mark - private method
+/** 获取到数据*/
 - (void)_fetchDataFromNetWorking {
     NSURL *url = [NSURL URLWithString:videoListUrl];
     NSURLSession *session  = [NSURLSession sharedSession];
@@ -74,6 +66,7 @@ static NSString *cellID = @"VideoListViewController";
     [task resume];
 }
 
+/** 滑动去切换播放*/
 - (void)_updateCellVideoPlayer {
     NSIndexPath *currentIndexPath = [self _findThePlayerCellIndexPath];
     [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
@@ -97,6 +90,7 @@ static NSString *cellID = @"VideoListViewController";
     self.lastPlayingIndexPath = currentIndexPath;
 }
 
+
 - (NSIndexPath *)_findThePlayerCellIndexPath {
     for (VideoCell *cell in self.tableView.visibleCells) {
         CGRect rect = [self.tableView convertRect:cell.frame toView:self.view];
@@ -107,21 +101,32 @@ static NSString *cellID = @"VideoListViewController";
     return nil;
 }
 
+//点击后滑动到顶部
 - (void)_cellScrollToTopWithIndexPath:(NSIndexPath *)indexPath {
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [UIView animateWithDuration:1.0f animations:^{
+      [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }];
 }
 
-- (void)_presentViewController:(VideoLayout *)layout {
-    [self.playerView pause];
-    VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
-//    detailVC.mp4_url = layout.model.mp4_url;
-//    detailVC.seekTime = [self.player currentTimeOfPlayerItem];
-//    detailVC.block = ^(NSTimeInterval seekTime) {
-////        [self.player seekTime:seekTime];
-////        [self.player startPlaying];
-//    };
-    [self presentViewController:detailVC animated:YES completion:^{
-      
+//全屏播放
+- (void)_animationToFullScreen {
+    [[UIApplication sharedApplication].keyWindow addSubview:self.playerView];
+    [UIView animateWithDuration:0.25 animations:^{
+        self.playerView.frame = [[UIApplication sharedApplication].keyWindow bounds];
+    }completion:^(BOOL finished) {
+       [self.playerView addSubview:self.closeButton];
+    }];
+}
+
+//小屏播放
+- (void)_animationToSmallScreen {
+    [self.closeButton removeFromSuperview];
+    VideoCell *cell = [self.tableView cellForRowAtIndexPath:self.lastPlayingIndexPath];
+    [cell.videoPalyerView addSubview:self.playerView];
+    [UIView animateWithDuration:0.25 animations:^{
+        self.playerView.frame = cell.videoPalyerView.bounds;
+    }completion:^(BOOL finished) {
+        
     }];
 }
 #pragma mark - UITableViewDataSource
@@ -139,6 +144,7 @@ static NSString *cellID = @"VideoListViewController";
    VideoLayout *layout = self.dataArr[indexPath.row];
     return layout.totalHeight;
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.dataArr.count;
 }
@@ -152,39 +158,47 @@ static NSString *cellID = @"VideoListViewController";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     VideoLayout *layout = self.dataArr[indexPath.row];
-    if (layout.model.isPlaying) { //当播放的时候跳到下个页面
-//        [self _presentViewController:layout];
-    }else {
+    if (!layout.model.isPlaying) {
         [self _cellScrollToTopWithIndexPath:indexPath];
         [self _exchangeVideoCurrentIndexPath:indexPath lastIndexPath:self.lastPlayingIndexPath];
     }
 }
 
 - (void)playVideoWithTargetView:(UIView *)targetView url:(NSURL *)url {
-    
     if (self.playerView.superview ) {
         [self.playerView removeFromSuperview];
     }
     if (self.playerView == nil) {
         self.playerView = [[MMPlayerLayerView alloc]initWithFrame:targetView.bounds displayType:MMPlayerLayerViewDisplayWithOutTopBar sourceUrl:url];
-//        self.playerView.delegate = self;
+        self.playerView.layerViewDelegate = self;
     }else{
         self.playerView.videoUrl = url;
     }
-   
-//    self.player.view.frame = targetView.bounds;
     [targetView addSubview:self.playerView];
 
 }
-
+#pragma mark - action
+- (void)respondToCloseAction:(UIButton *)button {
+    [self _animationToSmallScreen];
+}
 #pragma mark - MMVideoPlayerDelegate
-//- (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
-//    NSUInteger row = (self.lastPlayingIndexPath.row == self.dataArr.count - 1 )?0:(self.lastPlayingIndexPath.row + 1);
-//    NSIndexPath *currentIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
-//    [self _cellScrollToTopWithIndexPath:currentIndexPath];
-//    [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
-//   
-//}
+/** 播放结束*/
+- (void)playerLayerViewFinishedPlay:(MMPlayerLayerView *)playerLayerView {
+    if (![self.playerView.superview isMemberOfClass:[UIWindow class]]) {
+        NSUInteger row = (self.lastPlayingIndexPath.row == self.dataArr.count - 1 )?0:(self.lastPlayingIndexPath.row + 1);
+        NSIndexPath *currentIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        [self _cellScrollToTopWithIndexPath:currentIndexPath];
+        [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
+    }
+}
+
+- (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentViewOrientation:(MMPlayerLayerViewOrientation)viewOrientation {
+    self.closeButton.hidden = (viewOrientation != MMPlayerLayerViewOrientationLandscapePortrait);
+}
+
+- (void)videoPlayerViewRespondsToTapPlayerViewAction:(MMPlayerLayerView *)playerLayerView {
+   [self _animationToFullScreen];
+}
 #pragma mark - Getter
 - (UITableView *)tableView {
     if (_tableView == nil) {
@@ -226,5 +240,15 @@ static NSString *cellID = @"VideoListViewController";
         _line.backgroundColor = [UIColor greenColor].CGColor;
     }
     return _line;
+}
+
+- (UIButton *)closeButton {
+    if (_closeButton == nil) {
+        _closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_closeButton setImage:[UIImage imageNamed:@"Icon_Close"] forState:UIControlStateNormal];
+        [_closeButton addTarget:self action:@selector(respondToCloseAction:) forControlEvents:UIControlEventTouchUpInside];
+        self.closeButton.frame = CGRectMake(0, 0, 40, 40);
+    }
+    return _closeButton;
 }
 @end

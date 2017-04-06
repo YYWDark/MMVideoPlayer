@@ -32,7 +32,6 @@
 }
 
 - (void)videoPlayerViewRespondsToBackAction:(MMPlayerLayerView *)videoPlayer {
-
     [self dismissViewControllerAnimated:YES completion:^{
 
     }];
