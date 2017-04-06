@@ -6,7 +6,7 @@
 //  Copyright © 2017年 wyy. All rights reserved.
 //
 
-#import "NSString+Format.h"
+#import "NSString+MMVideoFormat.h"
 
 @implementation NSString (Format)
 + (NSString *)formatSeconds:(NSInteger)value {

@@ -46,6 +46,8 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UILabel  *currentTimeLabel;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
+@property (nonatomic, strong) UILabel  *alterLabel;
+
 @property (nonatomic, strong) UIView *orginSuperView;
 @property (nonatomic, assign) CGRect orginFrame;
 @property (nonatomic, strong) ThumbnailsView *thumbnailsView;
@@ -102,7 +104,7 @@ static CGFloat const AnimationDuration = 0.35;
     [self.bottomBarView addSubview:self.endTimeLabel];
     [self.bottomBarView addSubview:self.fullScreenButton];
     [self addSubview: self.indicatorView];
-    
+    [self addSubview:self.alterLabel];
 }
 
 - (void)layoutSubviews {
@@ -126,7 +128,8 @@ static CGFloat const AnimationDuration = 0.35;
         self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
         self.indicatorView.size = CGSizeMake(30, 30);
         self.indicatorView.center = self.center;
-
+        self.alterLabel.size = CGSizeMake(totalWidth, 50);
+        self.alterLabel.center = self.center;
 }
 
 //- (void)setCurrentTime:(NSTimeInterval)time {
@@ -144,6 +147,14 @@ static CGFloat const AnimationDuration = 0.35;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 #pragma mark - private method
+- (void)showErrorMessage:(NSString *)error {
+    self.alterLabel.text = error;
+    self.alterLabel.hidden = NO;
+    [self.indicatorView stopAnimating];
+    self.playButton.selected = YES;
+    [self respondToPlayAction:self.playButton];
+}
+
 - (void)initVideoPlayerAndRelevantSetting {
     NSArray *keys = @[
                       @"tracks",
@@ -357,7 +368,7 @@ static CGFloat const AnimationDuration = 0.35;
             case AVPlayerItemStatusFailed:
                 // Failed. Examine AVPlayerItem.error
                 NSLog(@"Examine AVPlayerItem.error remove loadedTimeRanges observe");
-
+                [self showErrorMessage:self.playerItem.error.userInfo[@"NSLocalizedFailureReason"]];
                 break;
             case AVPlayerItemStatusUnknown:
 
@@ -424,7 +435,6 @@ static CGFloat const AnimationDuration = 0.35;
     button.selected = !button.selected;
     if (button.selected == YES) {
             [self play];
-        
     }else {
             [self pause];
     }
@@ -552,6 +562,7 @@ static CGFloat const AnimationDuration = 0.35;
         [self didFinishedDragToChangeCurrentTime];
     }
 }
+
 #pragma mark - MMUpdateUIInterface
 - (void)setTitle:(NSString *)title {
     self.titleLabel.text = title;
@@ -625,6 +636,8 @@ static CGFloat const AnimationDuration = 0.35;
     
     [[UIApplication sharedApplication].keyWindow addSubview:self];
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationLandscapeLeft] forKey:@"orientation"];
+//    [[UIApplication sharedApplication] setStatusBarOrientation:UIDeviceOrientationLandscapeLeft animated:YES];
+    
      [self updateConstraintsIfNeeded];
     [UIView animateWithDuration:AnimationDuration animations:^{
         self.transform = CGAffineTransformMakeRotation(M_PI / 2);
@@ -761,6 +774,18 @@ static CGFloat const AnimationDuration = 0.35;
     return _titleLabel;
 }
 
+- (UILabel *)alterLabel {
+    if (_alterLabel == nil) {
+        _alterLabel = [[UILabel alloc] init];
+        _alterLabel.font = [UIFont systemFontOfSize:15];
+        _alterLabel.backgroundColor = [UIColor blackColor];
+        _alterLabel.textColor = [UIColor whiteColor];
+        _alterLabel.hidden = YES;
+        _alterLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    return _alterLabel;
+}
+
 - (UIView *)topBarView {
     if (_topBarView == nil) {
         _topBarView = [[UIView alloc] init];
@@ -776,8 +801,6 @@ static CGFloat const AnimationDuration = 0.35;
     if (_bottomBarView == nil) {
         _bottomBarView = [[UIView alloc] init];
         _bottomBarView.backgroundColor = [UIColor clearColor];
-        
-        
 #ifdef MMDEBUG
         _bottomBarView.backgroundColor = [UIColor yellowColor];
 #endif

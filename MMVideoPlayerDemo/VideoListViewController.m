@@ -10,7 +10,6 @@
 #import "VideoModel.h"
 #import "VideoCell.h"
 #import "VideoLayout.h"
-#import "VideoDetailViewController.h"
 #import "MMPlayerLayerView.h"
 #import <MJRefresh/MJRefresh.h>
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
@@ -35,9 +34,25 @@ static NSString *cellID = @"VideoListViewController";
     [self _fetchDataFromNetWorking];
 }
 
-/** 隐藏状态栏*/
+
 - (BOOL)prefersStatusBarHidden {
     return YES;
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (self.playerView != nil) {
+       [self.playerView play];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (self.playerView != nil) {
+       [self.playerView pause];
+    }
+    
 }
 #pragma mark - private method
 /** 获取到数据*/
@@ -90,7 +105,7 @@ static NSString *cellID = @"VideoListViewController";
     self.lastPlayingIndexPath = currentIndexPath;
 }
 
-
+/** 找到绿色线的那个cell*/
 - (NSIndexPath *)_findThePlayerCellIndexPath {
     for (VideoCell *cell in self.tableView.visibleCells) {
         CGRect rect = [self.tableView convertRect:cell.frame toView:self.view];
@@ -101,14 +116,14 @@ static NSString *cellID = @"VideoListViewController";
     return nil;
 }
 
-//点击后滑动到顶部
+/** 点击后滑动到顶部*/
 - (void)_cellScrollToTopWithIndexPath:(NSIndexPath *)indexPath {
     [UIView animateWithDuration:1.0f animations:^{
       [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }];
 }
 
-//全屏播放
+/** 全屏播放*/
 - (void)_animationToFullScreen {
     [[UIApplication sharedApplication].keyWindow addSubview:self.playerView];
     [UIView animateWithDuration:0.25 animations:^{
@@ -118,7 +133,7 @@ static NSString *cellID = @"VideoListViewController";
     }];
 }
 
-//小屏播放
+/** 小屏播放*/
 - (void)_animationToSmallScreen {
     [self.closeButton removeFromSuperview];
     VideoCell *cell = [self.tableView cellForRowAtIndexPath:self.lastPlayingIndexPath];
@@ -177,10 +192,12 @@ static NSString *cellID = @"VideoListViewController";
     [targetView addSubview:self.playerView];
 
 }
+
 #pragma mark - action
 - (void)respondToCloseAction:(UIButton *)button {
     [self _animationToSmallScreen];
 }
+
 #pragma mark - MMVideoPlayerDelegate
 /** 播放结束*/
 - (void)playerLayerViewFinishedPlay:(MMPlayerLayerView *)playerLayerView {
@@ -202,7 +219,7 @@ static NSString *cellID = @"VideoListViewController";
 #pragma mark - Getter
 - (UITableView *)tableView {
     if (_tableView == nil) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height  ) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height ) style:UITableViewStylePlain];
         _tableView.backgroundColor = [UIColor blackColor];
         _tableView.dataSource = self;
         _tableView.delegate = self;

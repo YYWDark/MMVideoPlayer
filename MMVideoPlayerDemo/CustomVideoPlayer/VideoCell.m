@@ -135,7 +135,7 @@
     if (_shadowView == nil) {
         _shadowView = [[UIView alloc] init];
         _shadowView.backgroundColor = [UIColor blackColor];
-        _shadowView.alpha = .5;
+        _shadowView.alpha = .9;
     }
     return _shadowView;
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2016年 yyx. All rights reserved.
 //
 
-#import "UIView+Extension.h"
+#import "UIView+MMVideoExtension.h"
 
 @implementation UIView (Extension)
 - (CGFloat)left {

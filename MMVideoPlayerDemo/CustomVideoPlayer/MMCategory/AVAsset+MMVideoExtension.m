@@ -6,7 +6,7 @@
 //  Copyright © 2017年 wyy. All rights reserved.
 //
 
-#import "AVAsset+Extension.h"
+#import "AVAsset+MMVideoExtension.h"
 #import <UIKit/UIKit.h>
 @implementation AVAsset (Extension)
 - (NSString *)videoTitle {

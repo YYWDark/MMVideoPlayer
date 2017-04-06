@@ -6,7 +6,7 @@
 //  Copyright © 2017年 wyy. All rights reserved.
 //
 
-#import "UIImage+Thumabnails.h"
+#import "UIImage+MMVideoThumabnails.h"
 #import <AVFoundation/AVFoundation.h>
 @implementation UIImage (Thumabnails)
 + (UIImage*) thumbnailImageForVideo:(NSURL *)videoURL atTime:(NSTimeInterval)time {

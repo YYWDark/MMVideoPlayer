@@ -6,7 +6,7 @@
 //  Copyright © 2017年 wyy. All rights reserved.
 //
 
-#import "NSTimer+Extension.h"
+#import "NSTimer+MMVideoExtension.h"
 
 @implementation NSTimer (Extension)
 + (instancetype)scheduledTimerWithTimeInterval:(NSTimeInterval)inTimeInterval
