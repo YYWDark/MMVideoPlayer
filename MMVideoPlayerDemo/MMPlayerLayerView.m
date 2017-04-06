@@ -300,10 +300,8 @@ static CGFloat const AnimationDuration = 0.35;
     __weak MMPlayerLayerView *weakSelf = self;
     void (^callback)(NSNotification *note) = ^(NSNotification *notification) {
             [weakSelf callTheActionWiththeEndOfVideo];
-        
-        
-        if ([self.layerViewDelegate respondsToSelector:@selector(playerLayerViewFinishedPlay:)]) {
-            [self.layerViewDelegate playerLayerViewFinishedPlay:self];
+        if ([weakSelf.layerViewDelegate respondsToSelector:@selector(playerLayerViewFinishedPlay:)]) {
+            [weakSelf.layerViewDelegate playerLayerViewFinishedPlay:weakSelf];
         }
     };
     self.itemEndObserver = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
