@@ -7,21 +7,44 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MMUpdateUIInterface.h"
 #import "MMVideoHeader.h"
 #import <AVFoundation/AVFoundation.h>
-@interface MMPlayerLayerView : UIView <MMUpdateUIInterface>
 
-@property (nonatomic, weak) id <MMPlayerActionDelegate> delegate;
-@property (nonatomic, assign) BOOL isToolHidden;
+
+@protocol MMPlayerLayerViewDelegate;
+@interface MMPlayerLayerView : UIView
 @property (nonatomic, assign) MMTopViewStatus topViewStatus;
-//- (instancetype)initWithFrame:(CGRect)frame
-//                topViewStatus:(MMTopViewStatus)status;
+@property (nonatomic, assign, readonly) MMVideoVideoPlayerState playerState;    /** 播放状态*/
+@property (nonatomic, assign) MMPlayerLayerViewDisplayType displayType; /** 展现的样式*/
+@property (nonatomic, assign) id <MMPlayerLayerViewDelegate> layerViewDelegate;
+@property (nonatomic, assign) BOOL isToolHidden;
+@property (nonatomic, assign) BOOL isMute;                                      /** 是否静音模式*/
+@property (nonatomic, strong) NSURL *videoUrl;
+
+
+
 
 - (instancetype)initWithFrame:(CGRect)frame
-                topViewStatus:(MMTopViewStatus)status
-                       player:(AVPlayer *)player;
+                    sourceUrl:(NSURL *)url;
 
-- (void)setCurrentTime:(NSTimeInterval)time;
+- (instancetype)initWithFrame:(CGRect)frame
+                  displayType:(MMPlayerLayerViewDisplayType)type
+                    sourceUrl:(NSURL *)url;
+
+//- (void)setCurrentTime:(NSTimeInterval)time;
+- (void)play;
+- (void)pause;
+- (void)stop;
+@end
+
+
+@protocol MMPlayerLayerViewDelegate <NSObject>
+@optional
+/** 播放结束*/
+- (void)playerLayerViewFinishedPlay:(MMPlayerLayerView *)playerLayerView;
+/** 点击了回退按钮*/
+- (void)videoPlayerViewRespondsToBackAction:(MMPlayerLayerView *)playerLayerView;
+/** 当前的播放状态*/
+- (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentPlayState:(MMVideoVideoPlayerState)State;
 
 @end

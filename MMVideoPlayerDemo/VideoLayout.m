@@ -36,5 +36,6 @@
     self.totalHeight += self.verticalMargin;
     self.totalHeight += self.titleLabelHeight;
     self.totalHeight += self.verticalMargin;
+    
 }
 @end

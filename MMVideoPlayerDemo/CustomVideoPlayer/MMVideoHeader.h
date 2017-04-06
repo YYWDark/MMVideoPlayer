@@ -28,8 +28,5 @@ static NSString * const kMMVideoKVOKeyPathPlayerItemStatus = @"status";
 static NSString * const kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges = @"loadedTimeRanges";
 static NSString * const kMMFinishedGeneratThumbnailsImageNotification = @"kMMFinishedGeneratThumbnailsImageNotification";
 /**********************************************************************/
-typedef NS_ENUM(NSUInteger, MMVideoVideoUrlType) {
-    MMVideoVideoUrlTypeLocation,
-    MMVideoVideoUrlTypeLocationRemote,
-};
+
 #endif /* MMVideoHeader_h */

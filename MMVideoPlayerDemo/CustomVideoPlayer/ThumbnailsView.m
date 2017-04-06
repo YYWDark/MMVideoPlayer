@@ -58,6 +58,9 @@ static NSString *cellIdentifer = @"ThumbnailsCell";
     self.indicatorView.frame = self.bounds;
 }
 
+- (void)dealloc {
+    NSLog(@"ThumbnailsView is dealloc");
+}
 #pragma mark - private method
 - (void)_addNotification {
     [[NSNotificationCenter defaultCenter] addObserver:self

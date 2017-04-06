@@ -10,17 +10,18 @@
 #import "VideoModel.h"
 #import "VideoCell.h"
 #import "VideoLayout.h"
-#import "MMVideoPlayer.h"
 #import "VideoDetailViewController.h"
+#import "MMPlayerLayerView.h"
 #import <MJRefresh/MJRefresh.h>
 #define videoListUrl @"http://c.3g.163.com/nc/video/list/VAP4BFR16/y/0-10.html"
 static const CGFloat linePositionY = 200;
 static NSString *cellID = @"VideoListViewController";
-@interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource, MMVideoPlayerDelegate>
+@interface VideoListViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
 @property (nonatomic, strong) NSIndexPath *lastPlayingIndexPath;
-@property (nonatomic, strong) MMVideoPlayer *player;
+//@property (nonatomic, strong) MMVideoPlayer *player;
+@property (nonatomic, strong) MMPlayerLayerView *playerView;
 @property (nonatomic, strong) CALayer *line;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @end
@@ -32,16 +33,20 @@ static NSString *cellID = @"VideoListViewController";
     self.dataArr = [NSMutableArray array];
     [self.view addSubview:self.indicatorView];
     [self _fetchDataFromNetWorking];
-}
-
-- (void)dealloc {
-    [self.player stopPlaying];
-    [self.player removeNotification];
-     self.player = nil;
+    
+    
 }
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    return;
+   VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
+    [self presentViewController:detailVC animated:YES completion:^{
+        
+    }];
 }
 #pragma mark - private method
 - (void)_fetchDataFromNetWorking {
@@ -107,14 +112,14 @@ static NSString *cellID = @"VideoListViewController";
 }
 
 - (void)_presentViewController:(VideoLayout *)layout {
-    [self.player pausePlaying];
+    [self.playerView pause];
     VideoDetailViewController *detailVC = [[VideoDetailViewController alloc] init];
-    detailVC.mp4_url = layout.model.mp4_url;
-    detailVC.seekTime = [self.player currentTimeOfPlayerItem];
-    detailVC.block = ^(NSTimeInterval seekTime) {
-        [self.player seekTime:seekTime];
-        [self.player startPlaying];
-    };
+//    detailVC.mp4_url = layout.model.mp4_url;
+//    detailVC.seekTime = [self.player currentTimeOfPlayerItem];
+//    detailVC.block = ^(NSTimeInterval seekTime) {
+////        [self.player seekTime:seekTime];
+////        [self.player startPlaying];
+//    };
     [self presentViewController:detailVC animated:YES completion:^{
       
     }];
@@ -148,7 +153,7 @@ static NSString *cellID = @"VideoListViewController";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     VideoLayout *layout = self.dataArr[indexPath.row];
     if (layout.model.isPlaying) { //当播放的时候跳到下个页面
-        [self _presentViewController:layout];
+//        [self _presentViewController:layout];
     }else {
         [self _cellScrollToTopWithIndexPath:indexPath];
         [self _exchangeVideoCurrentIndexPath:indexPath lastIndexPath:self.lastPlayingIndexPath];
@@ -156,29 +161,30 @@ static NSString *cellID = @"VideoListViewController";
 }
 
 - (void)playVideoWithTargetView:(UIView *)targetView url:(NSURL *)url {
-    if (self.player.view.superview ) {
-        [self.player.view removeFromSuperview];
+    
+    if (self.playerView.superview ) {
+        [self.playerView removeFromSuperview];
     }
-    if (self.player == nil) {
-        self.player = [[MMVideoPlayer alloc] initWithURL:url topViewStatus:MMTopViewHiddenStatus];
-        self.player.delegate = self;
+    if (self.playerView == nil) {
+        self.playerView = [[MMPlayerLayerView alloc]initWithFrame:targetView.bounds displayType:MMPlayerLayerViewDisplayWithOutTopBar sourceUrl:url];
+//        self.playerView.delegate = self;
     }else{
-        self.player.videoUrl = url;
+        self.playerView.videoUrl = url;
     }
    
-    self.player.view.frame = targetView.bounds;
-    [targetView addSubview:self.player.view];
+//    self.player.view.frame = targetView.bounds;
+    [targetView addSubview:self.playerView];
 
 }
 
 #pragma mark - MMVideoPlayerDelegate
-- (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
-    NSUInteger row = (self.lastPlayingIndexPath.row == self.dataArr.count - 1 )?0:(self.lastPlayingIndexPath.row + 1);
-    NSIndexPath *currentIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
-    [self _cellScrollToTopWithIndexPath:currentIndexPath];
-    [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
-   
-}
+//- (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
+//    NSUInteger row = (self.lastPlayingIndexPath.row == self.dataArr.count - 1 )?0:(self.lastPlayingIndexPath.row + 1);
+//    NSIndexPath *currentIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+//    [self _cellScrollToTopWithIndexPath:currentIndexPath];
+//    [self _exchangeVideoCurrentIndexPath:currentIndexPath lastIndexPath:self.lastPlayingIndexPath];
+//   
+//}
 #pragma mark - Getter
 - (UITableView *)tableView {
     if (_tableView == nil) {

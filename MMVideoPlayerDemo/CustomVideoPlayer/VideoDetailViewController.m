@@ -7,43 +7,35 @@
 //
 
 #import "VideoDetailViewController.h"
-#import "MMVideoPlayer.h"
-@interface VideoDetailViewController () <MMVideoPlayerDelegate>
-@property (nonatomic, strong) MMVideoPlayer *player;
+#import "MMPlayerLayerView.h"
+
+@interface VideoDetailViewController () <MMPlayerLayerViewDelegate>
+@property (nonatomic, strong) MMPlayerLayerView *playerView;
 @end
 
 @implementation VideoDetailViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.player = [[MMVideoPlayer alloc] initWithURL:self.mp4_url topViewStatus:MMTopViewDisplayStatus playerTime:_seekTime];
-    self.player.view.frame = self.view.frame;
-    self.player.delegate = self;
-    [self.view addSubview:self.player.view];
-}
-
-- (void)dealloc {    
-    [self.player stopPlaying];
-    [self.player removeNotification];
-     self.player = nil;
+    self.playerView = [[MMPlayerLayerView alloc] initWithFrame:self.view.bounds displayType:MMPlayerLayerViewDisplayWithDefectiveTopBar  sourceUrl:[[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"]];
+    self.playerView.layerViewDelegate = self;
+    [self.view addSubview:self.playerView];
 }
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
 #pragma mark - MMVideoPlayerDelegate
-- (void)videoPlayerFinished:(MMVideoPlayer *)videoPlayer {
-    NSLog(@"video is finished");
+/** 播放结束*/
+- (void)playerLayerViewFinishedPlay:(MMPlayerLayerView *)playerLayerView {
+    NSLog(@"播放结束");
 }
 
-- (void)videoPlayerViewWillDismiss:(MMVideoPlayer *)videoPlayer {
-    NSTimeInterval time = [self.player currentTimeOfPlayerItem];
+- (void)videoPlayerViewRespondsToBackAction:(MMPlayerLayerView *)videoPlayer {
+
     [self dismissViewControllerAnimated:YES completion:^{
-        if (self.block) {
-            self.block(time);
-        }
+
     }];
 }
-
 
 @end

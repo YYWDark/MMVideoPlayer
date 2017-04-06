@@ -40,6 +40,9 @@ static const CGFloat lineHeight = 2.0f;
     [self _updateCircleLayer:self.circleLayer newValue:_value StrokeColor:_circleTintColor];
 }
 
+- (void)dealloc {
+    NSLog(@"MMSlider is dealloc");
+}
 #pragma mark - private method
 - (void)_initValues {
     _value = 0.0;

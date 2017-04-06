@@ -9,8 +9,27 @@
 #ifndef MMStatusHeader_h
 #define MMStatusHeader_h
 //MMTopViewDisplayStatus
-typedef NS_ENUM(NSUInteger, MMTopViewStatus) {
+typedef NS_ENUM(NSUInteger, MMTopViewStatus) {   //是否显示topBar
     MMTopViewHiddenStatus,   //default
     MMTopViewDisplayStatus,
+};
+
+typedef NS_ENUM(NSUInteger, MMPlayerLayerViewDisplayType) {   //是否显示topBar
+    MMPlayerLayerViewDisplayWithOutTopBar,            //类型微博没有tapBar
+    MMPlayerLayerViewDisplayWithDefectiveTopBar,      //类似爱奇艺小屏幕,topBar没有完整的工具 default
+    MMPlayerLayerViewDisplayFullScreen,               //满屏
+};
+
+typedef NS_ENUM(NSUInteger, MMVideoVideoUrlType) {
+    MMVideoVideoUrlTypeLocation,                                
+    MMVideoVideoUrlTypeLocationRemote,
+};
+
+typedef NS_ENUM(NSUInteger, MMVideoVideoPlayerState) {
+    MMVideoVideoPlayerFailed,
+    MMVideoVideoPlayerPlaying,
+    MMVideoVideoPlayerPause,
+    MMVideoVideoPlayerBuffering,
+    MMVideoVideoPlayerStop,
 };
 #endif /* MMStatusHeader_h */
