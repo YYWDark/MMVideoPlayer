@@ -304,10 +304,8 @@ static CGFloat const AnimationDuration = 0.35;
     __weak MMPlayerLayerView *weakSelf = self;
     void (^callback)(NSNotification *note) = ^(NSNotification *notification) {
             [weakSelf callTheActionWiththeEndOfVideo];
-        
-        
-        if ([self.layerViewDelegate respondsToSelector:@selector(playerLayerViewFinishedPlay:)]) {
-            [self.layerViewDelegate playerLayerViewFinishedPlay:self];
+        if ([weakSelf.layerViewDelegate respondsToSelector:@selector(playerLayerViewFinishedPlay:)]) {
+            [weakSelf.layerViewDelegate playerLayerViewFinishedPlay:weakSelf];
         }
     };
     self.itemEndObserver = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
@@ -342,6 +340,8 @@ static CGFloat const AnimationDuration = 0.35;
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
     [self.player setRate:0];
+    self.slider.value = 0.0f;
+    self.slider.cacheValue = 0.0f;
     self.asset = nil;
     self.playerItem = nil;
     self.player = nil;

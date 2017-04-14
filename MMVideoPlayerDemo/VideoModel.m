@@ -43,6 +43,8 @@
     self.ptime = sourceDic[@"ptime"];
     self.topicName = sourceDic[@"topicName"];
     self.mp4_url = [NSURL URLWithString:sourceDic[@"mp4_url"]];
+
 //    self.mp4_url = [[NSBundle mainBundle] URLForResource:@"b" withExtension:@"mp4"];
+
 }
 @end
