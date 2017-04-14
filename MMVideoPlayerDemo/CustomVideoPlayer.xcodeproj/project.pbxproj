@@ -13,6 +13,7 @@
 		751591871E89110F0019DFE4 /* a.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 751591861E89110F0019DFE4 /* a.mp4 */; };
 		752E290C1E657DE1009AA362 /* UIColor+MMVideoExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E29081E657DE1009AA362 /* UIColor+MMVideoExtension.m */; };
 		752E290D1E657DE1009AA362 /* UIView+MMVideoExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 752E290A1E657DE1009AA362 /* UIView+MMVideoExtension.m */; };
+		7537A9391EA07B8B0033271D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7537A9381EA07B8B0033271D /* LoginViewController.m */; };
 		75422CDC1E962B4D00939504 /* VideoCatalogueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75422CDB1E962B4D00939504 /* VideoCatalogueViewController.m */; };
 		75422CE21E96391D00939504 /* VideoBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 75422CE11E96391D00939504 /* VideoBaseViewController.m */; };
 		754900931E7FDDDC00240AC9 /* VideoDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 754900921E7FDDDC00240AC9 /* VideoDetailViewController.m */; };
@@ -65,6 +66,8 @@
 		752E29081E657DE1009AA362 /* UIColor+MMVideoExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+MMVideoExtension.m"; sourceTree = "<group>"; };
 		752E29091E657DE1009AA362 /* UIView+MMVideoExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MMVideoExtension.h"; sourceTree = "<group>"; };
 		752E290A1E657DE1009AA362 /* UIView+MMVideoExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MMVideoExtension.m"; sourceTree = "<group>"; };
+		7537A9371EA07B8B0033271D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		7537A9381EA07B8B0033271D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		75422CD41E960D7C00939504 /* MMPlayerLayerViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMPlayerLayerViewDelegate.h; sourceTree = "<group>"; };
 		75422CDA1E962B4D00939504 /* VideoCatalogueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCatalogueViewController.h; sourceTree = "<group>"; };
 		75422CDB1E962B4D00939504 /* VideoCatalogueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCatalogueViewController.m; sourceTree = "<group>"; };
@@ -224,6 +227,8 @@
 				75422CDB1E962B4D00939504 /* VideoCatalogueViewController.m */,
 				75422CE01E96391D00939504 /* VideoBaseViewController.h */,
 				75422CE11E96391D00939504 /* VideoBaseViewController.m */,
+				7537A9371EA07B8B0033271D /* LoginViewController.h */,
+				7537A9381EA07B8B0033271D /* LoginViewController.m */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -557,6 +562,7 @@
 				75C4C83A1E72C09E00A7320D /* VideoListViewController.m in Sources */,
 				75422CDC1E962B4D00939504 /* VideoCatalogueViewController.m in Sources */,
 				759BE4CF1E73C4C40067B180 /* NSObject+Calculate.m in Sources */,
+				7537A9391EA07B8B0033271D /* LoginViewController.m in Sources */,
 				750678E31E691B690007253F /* AVAsset+MMVideoExtension.m in Sources */,
 				752E290C1E657DE1009AA362 /* UIColor+MMVideoExtension.m in Sources */,
 				75C4C8301E7156B300A7320D /* NSTimer+MMVideoExtension.m in Sources */,

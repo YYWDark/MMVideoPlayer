@@ -15,6 +15,7 @@ typedef NS_ENUM(NSUInteger, MMTopViewStatus) {   //是否显示topBar
 };
 
 typedef NS_ENUM(NSUInteger, MMPlayerLayerViewDisplayType) {   //是否显示topBar
+    MMPlayerLayerViewDisplayNone,
     MMPlayerLayerViewDisplayWithOutTopBar,            //类型微博没有tapBar
     MMPlayerLayerViewDisplayWithDefectiveTopBar,      //类似爱奇艺小屏幕,topBar没有完整的工具 default
     MMPlayerLayerViewDisplayFullScreen,               //满屏

@@ -78,7 +78,7 @@ static CGFloat const AnimationDuration = 0.35;
         self.isToolShown = YES;
         self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
         _videoUrl = url;
-        [self initVideoPlayerAndRelevantSetting];
+        [self autoToPlay];
         
         [self initUI];
         [self _resetTimer];
@@ -88,7 +88,8 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)initUI {
-    
+    if (self.displayType == MMPlayerLayerViewDisplayNone) return;
+        
     if (self.displayType != MMPlayerLayerViewDisplayWithOutTopBar) {
         [self addSubview:self.thumbnailsView];
         [self addSubview:self.topBarView];
@@ -112,6 +113,7 @@ static CGFloat const AnimationDuration = 0.35;
     CGFloat totalHeight = self.totalHeight;
     CGFloat totalWidth  = self.totalWidth;
     self.playerLayer.frame = self.bounds;
+    if (self.displayType == MMPlayerLayerViewDisplayNone) return;
     
         if (self.displayType != MMPlayerLayerViewDisplayWithOutTopBar ) {
             self.thumbnailsView.frame = CGRectMake(0, self.showIndexImageUIButton.selected?(totalHeight - BottomBarViewHeight - ThumbnailsViewHeight): totalHeight, totalWidth,ThumbnailsViewHeight);
@@ -155,7 +157,7 @@ static CGFloat const AnimationDuration = 0.35;
     [self respondToPlayAction:self.playButton];
 }
 
-- (void)initVideoPlayerAndRelevantSetting {
+- (void)autoToPlay {
     NSArray *keys = @[
                       @"tracks",
                       @"duration",
@@ -182,6 +184,7 @@ static CGFloat const AnimationDuration = 0.35;
 
 
 - (void)_addNotification {
+    if (self.displayType == MMPlayerLayerViewDisplayNone) return;
     if (self.displayType != MMPlayerLayerViewDisplayWithOutTopBar) {
     //屏幕旋转
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
@@ -220,6 +223,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)_resetTimer {
+    if (self.displayType == MMPlayerLayerViewDisplayNone) return;
     if (self.displayType == MMPlayerLayerViewDisplayWithOutTopBar) return;
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:5.0f firing:^{
@@ -331,7 +335,10 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)_setnil {
     [self.timer invalidate];
-    [self.player removeTimeObserver:self.timeObserver];
+//    if (self.timeObserver) {
+//       [self.player removeTimeObserver:self.timeObserver];
+//    }
+   
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
     [self.player setRate:0];
@@ -674,7 +681,7 @@ static CGFloat const AnimationDuration = 0.35;
     if (_videoUrl != videoUrl) {
         _videoUrl = videoUrl;
         [self _setnil];
-        [self initVideoPlayerAndRelevantSetting];
+        [self autoToPlay];
         [self _resetTimer];
     }
 }

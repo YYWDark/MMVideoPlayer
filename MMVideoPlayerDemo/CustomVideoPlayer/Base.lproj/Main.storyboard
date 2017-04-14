@@ -69,9 +69,10 @@
         <!--Tab Bar Controller-->
         <scene sceneID="F8m-JN-wCY">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="YrB-AL-fO0" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainVC" automaticallyAdjustsScrollViewInsets="NO" id="YrB-AL-fO0" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="yvv-CY-0cT">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
