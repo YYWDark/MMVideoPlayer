@@ -14,11 +14,9 @@
 #define SuperViewWidth CGRectGetWidth(self.frame)
 #define kOrientation  [UIDevice currentDevice].orientation
 
-
-
 static CGFloat const TopBarViewHeight = 44.0f;
 static CGFloat const BottomBarViewHeight = 49.0f;
-static CGFloat const HorizontalMargin = 0.0;
+static CGFloat const HorizontalMargin = 10.0;
 static CGFloat const IconSize = 40.0;
 static CGFloat const SliderViewHeight = 30.0;
 static CGFloat const DistanceBetweenHorizontalViews = 5.0f;
@@ -36,7 +34,6 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, weak) id timeObserver;
 @property (nonatomic, weak) id itemEndObserver;
 
-
 @property (nonatomic, strong) UIView *topBarView;
 @property (nonatomic, strong) UIView *bottomBarView;
 @property (nonatomic, strong) UIButton *closeButton;
@@ -47,6 +44,7 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, strong) UILabel  *endTimeLabel;
 @property (nonatomic, strong) UILabel  *titleLabel;
 @property (nonatomic, strong) UILabel  *alterLabel;
+@property (nonatomic, strong) UISwitch *switchControl;
 
 @property (nonatomic, strong) UIView *orginSuperView;
 @property (nonatomic, assign) CGRect orginFrame;
@@ -59,6 +57,7 @@ static CGFloat const AnimationDuration = 0.35;
 @property (nonatomic, assign) CGFloat totalWidth;
 @property (nonatomic, assign) CGFloat totalHeight;
 @property (nonatomic, assign) BOOL isShowthumbnails;                            /** 是否显示缩略图*/
+@property (nonatomic, assign) BOOL isAutoToPlay;                                /** 是否自动播放 默认不是*/
 @end
 
 @implementation MMPlayerLayerView
@@ -73,13 +72,20 @@ static CGFloat const AnimationDuration = 0.35;
                     sourceUrl:(NSURL *)url {
     self = [super initWithFrame:frame];
     if (self) {
+        _isAutoToPlay = NO;
         _displayType = type;
+        if (_displayType == MMPlayerLayerViewDisplayNone) {
+            _isAutoToPlay = YES;
+        }
         self.backgroundColor = [UIColor blackColor];
         self.isToolShown = YES;
         self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
         _videoUrl = url;
-        [self autoToPlay];
         
+        if (_isAutoToPlay == YES) {
+           [self autoToPlay];
+        }
+
         [self initUI];
         [self _resetTimer];
         [self _addNotification];
@@ -89,13 +95,13 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)initUI {
     if (self.displayType == MMPlayerLayerViewDisplayNone) return;
-        
     if (self.displayType != MMPlayerLayerViewDisplayWithOutTopBar) {
         [self addSubview:self.thumbnailsView];
         [self addSubview:self.topBarView];
         [self.topBarView addSubview:self.closeButton];
         [self.topBarView addSubview:self.titleLabel];
         [self.topBarView addSubview:self.showIndexImageUIButton];
+        [self.topBarView addSubview:self.switchControl];
     }
     
     [self addSubview:self.bottomBarView];
@@ -104,6 +110,8 @@ static CGFloat const AnimationDuration = 0.35;
     [self.bottomBarView addSubview:self.currentTimeLabel];
     [self.bottomBarView addSubview:self.endTimeLabel];
     [self.bottomBarView addSubview:self.fullScreenButton];
+    
+    
     [self addSubview: self.indicatorView];
     [self addSubview:self.alterLabel];
 }
@@ -120,7 +128,8 @@ static CGFloat const AnimationDuration = 0.35;
             self.topBarView.frame = CGRectMake(0, self.isToolShown?0:-TopBarViewHeight, totalWidth, TopBarViewHeight);
             self.closeButton.frame = CGRectMake(HorizontalMargin, 0, IconSize, IconSize);
             self.showIndexImageUIButton.frame = CGRectMake(self.topBarView.width - HorizontalMargin - IconSize, 0, IconSize, IconSize);
-            self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.showIndexImageUIButton.left - self.closeButton.right, TopBarViewHeight);
+            self.switchControl.frame = CGRectMake(self.showIndexImageUIButton.left - HorizontalMargin - IconSize, 5, IconSize, IconSize - 10);
+            self.titleLabel.frame  = CGRectMake(self.closeButton.right, 0, self.switchControl.left - self.closeButton.right, TopBarViewHeight);
         }
         self.bottomBarView.frame = CGRectMake(0, self.isToolShown?totalHeight - BottomBarViewHeight : totalHeight , totalWidth, BottomBarViewHeight);
         self.playButton.frame  = CGRectMake(HorizontalMargin, (BottomBarViewHeight - IconSize)/2, IconSize, IconSize);
@@ -130,8 +139,9 @@ static CGFloat const AnimationDuration = 0.35;
         self.slider.frame = CGRectMake(self.currentTimeLabel.right + DistanceBetweenHorizontalViews, self.playButton.top + 5, self.endTimeLabel.left - self.currentTimeLabel.right - 2*DistanceBetweenHorizontalViews, SliderViewHeight);
         self.indicatorView.size = CGSizeMake(30, 30);
         self.indicatorView.center = self.center;
-        self.alterLabel.size = CGSizeMake(totalWidth, 50);
-        self.alterLabel.center = self.center;
+//        self.alterLabel.size = CGSizeMake(totalWidth, 50);
+//        self.alterLabel.center = self.center;
+        self.alterLabel.frame  = CGRectMake(0, (totalHeight - 50)/2, totalWidth, 50);
 }
 
 //- (void)setCurrentTime:(NSTimeInterval)time {
@@ -141,14 +151,15 @@ static CGFloat const AnimationDuration = 0.35;
 //}
 
 - (void)dealloc {
+    [self _setnil];
     NSLog(@"MMPlayerLayerView dealloc");
-//    if (self.displayType != MMPlayerLayerViewDisplayWithOutTopBar) {
-//       [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]]; 
-//    }
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 #pragma mark - private method
+- (void)updatePlayerState:(MMVideoVideoPlayerState)state {
+    _playerState = state;
+}
+
 - (void)showErrorMessage:(NSString *)error {
     self.alterLabel.text = error;
     self.alterLabel.hidden = NO;
@@ -173,15 +184,14 @@ static CGFloat const AnimationDuration = 0.35;
     }
     
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    self.player.muted = self.isMute;
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.playerLayer.backgroundColor = [UIColor blackColor].CGColor;
 //    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.layer insertSublayer:self.playerLayer atIndex:0];
-    
+    [self.indicatorView startAnimating];
 
 }
-
-
 
 - (void)_addNotification {
     if (self.displayType == MMPlayerLayerViewDisplayNone) return;
@@ -189,6 +199,7 @@ static CGFloat const AnimationDuration = 0.35;
     //屏幕旋转
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
     }
+    
     //进入后台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackgroundNotification:) name:UIApplicationWillResignActiveNotification object:nil];
     //进入前台
@@ -264,8 +275,6 @@ static CGFloat const AnimationDuration = 0.35;
     });
 }
 
-
-
 //每隔0.5秒更新slider
 - (void)_timerObserveOfVedioPlayer {
     CMTime interval = CMTimeMakeWithSeconds(kMMVideoPlayerRefreshTime, NSEC_PER_SEC);
@@ -333,10 +342,6 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)_setnil {
     [self.timer invalidate];
-//    if (self.timeObserver) {
-//       [self.player removeTimeObserver:self.timeObserver];
-//    }
-   
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
     [self.player setRate:0];
@@ -353,6 +358,7 @@ static CGFloat const AnimationDuration = 0.35;
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context {
+    [self.indicatorView stopAnimating];
     // Only handle observations for the PlayerItemContext
     if (context != &kMMPlayerItemStatusContext) {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -376,12 +382,18 @@ static CGFloat const AnimationDuration = 0.35;
                 // Failed. Examine AVPlayerItem.error
                 NSLog(@"Examine AVPlayerItem.error remove loadedTimeRanges observe");
                 [self showErrorMessage:self.playerItem.error.userInfo[@"NSLocalizedFailureReason"]];
+                [self updatePlayerState:MMVideoVideoPlayerFailed];
                 break;
             case AVPlayerItemStatusUnknown:
-
+                [self showErrorMessage:@"not ready"];
+                [self updatePlayerState:MMVideoVideoPlayerFailed];
                 // Not ready
                 break;
         }
+    }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemPlaybackBufferEmpty]) {
+        NSLog(@"kMMVideoKVOKeyPathPlayerItemPlaybackBufferEmpty");
+    }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp]){
+        NSLog(@"kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp");
     }
 }
 
@@ -447,6 +459,12 @@ static CGFloat const AnimationDuration = 0.35;
     }
 }
 
+- (void)respondsToSwitchAction:(UISwitch *)sender {
+    [self _resetTimer];
+    if ([self.layerViewDelegate respondsToSelector:@selector(playerLayerView:currentStateOfSwitch:)]) {
+        [self.layerViewDelegate playerLayerView:self currentStateOfSwitch:sender.isOn];
+    }
+}
 #pragma mark - NSNotification
 - (void)orientationDidChangeNotification:(NSNotification *)notification {
     if (kOrientation == UIDeviceOrientationLandscapeLeft) {
@@ -491,20 +509,31 @@ static CGFloat const AnimationDuration = 0.35;
 
 #pragma mark - MMPlayerActionDelegate
 - (void)play {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     //if video is finished, replay!
     if (CMTimeGetSeconds(self.playerItem.currentTime) == CMTimeGetSeconds(self.playerItem.duration)) {
         [self.playerItem seekToTime:kCMTimeZero];
     }
-    [self.player play];
+    if (self.player == nil) {
+        [self autoToPlay];
+    }else {
+        [self.player play];
+    }
+   
+    [self updatePlayerState:MMVideoVideoPlayerPlaying];
 }
 
 - (void)pause {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     [self.player pause];
+    [self updatePlayerState:MMVideoVideoPlayerPause];
 }
 
 - (void)stop {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     [self.player setRate:0];
     [self callTheActionWiththeEndOfVideo];
+    [self updatePlayerState:MMVideoVideoPlayerStop];
 }
 
 - (void)setVideoPlayerCurrentTime:(NSTimeInterval)time {
@@ -527,6 +556,7 @@ static CGFloat const AnimationDuration = 0.35;
 
 #pragma mark - MMSliderDelegate
 - (void)sliderWillRespondsToPanGestureRecognizer:(MMSlider *)slider {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     if ([self respondsToSelector:@selector(willDragToChangeCurrentTime)]) {
         [self.timer invalidate];
         [self willDragToChangeCurrentTime];
@@ -534,6 +564,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)sliderDidFinishedRespondsToPanGestureRecognizer:(MMSlider *)slider {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     if ([self respondsToSelector:@selector(didFinishedDragToChangeCurrentTime)]) {
         [self _resetTimer];
         [self didFinishedDragToChangeCurrentTime];
@@ -541,12 +572,14 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)sliderPanGestureRecognizer:(MMSlider *)slider value:(CGFloat)value {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     if ([self respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
         [self setVideoPlayerCurrentTime:value];
     }
 }
 
 - (void)sliderTapAction:(MMSlider *)slider value:(CGFloat)value {
+    if (_playerState == MMVideoVideoPlayerFailed) return;
     if ([self respondsToSelector:@selector(setVideoPlayerCurrentTime:)]) {
         [self _resetTimer];
         [self setVideoPlayerCurrentTime:value];
@@ -625,6 +658,7 @@ static CGFloat const AnimationDuration = 0.35;
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
     }completion:^(BOOL finished) {
         self.thumbnailsView.hidden = NO;
+        self.switchControl.hidden = NO;
     }];
 }
 
@@ -636,6 +670,7 @@ static CGFloat const AnimationDuration = 0.35;
     }
     self.fullScreenButton.selected = YES;
     self.thumbnailsView.hidden = YES;
+   
     if (self.orginSuperView == nil) {
         self.orginSuperView = self.superview;
         self.orginFrame = self.frame;
@@ -651,6 +686,7 @@ static CGFloat const AnimationDuration = 0.35;
         self.frame = [[UIApplication sharedApplication].keyWindow bounds];
     }completion:^(BOOL finished) {
         self.thumbnailsView.hidden = NO;
+         self.switchControl.hidden = NO;
     }];
 }
 
@@ -662,6 +698,8 @@ static CGFloat const AnimationDuration = 0.35;
     }
     self.fullScreenButton.selected = NO;
     self.thumbnailsView.hidden = YES;
+    self.switchControl.hidden = YES;
+    
     [self.orginSuperView addSubview:self];
     self.orginSuperView = nil;
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationPortrait] forKey:@"orientation"];
@@ -672,11 +710,19 @@ static CGFloat const AnimationDuration = 0.35;
         
     }completion:^(BOOL finished) {
         self.thumbnailsView.hidden = NO;
+       
     }];
 
 }
 
 #pragma mark - setter
+- (void)setIsMute:(BOOL)isMute {
+    if (_isMute != isMute) {
+        _isMute = isMute;
+        _player.muted = _isMute;
+    }
+}
+
 - (void)setVideoUrl:(NSURL *)videoUrl {
     if (_videoUrl != videoUrl) {
         _videoUrl = videoUrl;
@@ -690,10 +736,14 @@ static CGFloat const AnimationDuration = 0.35;
     if (_playerItem == playerItem) {return;}
     if (_playerItem ) {
         [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus];
+        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemPlaybackBufferEmpty];
+        [self.playerItem removeObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp];
     }
      _playerItem = playerItem;
     if (playerItem) {
         [playerItem addObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemStatus options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:&kMMPlayerItemStatusContext];
+        [playerItem addObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemPlaybackBufferEmpty options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:&kMMPlayerItemStatusContext];
+        [playerItem addObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:&kMMPlayerItemStatusContext];
     }
 }
 #pragma mark - getter
@@ -719,7 +769,7 @@ static CGFloat const AnimationDuration = 0.35;
 - (UIButton *)playButton {
     if (_playButton == nil) {
         _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _playButton.selected = YES;
+        _playButton.selected = _isAutoToPlay;
         [_playButton setImage:[UIImage imageNamed:@"Icon_Play"] forState:UIControlStateNormal];
         [_playButton setImage:[UIImage imageNamed:@"Icon_Pause"] forState:UIControlStateSelected];
         [_playButton addTarget:self action:@selector(respondToPlayAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -796,7 +846,7 @@ static CGFloat const AnimationDuration = 0.35;
 - (UIView *)topBarView {
     if (_topBarView == nil) {
         _topBarView = [[UIView alloc] init];
-        _topBarView.backgroundColor = [UIColor clearColor];
+        _topBarView.backgroundColor = [UIColor lightGrayColor];
 #ifdef MMDEBUG
         _topBarView.backgroundColor = [UIColor redColor];
 #endif
@@ -827,7 +877,8 @@ static CGFloat const AnimationDuration = 0.35;
 - (UIActivityIndicatorView *)indicatorView {
     if (_indicatorView == nil) {
         _indicatorView = [[UIActivityIndicatorView alloc] init];
-        [_indicatorView startAnimating];
+        if (_isAutoToPlay == YES) {
+            [_indicatorView startAnimating];}
     }
     return _indicatorView;
 }
@@ -843,6 +894,15 @@ static CGFloat const AnimationDuration = 0.35;
     return _slider;
 }
 
+- (UISwitch *)switchControl {
+    if (_switchControl == nil) {
+        _switchControl = [[UISwitch alloc] init];
+        _switchControl.hidden = YES;
+       [_switchControl addTarget:self action:@selector(respondsToSwitchAction:) forControlEvents:UIControlEventValueChanged];
+    }
+    return _switchControl;
+}
+
 - (CGFloat)totalWidth {
     return (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait)?SuperViewWidth:SuperViewHeight;
 }
@@ -850,7 +910,5 @@ static CGFloat const AnimationDuration = 0.35;
 - (CGFloat)totalHeight {
     return (self.viewOrientation == MMPlayerLayerViewOrientationLandscapePortrait)?SuperViewHeight:SuperViewWidth;
 }
-
-
 
 @end

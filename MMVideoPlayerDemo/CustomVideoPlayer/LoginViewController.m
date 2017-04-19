@@ -19,10 +19,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     MMPlayerLayerView *playerView = [[MMPlayerLayerView alloc]initWithFrame:self.view.bounds displayType:MMPlayerLayerViewDisplayNone sourceUrl:url];
-    playerView.isMute = NO;
+    playerView.isMute = YES;
     playerView.layerViewDelegate = self;
+    [playerView autoToPlay];
     [self.view addSubview:playerView];
     [self.view addSubview:self.loginButton];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

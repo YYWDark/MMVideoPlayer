@@ -185,8 +185,9 @@ static NSString *cellID = @"VideoListViewController";
         [self.playerView removeFromSuperview];
     }
     if (self.playerView == nil) {
-        self.playerView = [[MMPlayerLayerView alloc]initWithFrame:targetView.bounds displayType:MMPlayerLayerViewDisplayNone sourceUrl:url];
+        self.playerView = [[MMPlayerLayerView alloc]initWithFrame:targetView.bounds displayType:MMPlayerLayerViewDisplayWithOutTopBar sourceUrl:url];
         self.playerView.layerViewDelegate = self;
+//        [self.playerView autoToPlay];
     }else{
         self.playerView.videoUrl = url;
     }

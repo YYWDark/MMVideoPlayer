@@ -20,9 +20,9 @@
     
     LoginViewController *loginViewController = [[LoginViewController alloc] init];
     loginViewController.loginBlock = ^(void) {
-        self.window.rootViewController = rootViewController;
+        self.window.rootViewController = loginViewController;
     };
-    self.window.rootViewController = loginViewController;
+    self.window.rootViewController = rootViewController;
     return YES;
 }
 

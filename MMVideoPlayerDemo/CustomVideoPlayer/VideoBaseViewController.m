@@ -21,7 +21,6 @@
     [self.tabBarController.tabBar setBarTintColor:[UIColor blackColor]];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor lightTextColor],NSForegroundColorAttributeName,nil]];
     
-    
 }
 
 - (void)didReceiveMemoryWarning {
