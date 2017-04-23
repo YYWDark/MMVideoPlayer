@@ -63,3 +63,5 @@ break;
 }
 ```
 当回调的`AVPlayerItemStatus`状态为`AVPlayerItemStatusReadyToPlay`意味着`player item`准备被播放了。
+
+
