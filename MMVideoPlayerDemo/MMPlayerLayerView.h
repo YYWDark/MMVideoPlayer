@@ -10,7 +10,6 @@
 #import "MMVideoHeader.h"
 #import <AVFoundation/AVFoundation.h>
 
-
 @protocol MMPlayerLayerViewDelegate;
 @interface MMPlayerLayerView : UIView
 @property (nonatomic, assign) MMTopViewStatus topViewStatus;
@@ -31,7 +30,6 @@
                   displayType:(MMPlayerLayerViewDisplayType)type
                     sourceUrl:(NSURL *)url;
 
-//- (void)setCurrentTime:(NSTimeInterval)time;
 - (void)play;
 - (void)pause;
 - (void)stop;
