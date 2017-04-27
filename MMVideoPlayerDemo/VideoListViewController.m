@@ -29,6 +29,7 @@ static NSString *cellID = @"VideoListViewController";
 @implementation VideoListViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor blackColor];
     self.dataArr = [NSMutableArray array];
     [self.view addSubview:self.indicatorView];
     [self _fetchDataFromNetWorking];
@@ -186,6 +187,7 @@ static NSString *cellID = @"VideoListViewController";
     if (self.playerView == nil) {
         self.playerView = [[MMPlayerLayerView alloc]initWithFrame:targetView.bounds displayType:MMPlayerLayerViewDisplayWithOutTopBar sourceUrl:url];
         self.playerView.layerViewDelegate = self;
+//        [self.playerView autoToPlay];
     }else{
         self.playerView.videoUrl = url;
     }

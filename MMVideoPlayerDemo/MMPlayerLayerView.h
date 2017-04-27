@@ -20,9 +20,6 @@
 @property (nonatomic, assign) BOOL isMute;                                      /** 是否静音模式*/
 @property (nonatomic, strong) NSURL *videoUrl;
 
-
-
-
 - (instancetype)initWithFrame:(CGRect)frame
                     sourceUrl:(NSURL *)url;
 
@@ -33,6 +30,7 @@
 - (void)play;
 - (void)pause;
 - (void)stop;
+- (void)autoToPlay;
 @end
 
 
@@ -48,5 +46,6 @@
 - (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentPlayState:(MMVideoVideoPlayerState)State;
 /** 当前视图的方向*/
 - (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentViewOrientation:(MMPlayerLayerViewOrientation)viewOrientation;
-
+/** switch当前的状态*/
+- (void)playerLayerView:(MMPlayerLayerView *)playerLayerView currentStateOfSwitch:(BOOL)isOn;
 @end

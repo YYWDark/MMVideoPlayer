@@ -26,6 +26,10 @@ static CGFloat const kMMThumbnailsImageWidth   = 120.0f;
 static CGFloat const kMMVideoPlayerRefreshTime = 0.5f;
 static NSString * const kMMVideoKVOKeyPathPlayerItemStatus = @"status";
 static NSString * const kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges = @"loadedTimeRanges";
+static NSString * const kMMVideoKVOKeyPathPlayerItemPlaybackBufferEmpty = @"playbackBufferEmpty";
+static NSString * const kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp = @"playbackLikelyToKeepUp";
+//playbackLikelyToKeepUp
+//static NSString * const kMMVideoKVOKeyPathPlayerItemLoadedTimeRanges = @"loadedTimeRanges";
 static NSString * const kMMFinishedGeneratThumbnailsImageNotification = @"kMMFinishedGeneratThumbnailsImageNotification";
 
 static NSString * const kErrorMessage = @"播放出现问题";

@@ -20,6 +20,7 @@
     self.edgesForExtendedLayout = NO;
     self.playerView = [[MMPlayerLayerView alloc] initWithFrame:self.view.bounds displayType:MMPlayerLayerViewDisplayWithDefectiveTopBar  sourceUrl:self.mp4_url];
     self.playerView.layerViewDelegate = self;
+    [self.playerView autoToPlay];
     [self.view addSubview:self.playerView];
 }
 
