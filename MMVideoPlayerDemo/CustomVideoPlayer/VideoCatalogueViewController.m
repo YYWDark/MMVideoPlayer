@@ -54,7 +54,7 @@ static NSString *cellID = @"VideoCatalogueViewController";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     VideoDetailViewController *detailVC = [VideoDetailViewController new];
     detailVC.mp4_url = [NSURL URLWithString:self.dataSource[indexPath.row]];
-    detailVC.mp4_url = [[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"];
+//    detailVC.mp4_url = [[NSBundle mainBundle] URLForResource:@"a" withExtension:@"mp4"];
     [self presentViewController:detailVC animated:YES completion:nil];
     
 }

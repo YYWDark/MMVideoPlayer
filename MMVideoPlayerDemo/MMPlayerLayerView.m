@@ -74,17 +74,17 @@ static CGFloat const AnimationDuration = 0.35;
     if (self) {
         _isAutoToPlay = NO;
         _displayType = type;
-        if (_displayType == MMPlayerLayerViewDisplayNone) {
-            _isAutoToPlay = YES;
-        }
+//        if (_displayType == MMPlayerLayerViewDisplayNone) {
+//            _isAutoToPlay = YES;
+//        }
         self.backgroundColor = [UIColor blackColor];
         self.isToolShown = YES;
         self.viewOrientation = MMPlayerLayerViewOrientationLandscapePortrait;
         _videoUrl = url;
         
-        if (_isAutoToPlay == YES) {
-           [self autoToPlay];
-        }
+//        if (_isAutoToPlay == YES) {
+//           [self autoToPlay];
+//        }
 
         [self initUI];
         [self _resetTimer];
@@ -169,6 +169,7 @@ static CGFloat const AnimationDuration = 0.35;
 }
 
 - (void)autoToPlay {
+    self.isAutoToPlay = YES;
     NSArray *keys = @[
                       @"tracks",
                       @"duration",
@@ -190,6 +191,8 @@ static CGFloat const AnimationDuration = 0.35;
 //    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.layer insertSublayer:self.playerLayer atIndex:0];
     [self.indicatorView startAnimating];
+    self.playButton.selected = YES;
+    
 
 }
 
@@ -283,6 +286,7 @@ static CGFloat const AnimationDuration = 0.35;
     void (^callBack)(CMTime time) = ^(CMTime time) {
         NSTimeInterval currentTime = CMTimeGetSeconds(time);
         NSTimeInterval duration = CMTimeGetSeconds(weakSelf.playerItem.duration);
+        if (isnan(duration)) return;
             //当前播放到的时间
             [weakSelf setCurrentTime:currentTime duration:duration];
             //当前的缓存
@@ -342,16 +346,18 @@ static CGFloat const AnimationDuration = 0.35;
 
 - (void)_setnil {
     [self.timer invalidate];
+    self.slider.value = 0.0f;
+    self.slider.cacheValue = 0.0f;
     [self.player.currentItem cancelPendingSeeks];
     [self.player.currentItem.asset cancelLoading];
     [self.player setRate:0];
-    self.slider.value = 0.0f;
-    self.slider.cacheValue = 0.0f;
     self.asset = nil;
     self.playerItem = nil;
     self.player = nil;
     self.timer = nil;
     [self.playerLayer removeFromSuperlayer];
+    self.endTimeLabel.text = @"--:--";
+    self.currentTimeLabel.text = @"--:--";
 }
 #pragma mark - action
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -394,6 +400,7 @@ static CGFloat const AnimationDuration = 0.35;
         NSLog(@"kMMVideoKVOKeyPathPlayerItemPlaybackBufferEmpty");
     }else if ([keyPath isEqualToString:kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp]){
         NSLog(@"kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp");
+        
     }
 }
 
@@ -452,7 +459,8 @@ static CGFloat const AnimationDuration = 0.35;
 - (void)respondToPlayAction:(UIButton *)button {
     [self _resetTimer];
     button.selected = !button.selected;
-    if (button.selected == YES) {
+    if (button.selected == YES
+        ) {
             [self play];
     }else {
             [self pause];
@@ -521,12 +529,14 @@ static CGFloat const AnimationDuration = 0.35;
     }
    
     [self updatePlayerState:MMVideoVideoPlayerPlaying];
+    self.playButton.selected = YES;
 }
 
 - (void)pause {
     if (_playerState == MMVideoVideoPlayerFailed) return;
     [self.player pause];
     [self updatePlayerState:MMVideoVideoPlayerPause];
+    self.playButton.selected = NO;
 }
 
 - (void)stop {
@@ -534,6 +544,7 @@ static CGFloat const AnimationDuration = 0.35;
     [self.player setRate:0];
     [self callTheActionWiththeEndOfVideo];
     [self updatePlayerState:MMVideoVideoPlayerStop];
+    
 }
 
 - (void)setVideoPlayerCurrentTime:(NSTimeInterval)time {
@@ -710,9 +721,7 @@ static CGFloat const AnimationDuration = 0.35;
         
     }completion:^(BOOL finished) {
         self.thumbnailsView.hidden = NO;
-       
     }];
-
 }
 
 #pragma mark - setter
@@ -746,6 +755,15 @@ static CGFloat const AnimationDuration = 0.35;
         [playerItem addObserver:self forKeyPath:kMMVideoKVOKeyPathPlayerItemPlaybackLikelyToKeepUp options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:&kMMPlayerItemStatusContext];
     }
 }
+
+- (void)setIsAutoToPlay:(BOOL)isAutoToPlay {
+    if (_isAutoToPlay != isAutoToPlay) {
+        _isAutoToPlay = isAutoToPlay;
+//        _playButton.selected = _isAutoToPlay;
+//        [self respondToPlayAction:_playButton];
+        
+    }
+}
 #pragma mark - getter
 - (UIButton *)closeButton {
     if (_closeButton == nil) {
@@ -769,7 +787,7 @@ static CGFloat const AnimationDuration = 0.35;
 - (UIButton *)playButton {
     if (_playButton == nil) {
         _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _playButton.selected = _isAutoToPlay;
+//        _playButton.selected = _isAutoToPlay;
         [_playButton setImage:[UIImage imageNamed:@"Icon_Play"] forState:UIControlStateNormal];
         [_playButton setImage:[UIImage imageNamed:@"Icon_Pause"] forState:UIControlStateSelected];
         [_playButton addTarget:self action:@selector(respondToPlayAction:) forControlEvents:UIControlEventTouchUpInside];

@@ -40,7 +40,6 @@ static NSString *cellID = @"VideoListViewController";
     return YES;
 }
 
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (self.playerView != nil) {
